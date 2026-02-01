@@ -1,4 +1,4 @@
-import { IProject } from "../models/IProject";
+import { IProject } from "@/types/IProject";
 
 export const projects: IProject[] = [
   {
@@ -70,7 +70,7 @@ export const projects: IProject[] = [
     points: [
       "Developed all backend APIs from scratch, integrating with GCP buckets and implementing custom role management.",
       "Boosted application performance by 50% by transitioning from monolithic to microservice architecture, earning MVP awards.",
-      "Increased system reliability by 40% by optimizing PostgreSQL queries and enhancing the application’s scalability.",
+      "Increased system reliability by 40% by optimizing PostgreSQL queries and enhancing the application's scalability.",
       "Contributed to GCP deployment, improving availability and ensuring smooth operation for marketing managers.",
       "Streamlined deployment using Docker, ensuring quick and reliable production builds.",
     ],

@@ -1,12 +1,14 @@
-import "../styles/nav.scss";
+"use client";
+
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useAppStore } from "../store/store";
-import StaggeredText from "../utils/StaggerText";
-import { Link, useLocation } from "react-router-dom";
+import { useAppStore } from "@/store/store";
+import StaggeredText from "@/components/StaggerText";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Nav = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const MotionLink = motion.create(Link);
 
   const showExternal = useAppStore((state) => state.showExternal);
@@ -27,10 +29,10 @@ const Nav = () => {
   }, [setShowExternal]);
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (pathname === "/") {
       setShowExternal(false);
     }
-  }, [location.pathname, setShowExternal]);
+  }, [pathname, setShowExternal]);
 
   const linkVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -47,13 +49,13 @@ const Nav = () => {
   return (
     <motion.nav className="nav">
       <motion.div
-        className={`nav__wrapper`}
+        className="nav__wrapper"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <MotionLink
-          to={"/"}
+          href="/"
           className="nav__wrapper__logo"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -85,9 +87,7 @@ const Nav = () => {
                       animate="visible"
                       variants={linkVariants}
                       className="nav__wrapper__links__wrapper__link"
-                      to={`${
-                        link === "Portfolio" ? "/" : `/${link.toLowerCase()}`
-                      }`}
+                      href={link === "Portfolio" ? "/" : `/${link.toLowerCase()}`}
                     >
                       <StaggeredText text={link} />
                     </MotionLink>
@@ -124,7 +124,7 @@ const Nav = () => {
           >
             <Link
               className={`${externalLink.toLocaleLowerCase()}-link`}
-              to={externalLink === "Blogs" ? "/blogs" : "/resume"}
+              href={externalLink === "Blogs" ? "/blogs" : "/resume"}
             >
               {externalLink}
             </Link>

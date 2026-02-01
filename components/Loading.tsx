@@ -1,8 +1,9 @@
-import "../styles/loading.scss";
+"use client";
+
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import loadingAnimation from "../assets/animation/loading.json";
+import loadingAnimation from "@/public/assets/animation/loading.json";
 
 const Loading = () => {
   const animation = useRef<LottieRefCurrentProps>(null);

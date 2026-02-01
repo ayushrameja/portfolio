@@ -1,8 +1,9 @@
-import "../styles/resume.scss";
+"use client";
+
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-const Resume = () => {
+export default function ResumePage() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -24,7 +25,7 @@ const Resume = () => {
 
   return (
     <motion.div
-      className="resume"
+      className="w-full p-[2dvh] h-dvh flex relative justify-end flex-col-reverse"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -39,13 +40,10 @@ const Resume = () => {
         <a
           href="https://drive.google.com/uc?export=download&id=1KH4dnH50ocYFxv0Cut7gqMltRDHgC088"
           download
-          className="download-button"
         >
           Download Resume
         </a>
       </div>
     </motion.div>
   );
-};
-
-export default Resume;
+}

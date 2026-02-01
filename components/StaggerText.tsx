@@ -1,3 +1,5 @@
+"use client";
+
 const StaggeredText = ({ text }: { text: string }) => {
   return (
     <span className="staggered-text">
