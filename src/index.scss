@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap");
+
+@font-face {
+  font-family: "Neue Haas Display roman";
+  src: url("./assets/font/neue/NeueHaasDisplayRoman.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display roman italic";
+  src: url("./assets/font/neue/NeueHaasDisplayRomanItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display medium";
+  src: url("./assets/font/neue/NeueHaasDisplayMediu.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display medium italic";
+  src: url("./assets/font/neue/NeueHaasDisplayMediumItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display bold";
+  src: url("./assets/font/neue/NeueHaasDisplayBold.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display bold italic";
+  src: url("./assets/font/neue/NeueHaasDisplayBoldItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display black";
+  src: url("./assets/font/neue/NeueHaasDisplayBlack.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display black italic";
+  src: url("./assets/font/neue/NeueHaasDisplayBoldItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display light";
+  src: url("./assets/font/neue/NeueHaasDisplayLight.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display light italic";
+  src: url("./assets/font/neue/NeueHaasDisplayLightItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display thin";
+  src: url("./assets/font/neue/NeueHaasDisplayThin.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display thin italic";
+  src: url("./assets/font/neue/NeueHaasDisplayXThinItalic.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display extra thin";
+  src: url("./assets/font/neue/NeueHaasDisplayXThin.ttf");
+}
+
+@font-face {
+  font-family: "Neue Haas Display extra thin italic";
+  src: url("./assets/font/neue/NeueHaasDisplayXThinItalic.ttf");
+}
+
+:root {
+  // colors
+  --mint: #89e5ff;
+  --white: #ffffff;
+  --black: #000000;
+  --purple: #b089ff;
+  --dull-mint: #001d34;
+  --dull-white: #dbdbdb;
+  --light-black: #0d0d0d;
+  --dull-purple: #130038;
+
+  // fonts
+  --font-neue-roman: "Neue Haas Display roman", sans-serif;
+  --font-neue-roman-italic: "Neue Haas Display roman italic", sans-serif;
+  --font-neue-medium: "Neue Haas Display medium", sans-serif;
+  --font-neue-medium-italic: "Neue Haas Display medium italic", sans-serif;
+  --font-neue-bold: "Neue Haas Display bold", sans-serif;
+  --font-neue-bold-italic: "Neue Haas Display bold italic", sans-serif;
+  --font-neue-black: "Neue Haas Display black", sans-serif;
+  --font-neue-black-italic: "Neue Haas Display black italic", sans-serif;
+  --font-neue-light: "Neue Haas Display light", sans-serif;
+  --font-neue-light-italic: "Neue Haas Display light italic", sans-serif;
+  --font-neue-thin: "Neue Haas Display thin", sans-serif;
+  --font-neue-thin-italic: "Neue Haas Display thin italic", sans-serif;
+  --font-neue-extra-thin: "Neue Haas Display extra thin", sans-serif;
+  --font-neue-extra-thin-italic: "Neue Haas Display extra thin italic",
+    sans-serif;
+  --font-trade-winds: "Trade Winds", system-ui;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--white);
+  background-color: var(--black);
+  font-family: var(--font-neue-roman);
+}
