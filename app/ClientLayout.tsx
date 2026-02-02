@@ -38,7 +38,7 @@ export default function ClientLayout({
   }
 
   return (
-    <div className="app">
+    <div className="relative">
       <Suspense fallback={<Loading />}>
         {children}
         <Nav />
