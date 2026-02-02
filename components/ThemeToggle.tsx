@@ -7,20 +7,17 @@ type Theme = "light" | "dark";
 const STORAGE_KEY = "theme";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
+  const getInitialTheme = (): Theme => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      const prefersDark =
-        typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-      const nextTheme: Theme = stored === "dark" ? "dark" : stored === "light" ? "light" : prefersDark ? "dark" : "light";
-      setTheme(nextTheme);
-      applyTheme(nextTheme);
+      const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+      return stored === "dark" ? "dark" : stored === "light" ? "light" : prefersDark ? "dark" : "light";
     } catch {
-      applyTheme("light");
+      return "light";
     }
-  }, []);
+  };
+
+  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
 
   const applyTheme = (t: Theme) => {
     if (t === "dark") {
@@ -30,10 +27,13 @@ export default function ThemeToggle() {
     }
   };
 
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
+
   const toggle = () => {
     const nextTheme: Theme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    applyTheme(nextTheme);
     try {
       localStorage.setItem(STORAGE_KEY, nextTheme);
     } catch {}

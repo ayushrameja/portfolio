@@ -4,7 +4,7 @@ import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "Ayush Rameja | Portfolio",
-  description: "Software Engineer at Siemens - Blending design and function to craft engaging experiences",
+  description: "Software Engineer at Autodesk building fast, thoughtful web experiences",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
