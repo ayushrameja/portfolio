@@ -25,24 +25,36 @@ export default function ResumePage() {
 
   return (
     <motion.div
-      className="w-full p-[2dvh] h-dvh flex relative justify-end flex-col-reverse"
+      className="min-h-dvh px-6 py-10"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      <motion.iframe
-        src="https://drive.google.com/file/d/1KH4dnH50ocYFxv0Cut7gqMltRDHgC088/preview"
-        title="Ayush Rameja's Resume"
-        className="resume__iframe"
-        variants={iframeVariants}
-      ></motion.iframe>
-      <div className="action-button">
-        <a
-          href="https://drive.google.com/uc?export=download&id=1KH4dnH50ocYFxv0Cut7gqMltRDHgC088"
-          download
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Resume</h1>
+            <p className="mt-2 text-zinc-600 dark:text-zinc-300">Preview below. You can also download the PDF.</p>
+          </div>
+          <a
+            href="https://drive.google.com/uc?export=download&id=1KH4dnH50ocYFxv0Cut7gqMltRDHgC088"
+            download
+            className="inline-flex w-fit items-center justify-center rounded-xl bg-zinc-950 px-4 py-2 text-sm font-semibold text-zinc-50 transition hover:bg-black dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+          >
+            Download PDF
+          </a>
+        </div>
+
+        <motion.div
+          variants={iframeVariants}
+          className="overflow-hidden rounded-3xl border border-zinc-200/70 bg-white/70 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/40 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]"
         >
-          Download Resume
-        </a>
+          <iframe
+            src="https://drive.google.com/file/d/1KH4dnH50ocYFxv0Cut7gqMltRDHgC088/preview"
+            title="Ayush Rameja's Resume"
+            className="h-[75dvh] w-full"
+          />
+        </motion.div>
       </div>
     </motion.div>
   );

@@ -9,9 +9,9 @@ const Loading = () => {
   const animation = useRef<LottieRefCurrentProps>(null);
 
   return (
-    <motion.div className="loading" initial={{ opacity: 1 }}>
+    <motion.div className="fixed inset-0 z-[9999] grid place-items-center bg-zinc-900" initial={{ opacity: 1 }}>
       <motion.div
-        className="lottie-wrapper"
+        className="flex items-center justify-center"
         initial={{ width: 0, height: 0 }}
         animate={{ width: "20%", height: "20%" }}
         transition={{
@@ -32,7 +32,7 @@ const Loading = () => {
             }}
             lottieRef={animation}
             loop={true}
-            className="loading-animation"
+            className="w-full object-cover"
             animationData={loadingAnimation}
           />
         </motion.div>
