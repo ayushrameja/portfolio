@@ -1,12 +1,16 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useAppStore } from "@/store/store";
-import StaggeredText from "@/components/StaggerText";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { useAppStore } from "@/store/store";
 import ThemeToggle from "@/components/ThemeToggle";
+import StaggeredText from "@/components/StaggerText";
+
+import logo from "../public/assets/image/logo.svg";
 
 const MotionLink = motion.create(Link);
 
@@ -49,24 +53,24 @@ const Nav = () => {
   };
 
   return (
-    <motion.nav className="fixed inset-x-0 bottom-0 z-50 pb-6 pt-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />
+    <motion.nav className="fixed inset-x-0 bottom-0 z-50 pb-5 pt-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />
       <motion.div
-        className="pointer-events-auto mx-auto flex w-fit max-w-[min(52rem,calc(100vw-2rem))] items-center gap-2 rounded-2xl border border-zinc-200/70 bg-white/70 p-2 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-800/60 dark:shadow-[0_10px_40px_-20px_rgba(0,0,0,0.8)]"
+        className="pointer-events-auto mx-auto flex w-fit max-w-[min(52rem,calc(100vw-2rem))] items-center gap-1.5 rounded-2xl border border-zinc-200/70 bg-white/70 p-1.5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-800/60 dark:shadow-[0_10px_40px_-20px_rgba(0,0,0,0.8)]"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <MotionLink
           href="/"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-zinc-950 text-sm font-semibold tracking-wide text-zinc-50 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/50 dark:ring-zinc-700/60"
+          className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black ring-1 ring-inset ring-black/10 dark:bg-black dark:ring-zinc-700/60"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          AXU
+          <Image src={logo} alt="AXU" fill className="object-contain p-2" />
         </MotionLink>
-        <div className="flex items-center gap-1 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
+          <div className="flex items-center gap-0.5">
             {currentRoute === "Home"
               ? ["About", "Projects", "Contact"].map((link, i) => (
                   <motion.a
@@ -76,7 +80,7 @@ const Nav = () => {
                     initial="hidden"
                     animate="visible"
                     variants={linkVariants}
-                    className="group relative rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
                   >
                     <StaggeredText text={link} />
                   </motion.a>
@@ -89,7 +93,7 @@ const Nav = () => {
                       initial="hidden"
                       animate="visible"
                       variants={linkVariants}
-                      className="group relative rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+                      className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
                       href={link === "Portfolio" ? "/" : `/${link.toLowerCase()}`}
                     >
                       <StaggeredText text={link} />
@@ -98,44 +102,24 @@ const Nav = () => {
                 )}
           </div>
         </div>
-        {["Blogs", "Resume"].map((externalLink: string, i: number) => (
+        {showExternal && ["Blogs", "Resume"].map((externalLink: string, i: number) => (
           <motion.div
             key={externalLink}
             custom={i}
             className="hidden sm:block"
-            initial={{ opacity: 0, height: 0, padding: 0, width: 0 }}
-            animate={
-              showExternal
-                ? {
-                    opacity: 1,
-                    height: "auto",
-                    width: "auto",
-                    marginLeft: "0.25rem",
-                    y: 0,
-                  }
-                : {
-                    opacity: 0,
-                    height: 0,
-                    padding: 0,
-                    width: 0,
-                    marginLeft: 0,
-                    y: 10,
-                  }
-            }
-            transition={{ delay: i * 0.1 + 0.3 }}
-            style={{ pointerEvents: showExternal ? "auto" : "none" }}
+            initial={{ opacity: 0, scale: 0.9, width: 0 }}
+            animate={{ opacity: 1, scale: 1, width: "auto" }}
+            exit={{ opacity: 0, scale: 0.9, width: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.2 }}
           >
             <Link
-              className="inline-flex items-center justify-center rounded-xl bg-zinc-950 px-3 py-2 text-sm text-zinc-50 ring-1 ring-inset ring-zinc-950/10 transition hover:bg-black dark:bg-zinc-950/50 dark:text-zinc-200 dark:ring-zinc-700/60 dark:hover:bg-zinc-950/70 dark:hover:text-zinc-50"
+              className="inline-flex items-center justify-center rounded-xl bg-black px-3 py-2 text-sm text-zinc-50 ring-1 ring-inset ring-black/10 transition hover:bg-zinc-950 dark:bg-black dark:text-zinc-200 dark:ring-zinc-700/60 dark:hover:bg-zinc-950/90 dark:hover:text-zinc-50"
               href={externalLink === "Blogs" ? "/blogs" : "/resume"}
             >
               {externalLink}
             </Link>
           </motion.div>
         ))}
-        <div className="ml-1">
-          <ThemeToggle />
-        </div>
       </motion.div>
     </motion.nav>
   );
