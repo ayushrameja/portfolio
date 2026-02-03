@@ -113,13 +113,16 @@ const Nav = () => {
             transition={{ delay: i * 0.08, duration: 0.2 }}
           >
             <Link
-              className="inline-flex items-center justify-center rounded-xl bg-black px-3 py-2 text-sm text-zinc-50 ring-1 ring-inset ring-black/10 transition hover:bg-zinc-950 dark:bg-black dark:text-zinc-200 dark:ring-zinc-700/60 dark:hover:bg-zinc-950/90 dark:hover:text-zinc-50"
+              className="inline-flex items-center justify-center rounded-lg bg-black px-3 py-2 text-sm text-zinc-50 ring-1 ring-inset ring-black/10 transition hover:bg-zinc-950 dark:bg-black dark:text-zinc-200 dark:ring-zinc-700/60 dark:hover:bg-zinc-950/90 dark:hover:text-zinc-50"
               href={externalLink === "Blogs" ? "/blogs" : "/resume"}
             >
               {externalLink}
             </Link>
           </motion.div>
         ))}
+        <div className="ml-1 flex items-center">
+          <ThemeToggle />
+        </div>
       </motion.div>
     </motion.nav>
   );
