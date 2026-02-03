@@ -84,7 +84,7 @@ export default function Home() {
 
       <section id="about" className="relative flex min-h-screen items-center px-6 py-16">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-zinc-200 via-zinc-100/70 to-zinc-200 dark:from-zinc-950 dark:via-zinc-950/80 dark:to-zinc-950" />
+          <div className="absolute inset-0 bg-linear-to-b from-zinc-200 via-zinc-100/70 to-zinc-200 dark:from-zinc-950 dark:via-zinc-950/80 dark:to-zinc-950" />
           <video
             autoPlay
             muted
@@ -96,7 +96,7 @@ export default function Home() {
           >
             <source src="/assets/video/bg-video.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-200/95 via-zinc-100/25 to-zinc-200/95 dark:from-zinc-950/95 dark:via-zinc-950/40 dark:to-zinc-950/95" />
+          <div className="absolute inset-0 bg-linear-to-t from-zinc-200/95 via-zinc-100/25 to-zinc-200/95 dark:from-zinc-950/95 dark:via-zinc-950/40 dark:to-zinc-950/95" />
         </div>
         <motion.div
           className="mx-auto w-full max-w-7xl"
@@ -141,43 +141,31 @@ export default function Home() {
 
             <motion.div
               variants={itemVariants}
-              className="md:col-span-1 lg:col-span-4 lg:row-span-2 flex h-full flex-col rounded-3xl border border-zinc-300/60 bg-white/65 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.18)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.22)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_20px_70px_-30px_rgba(0,0,0,0.75)]"
+              className="md:col-span-1 lg:col-span-4 lg:row-span-2 flex h-full flex-col justify-between rounded-3xl border border-zinc-300/60 bg-white/65 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.18)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.22)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_20px_70px_-30px_rgba(0,0,0,0.75)]"
             >
               <div>
                 <h2 className="text-xl font-bold text-zinc-950 dark:text-zinc-50">About</h2>
                 <div className="mt-5 space-y-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
                   <p>
-                    I’m a software engineer at Autodesk. I enjoy building products that feel simple on the surface but
+                    I&apos;m a software engineer at Autodesk. I enjoy building products that feel simple on the surface but
                     are carefully engineered underneath.
                   </p>
                   <p>
-                    I’ve spent the last few years shipping web experiences for teams across different domains, and I’m
+                    I&apos;ve spent the last few years shipping web experiences for teams across different domains, and I&apos;m
                     happiest when I can collaborate closely with design and iterate quickly with real feedback.
                   </p>
                 </div>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                    React
-                  </span>
-                  <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                    Next.js
-                  </span>
-                  <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                    Design systems
-                  </span>
-                  <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                    Motion
-                  </span>
-                </div>
               </div>
-              <div className="mt-6 rounded-2xl border border-zinc-200/70 bg-zinc-950/5 p-5 backdrop-blur transition-colors hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:hover:bg-zinc-950/35">
+              <div className="mt-auto rounded-2xl border border-zinc-200/70 bg-zinc-950/5 p-5 backdrop-blur transition-colors hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:hover:bg-zinc-950/35">
                 <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">PREVIOUSLY</p>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800 dark:text-zinc-200">
+                  SDE III at Siemens
+                </p>
                 <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800 dark:text-zinc-200">
                   Full stack developer at Accenture AI (prev. Bridgei2i)
                 </p>
               </div>
             </motion.div>
-
             <motion.div variants={itemVariants} className="md:col-span-1 lg:col-span-4 lg:row-span-1">
               <Link
                 href="/resume"
@@ -267,7 +255,7 @@ export default function Home() {
 
       <div className="px-6">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
+          <div className="h-px w-full bg-linear-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
         </div>
       </div>
 
@@ -333,7 +321,7 @@ export default function Home() {
       <section id="contact" className="px-6 pb-10 pt-16">
         <div className="mx-auto w-full max-w-6xl">
           <div className="relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-[url('/assets/image/contact-background.png')] bg-cover bg-center dark:border-zinc-700/60">
-            <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950/85 via-zinc-950/55 to-zinc-950/20" />
+            <div className="absolute inset-0 bg-linear-to-tr from-zinc-950/85 via-zinc-950/55 to-zinc-950/20" />
             <div className="relative grid gap-6 p-7 lg:grid-cols-12">
               <div className="lg:col-span-7">
                 <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">
