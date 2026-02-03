@@ -94,169 +94,195 @@ export default function Home() {
 
       <section id="about" className="relative flex min-h-screen items-center px-6 py-16">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-linear-to-b from-zinc-200 via-zinc-100/70 to-zinc-200 dark:from-zinc-950 dark:via-zinc-950/80 dark:to-zinc-950" />
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 h-full w-full object-cover opacity-[0.06] blur-[1px] saturate-150 dark:opacity-[0.12]"
+          <div className="absolute inset-0 bg-linear-to-b from-white via-zinc-50 to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-950" />
+          <div
+            className="absolute inset-0 opacity-[0.55] dark:opacity-[0.28]"
             aria-hidden="true"
-          >
-            <source src="/assets/video/bg-video.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-linear-to-t from-zinc-200/95 via-zinc-100/25 to-zinc-200/95 dark:from-zinc-950/95 dark:via-zinc-950/40 dark:to-zinc-950/95" />
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, rgba(24,24,27,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(24,24,27,0.06) 1px, transparent 1px)",
+              backgroundSize: "72px 72px",
+            }}
+          />
+          <div className="absolute inset-0 bg-radial from-fuchsia-500/18 via-transparent to-transparent blur-3xl dark:from-fuchsia-400/10" />
+          <div className="absolute right-[-20%] top-[-20%] h-[520px] w-[520px] rounded-full bg-radial from-violet-500/16 via-transparent to-transparent blur-3xl dark:from-violet-400/10" />
+          <div className="absolute left-[-15%] bottom-[-25%] h-[560px] w-[560px] rounded-full bg-radial from-cyan-500/12 via-transparent to-transparent blur-3xl dark:from-cyan-400/8" />
+          <div className="absolute inset-0 bg-linear-to-t from-white/85 via-transparent to-white/85 dark:from-zinc-950/90 dark:to-zinc-950/90" />
         </div>
         <motion.div
-          className="mx-auto w-full max-w-7xl"
+          className="mx-auto w-full max-w-6xl"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2 lg:items-stretch">
-            <motion.div
-              variants={itemVariants}
-              className="md:col-span-1 lg:col-span-8 lg:row-span-1 lg:self-start rounded-3xl border border-zinc-300/60 bg-white/70 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.22)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.26)] dark:border-zinc-700/60 dark:bg-zinc-900/40 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)] dark:hover:shadow-[0_20px_70px_-30px_rgba(0,0,0,0.9)]"
-            >
-              <div className="flex flex-col gap-6 md:flex-row md:items-stretch">
-                <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl ring-2 ring-inset ring-zinc-200/70 transition-all duration-300 hover:ring-zinc-300 md:h-auto md:w-44 dark:ring-zinc-700/60 dark:hover:ring-zinc-600">
-                  <Image src="/assets/image/profile.png" alt="Ayush Rameja" fill priority className="object-cover" />
+	          <div className="flex flex-col items-center text-center">
+	            <motion.div variants={itemVariants} className="w-full max-w-3xl">
+	              <div className="inline-flex flex-wrap items-center justify-center gap-2">
+	                <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-white/60 px-4 py-2 text-xs font-semibold tracking-widest text-zinc-700 backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200">
+	                  PRODUCT · UI · SYSTEMS
+	                </span>
+	              </div>
+	              <h1 className="mt-8 text-6xl font-semibold tracking-tight text-zinc-950 sm:text-7xl dark:text-zinc-50">
+		                Ayush Rameja
+		                <span className="relative mt-4 block text-2xl font-semibold tracking-tight sm:text-3xl">
+		                  <span className="bg-linear-to-r from-fuchsia-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent dark:from-fuchsia-300 dark:via-violet-300 dark:to-cyan-300">
+		                    Software engineer
+		                  </span>
+		                  <span className="text-zinc-950 dark:text-zinc-50"> who ships end to end.</span>
+	                  <span
+	                    aria-hidden
+	                    className="pointer-events-none absolute left-1/2 top-full h-px w-44 -translate-x-1/2 bg-linear-to-r from-transparent via-zinc-300/80 to-transparent dark:via-zinc-700/70"
+	                  />
+	                </span>
+	              </h1>
+
+	              <p className="mt-6 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
+		                I build web products across UI, APIs, and data. I try to keep the code clean, the UX calm, and the
+		                systems boring in the best way.
+	              </p>
+
+	              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+	                <Link
+	                  href="#projects"
+	                  className="inline-flex w-full items-center justify-center rounded-2xl bg-zinc-950 px-6 py-3 text-sm font-semibold text-zinc-50 shadow-[0_20px_65px_-45px_rgba(0,0,0,0.45)] transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/25 sm:w-auto dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+	                >
+	                  See selected work
+                </Link>
+                <Link
+                  href="#contact"
+                  className="inline-flex w-full items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-6 py-3 text-sm font-semibold text-zinc-900 backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/25 sm:w-auto dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-50 dark:hover:bg-zinc-950/45"
+	                >
+	                  Let&apos;s talk
+	                </Link>
+	              </div>
+	            </motion.div>
+
+            <motion.div variants={itemVariants} className="mt-12 w-full">
+              <div className="relative mx-auto w-full max-w-5xl">
+                <div className="pointer-events-none absolute -inset-10 -z-10 opacity-70">
+                  <div className="absolute inset-0 rounded-[44px] bg-linear-to-br from-fuchsia-500/12 via-violet-500/8 to-cyan-500/12 blur-2xl dark:from-fuchsia-400/10 dark:via-violet-400/7 dark:to-cyan-400/9" />
                 </div>
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
-                    SOFTWARE ENGINEER
-                  </p>
-                  <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-950 sm:text-5xl dark:text-zinc-50">
-                    Ayush Rameja
-                  </h1>
-                  <p className="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-                    I build fast, thoughtful web experiences and I care a lot about the small details that make products
-                    feel good to use.
-                  </p>
-                  <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                    <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-zinc-950/5 px-4 py-1.5 text-sm font-medium text-zinc-700 backdrop-blur transition-colors hover:bg-zinc-950/10 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300 dark:hover:bg-zinc-950/35">
-                      Autodesk
-                    </span>
-                    <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-zinc-950/5 px-4 py-1.5 text-sm font-medium text-zinc-700 backdrop-blur transition-colors hover:bg-zinc-950/10 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300 dark:hover:bg-zinc-950/35">
-                      Full‑stack
-                    </span>
-                    <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-zinc-950/5 px-4 py-1.5 text-sm font-medium text-zinc-700 backdrop-blur transition-colors hover:bg-zinc-950/10 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300 dark:hover:bg-zinc-950/35">
-                      Design‑minded
-                    </span>
-                  </div>
-                </div>
+
+	                <div className="overflow-hidden rounded-[40px] border border-zinc-200/70 bg-white/60 shadow-[0_26px_80px_-60px_rgba(0,0,0,0.22)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_26px_80px_-60px_rgba(0,0,0,0.85)]">
+	                  <div className="flex items-center justify-between border-b border-zinc-200/70 bg-white/40 px-6 py-4 dark:border-zinc-700/60 dark:bg-zinc-950/25">
+	                    <div className="flex items-center gap-2" aria-hidden>
+	                      <span className="h-2.5 w-2.5 rounded-full bg-red-400/90" />
+	                      <span className="h-2.5 w-2.5 rounded-full bg-amber-400/90" />
+	                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/90" />
+	                    </div>
+	                    <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">PORTFOLIO</p>
+	                    <div className="w-[52px]" aria-hidden />
+	                  </div>
+
+	                  <div className="grid gap-0 lg:grid-cols-12">
+	                    <div className="lg:col-span-7">
+	                      <div className="p-6 text-left sm:p-8">
+	                        <div className="mt-5 overflow-hidden rounded-[32px] border border-zinc-200/70 bg-white/60 shadow-[0_18px_55px_-45px_rgba(0,0,0,0.18)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:shadow-[0_18px_55px_-45px_rgba(0,0,0,0.8)]">
+	                          <div className="relative h-[320px] w-full sm:h-[360px] lg:h-[420px]">
+	                            <Image
+	                              src="/assets/image/profile.png"
+	                              alt="Ayush Rameja"
+	                              fill
+	                              priority
+	                              className="object-cover"
+	                            />
+	                            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-zinc-950/55 via-zinc-950/10 to-transparent dark:from-zinc-950/70" />
+
+		                            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7">
+		                              <div className="flex flex-wrap items-end justify-between gap-4">
+		                                <div className="min-w-0">
+		                                  <p className="text-sm font-semibold text-zinc-50">Ayush Rameja</p>
+		                                  <p className="mt-1 text-sm text-zinc-200/90">
+		                                    <span className="font-semibold text-zinc-50">Software Engineer</span> at{" "}
+		                                    <Link
+		                                      href="https://www.autodesk.com"
+		                                      target="_blank"
+		                                      rel="noopener noreferrer"
+		                                      className="font-semibold text-zinc-50 underline decoration-white/20 underline-offset-4 transition hover:decoration-white/50"
+		                                    >
+		                                      Autodesk
+		                                    </Link>
+		                                  </p>
+		                                  <p className="mt-1 text-sm text-zinc-200/90">
+		                                    Building web products across UI, APIs, and data
+		                                  </p>
+		                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                        </div>
+	                      </div>
+	                    </div>
+
+	                    <div className="border-t border-zinc-200/70 lg:col-span-5 lg:border-l lg:border-t-0 dark:border-zinc-700/60">
+	                      <div className="flex h-full flex-col p-6 sm:p-8">
+		                        <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+		                          QUICK LINKS
+		                        </p>
+	                        <div className="mt-5 grid gap-3">
+                          <Link
+                            href="/resume"
+                            className="group flex items-center justify-between rounded-3xl border border-zinc-200/70 bg-white/65 px-5 py-4 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-100 dark:hover:bg-zinc-950/35"
+                          >
+                            Resume
+                            <span className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400" aria-hidden>
+                              ↗
+                            </span>
+                          </Link>
+                          <Link
+                            href="/blogs"
+                            className="group flex items-center justify-between rounded-3xl border border-zinc-200/70 bg-white/65 px-5 py-4 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-100 dark:hover:bg-zinc-950/35"
+                          >
+                            Blogs
+                            <span className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400" aria-hidden>
+                              ↗
+                            </span>
+                          </Link>
+                          <Link
+                            href="#contact"
+                            className="group flex items-center justify-between rounded-3xl border border-zinc-200/70 bg-white/65 px-5 py-4 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-100 dark:hover:bg-zinc-950/35"
+	                          >
+	                            Contact
+	                            <span className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400" aria-hidden>
+                                ↗
+	                            </span>
+	                          </Link>
+		                        </div>
+		                        <div className="mt-auto rounded-3xl border border-zinc-200/70 bg-white/55 p-6 text-left backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/20">
+		                          <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+		                            WHAT I DO
+		                          </p>
+	                          <ul className="mt-4 grid gap-3 text-sm text-zinc-700 dark:text-zinc-200">
+	                            <li className="flex gap-3">
+	                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-500/80 dark:bg-fuchsia-400/70" />
+	                              Build clean, scalable frontends
+	                            </li>
+	                            <li className="flex gap-3">
+	                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500/70 dark:bg-violet-400/60" />
+	                              Ship APIs and services that hold up
+	                            </li>
+		                            <li className="flex gap-3">
+		                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500/70 dark:bg-cyan-400/60" />
+		                              Keep performance and DX honest
+		                            </li>
+		                          </ul>
+		                        </div>
+		                      </div>
+		                    </div>
+	                  </div>
+	                </div>
               </div>
             </motion.div>
 
-            <motion.div
-              variants={itemVariants}
-              className="md:col-span-1 lg:col-span-4 lg:row-span-2 flex h-full flex-col justify-between rounded-3xl border border-zinc-300/60 bg-white/65 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.18)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.22)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_20px_70px_-30px_rgba(0,0,0,0.75)]"
-            >
-              <div>
-                <h2 className="text-xl font-bold text-zinc-950 dark:text-zinc-50">About</h2>
-                <div className="mt-5 space-y-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-                  <p>
-                    I&apos;m a software engineer at Autodesk. I enjoy building products that feel simple on the surface but
-                    are carefully engineered underneath.
-                  </p>
-                  <p>
-                    I&apos;ve spent the last few years shipping web experiences for teams across different domains, and I&apos;m
-                    happiest when I can collaborate closely with design and iterate quickly with real feedback.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-auto rounded-2xl border border-zinc-200/70 bg-zinc-950/5 p-5 backdrop-blur transition-colors hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:hover:bg-zinc-950/35">
-                <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">PREVIOUSLY</p>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800 dark:text-zinc-200">
-                  SDE III at Siemens
-                </p>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800 dark:text-zinc-200">
-                  Full stack developer at Accenture AI (prev. Bridgei2i)
-                </p>
-              </div>
-            </motion.div>
-            <motion.div variants={itemVariants} className="md:col-span-1 lg:col-span-4 lg:row-span-1">
+            <motion.div variants={itemVariants} className="mt-10">
               <Link
-                href="/resume"
-                className="group relative flex h-full min-h-[200px] flex-col overflow-hidden rounded-3xl border border-zinc-300/60 bg-white/65 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.18)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.22)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.6)] dark:hover:border-zinc-600/70 dark:hover:shadow-[0_25px_70px_-30px_rgba(0,0,0,0.75)]"
+                href="#projects"
+                className="group inline-flex items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
               >
-                <div className="pointer-events-none absolute inset-0 opacity-60">
-                  <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-fuchsia-500/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80 dark:bg-fuchsia-400/12" />
-                  <div className="absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-violet-500/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80 dark:bg-violet-400/12" />
-                </div>
-                <div className="pointer-events-none absolute right-5 top-5 opacity-25 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 group-hover:opacity-35 dark:opacity-20 dark:group-hover:opacity-30">
-                  <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                  </svg>
-                </div>
-                <div className="relative">
-                  <p className="text-sm font-semibold tracking-wide text-zinc-700 dark:text-zinc-200">Resume</p>
-                  <p className="mt-3 text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">Download PDF</p>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                    A quick overview of my experience and impact.
-                  </p>
-                </div>
-                <div className="relative mt-auto pt-6">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                      PDF
-                    </span>
-                    <span className="rounded-full border border-fuchsia-500/25 bg-fuchsia-500/10 px-3 py-1 text-xs font-medium text-fuchsia-700 dark:border-fuchsia-400/30 dark:bg-fuchsia-400/10 dark:text-fuchsia-200">
-                      Feb 2026
-                    </span>
-                  </div>
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-zinc-950 px-4 py-2 text-sm font-semibold text-zinc-50 transition-all hover:bg-black dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white">
-                    Open
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="md:col-span-1 lg:col-span-4 lg:row-span-1">
-              <Link
-                href="/blogs"
-                className="group relative flex h-full min-h-[200px] flex-col overflow-hidden rounded-3xl border border-zinc-300/60 bg-white/65 p-8 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.18)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_24px_70px_-32px_rgba(0,0,0,0.22)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.6)] dark:hover:border-zinc-600/70 dark:hover:shadow-[0_25px_70px_-30px_rgba(0,0,0,0.75)]"
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-60">
-                  <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-cyan-500/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80 dark:bg-cyan-400/12" />
-                  <div className="absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-blue-500/15 blur-3xl transition-opacity duration-300 group-hover:opacity-80 dark:bg-blue-400/12" />
-                </div>
-                <div className="pointer-events-none absolute right-5 top-5 opacity-25 transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110 group-hover:opacity-35 dark:opacity-20 dark:group-hover:opacity-30">
-                  <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 19l7-7 3 3-7 7-3-3z" />
-                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-                    <circle cx="11" cy="11" r="2" />
-                  </svg>
-                </div>
-                <div className="relative">
-                  <p className="text-sm font-semibold tracking-wide text-zinc-700 dark:text-zinc-200">Blogs</p>
-                  <p className="mt-3 text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">Notes &amp; writeups</p>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                    Thoughts on product, engineering, and UI polish.
-                  </p>
-                </div>
-                <div className="relative mt-auto pt-6">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
-                      Writing
-                    </span>
-                    <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-800 dark:border-cyan-400/30 dark:bg-cyan-400/10 dark:text-cyan-200">
-                      UI
-                    </span>
-                    <span className="rounded-full border border-blue-500/25 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-800 dark:border-blue-400/30 dark:bg-blue-400/10 dark:text-blue-200">
-                      Eng
-                    </span>
-                  </div>
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-zinc-950 px-4 py-2 text-sm font-semibold text-zinc-50 transition-all hover:bg-black dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white">
-                    Explore
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
-                  </div>
-                </div>
+                Scroll
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-200/70 bg-white/70 text-zinc-700 transition group-hover:translate-y-0.5 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200">
+                  ↓
+                </span>
               </Link>
             </motion.div>
           </div>
@@ -339,21 +365,17 @@ export default function Home() {
                       HIGHLIGHTS
                     </p>
 
-                    <ul className="mt-5 space-y-4">
-                      {project.points.map((point: string, index: number) => (
-                        <li key={index} className="flex gap-4">
-                          <span aria-hidden className="mt-0.5 inline-flex shrink-0">
-                            <span className="relative inline-flex h-8 w-8 items-center justify-center">
-                              <span className="absolute inset-0 rounded-full bg-linear-to-br from-fuchsia-500/25 to-violet-500/20 blur-[6px] dark:from-fuchsia-400/18 dark:to-violet-400/14" />
-                              <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200/70 bg-white/60 text-[11px] font-semibold tabular-nums text-zinc-800 shadow-[0_12px_40px_-26px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:shadow-[0_12px_40px_-26px_rgba(0,0,0,0.8)]">
-                                {(index + 1).toString().padStart(2, "0")}
-                              </span>
-                            </span>
-                          </span>
-                          <span className="text-base leading-7 text-zinc-700 dark:text-zinc-200">{point}</span>
-                        </li>
-                      ))}
-                    </ul>
+	                    <ul className="mt-5 space-y-4">
+	                      {project.points.map((point: string, index: number) => (
+	                        <li key={index} className="flex gap-4">
+	                          <span
+	                            aria-hidden
+	                            className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-500 dark:bg-fuchsia-300"
+	                          />
+	                          <span className="text-base leading-7 text-zinc-700 dark:text-zinc-200">{point}</span>
+	                        </li>
+	                      ))}
+	                    </ul>
                   </div>
                 </div>
               </div>
