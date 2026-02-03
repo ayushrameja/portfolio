@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAppStore } from "@/store/store";
 import Nav from "@/components/Nav";
-import Loading from "@/components/Loading";
+import StormTransition from "@/components/StormTransition";
+import { triggerStorm } from "@/utils/storm";
 
 export default function ClientLayout({
   children,
@@ -12,11 +13,10 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isLoading = useAppStore((state) => state.isLoading);
   const setNavClass = useAppStore((state) => state.setNavClass);
-  const setIsLoading = useAppStore((state) => state.setIsLoading);
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
+  const hasMounted = useRef(false);
 
   useEffect(() => {
     let route = "Home";
@@ -26,23 +26,26 @@ export default function ClientLayout({
       route = "Resume";
     }
 
-    setIsLoading(true);
     setNavClass("grey");
     setCurrentRoute(route);
     setShowExternal(false);
-    setIsLoading(false);
-  }, [pathname, setCurrentRoute, setIsLoading, setNavClass, setShowExternal]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      triggerStorm({ cause: "load" });
+    } else {
+      triggerStorm({ cause: "route" });
+    }
+  }, [pathname, setCurrentRoute, setNavClass, setShowExternal]);
 
   return (
     <div className="relative">
-      <Suspense fallback={<Loading />}>
-        {children}
-        <Nav />
-      </Suspense>
+      <div className="relative" id="app-shell">
+        <Suspense fallback={null}>
+          {children}
+          <Nav />
+        </Suspense>
+      </div>
+      <StormTransition />
     </div>
   );
 }

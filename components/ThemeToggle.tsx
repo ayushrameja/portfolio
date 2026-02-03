@@ -1,43 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { triggerStorm, THEME_CHANGE_EVENT } from "@/utils/storm";
 
 type Theme = "light" | "dark";
 
 const STORAGE_KEY = "theme";
 
 export default function ThemeToggle() {
-  const getInitialTheme = (): Theme => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-      return stored === "dark" ? "dark" : stored === "light" ? "light" : prefersDark ? "dark" : "light";
-    } catch {
-      return "light";
-    }
+  const getCurrentTheme = (): Theme => {
+    if (typeof document === "undefined") return "light";
+    return document.documentElement.classList.contains("dark") ? "dark" : "light";
   };
 
-  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
-
-  const applyTheme = (t: Theme) => {
-    if (t === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    const sync = () => setTheme(getCurrentTheme());
+    sync();
+    window.addEventListener(THEME_CHANGE_EVENT, sync as EventListener);
+    return () => window.removeEventListener(THEME_CHANGE_EVENT, sync as EventListener);
+  }, []);
 
   const toggle = () => {
     const nextTheme: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
     try {
       localStorage.setItem(STORAGE_KEY, nextTheme);
     } catch {}
-    window.dispatchEvent(new Event("theme-change"));
+    triggerStorm({ cause: "theme", theme: nextTheme });
   };
 
   return (
@@ -79,4 +69,3 @@ export default function ThemeToggle() {
     </button>
   );
 }
-

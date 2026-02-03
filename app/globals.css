@@ -49,3 +49,29 @@
     opacity: 0.8;
   }
 }
+
+:root {
+  --storm-blur: 14px;
+  --storm-scale: 1.015;
+  --storm-duration: 1000ms;
+}
+
+html[data-storming="true"] #app-shell {
+  animation: storm-blur var(--storm-duration) ease;
+  will-change: filter, transform;
+}
+
+@keyframes storm-blur {
+  0% {
+    filter: blur(0px);
+    transform: scale(1);
+  }
+  35% {
+    filter: blur(var(--storm-blur));
+    transform: scale(var(--storm-scale));
+  }
+  100% {
+    filter: blur(0px);
+    transform: scale(1);
+  }
+}
