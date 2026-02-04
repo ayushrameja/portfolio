@@ -16,7 +16,6 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
   const hasMounted = useRef(false);
-  const setNavClass = useAppStore((state) => state.setNavClass);
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
 
@@ -28,7 +27,6 @@ export default function ClientLayout({
       route = "Resume";
     }
 
-    setNavClass("grey");
     setCurrentRoute(route);
     setShowExternal(false);
     if (!hasMounted.current) {
@@ -37,7 +35,7 @@ export default function ClientLayout({
     } else {
       triggerStorm({ cause: "route" });
     }
-  }, [pathname, setCurrentRoute, setNavClass, setShowExternal]);
+  }, [pathname, setCurrentRoute, setShowExternal]);
 
   return (
     <div className="relative">
