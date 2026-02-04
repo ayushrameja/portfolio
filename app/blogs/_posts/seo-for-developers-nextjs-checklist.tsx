@@ -1,4 +1,4 @@
-import type { BlogPost } from "./post";
+import type { BlogPost } from "@/types/blog";
 
 function Content() {
   return (
@@ -109,4 +109,3 @@ export const post: BlogPost = {
   readingTime: "6 min",
   Content,
 };
-

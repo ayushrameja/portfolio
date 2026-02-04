@@ -3,29 +3,48 @@ import { NextResponse } from "next/server";
 
 const MAX_REQUESTS = 3;
 const RATE_LIMIT_WINDOW = 60 * 1000;
+// NOTE: In-memory rate limiting is per running instance and resets on cold starts.
 const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
 
-function isRateLimited(ip: string): boolean {
+function getClientIp(request: Request): string {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    const ip = forwardedFor.split(",")[0]?.trim();
+    if (ip) return ip;
+  }
+
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
+  const cfIp = request.headers.get("cf-connecting-ip")?.trim();
+  if (cfIp) return cfIp;
+
+  return "127.0.0.1";
+}
+
+function checkRateLimit(ip: string): { limited: boolean; retryAfterSeconds?: number } {
   const now = Date.now();
   const record = rateLimitMap.get(ip);
 
   if (!record) {
     rateLimitMap.set(ip, { count: 1, lastRequest: now });
-    return false;
+    return { limited: false };
   }
 
   if (now - record.lastRequest > RATE_LIMIT_WINDOW) {
     rateLimitMap.set(ip, { count: 1, lastRequest: now });
-    return false;
+    return { limited: false };
   }
 
   if (record.count >= MAX_REQUESTS) {
-    return true;
+    const retryAfterMs = RATE_LIMIT_WINDOW - (now - record.lastRequest);
+    const retryAfterSeconds = Math.max(1, Math.ceil(retryAfterMs / 1000));
+    return { limited: true, retryAfterSeconds };
   }
 
   record.count++;
   record.lastRequest = now;
-  return false;
+  return { limited: false };
 }
 
 function sanitize(str: string): string {
@@ -61,12 +80,16 @@ function getRecipientEmail(): string {
 
 export async function POST(request: Request) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = getClientIp(request);
+    const { limited, retryAfterSeconds } = checkRateLimit(ip);
 
-    if (isRateLimited(ip)) {
+    if (limited) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
-        { status: 429 }
+        {
+          status: 429,
+          headers: retryAfterSeconds ? { "Retry-After": retryAfterSeconds.toString() } : undefined,
+        }
       );
     }
 

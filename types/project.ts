@@ -1,4 +1,4 @@
-export interface IProject {
+export type Project = {
   id: number;
   name: string;
   role: string;
@@ -6,4 +6,4 @@ export interface IProject {
   skills: string[];
   points: string[];
   link: string;
-}
+};
