@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import BlogPostShell from "../_components/BlogPostShell";
 import { allPosts, getPostBySlug } from "../_posts";
+import BlogPostShell from "../_components/BlogPostShell";
 
 export const dynamic = "force-static";
 

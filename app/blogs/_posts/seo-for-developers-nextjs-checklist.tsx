@@ -28,19 +28,19 @@ function Content() {
       <h2>2) Make pages crawlable (no accidental “invisible site”)</h2>
       <ul>
         <li>
-          Ensure <code>robots.txt</code> doesn’t block your whole site (it happens more than you’d think).
+          Ensure <code>robots.txt</code> doesn&apos;t block your whole site (it happens more than you&apos;d think).
         </li>
         <li>
-          Don’t hide important content behind client-only rendering if you can avoid it.
+          Don&apos;t hide important content behind client-only rendering if you can avoid it.
         </li>
         <li>
-          Avoid requiring auth/cookies for public pages (bots don’t RSVP).
+          Avoid requiring auth/cookies for public pages (bots don&apos;t RSVP).
         </li>
       </ul>
 
       <h2>3) Ship a sitemap (and keep it correct)</h2>
       <p>
-        A sitemap is a polite list of URLs you want indexed. It won’t magically rank you, but it makes discovery and
+        A sitemap is a polite list of URLs you want indexed. It won&apos;t magically rank you, but it makes discovery and
         recrawling easier—especially for new sites.
       </p>
       <ul>
@@ -52,12 +52,12 @@ function Content() {
       <h2>4) Use structured data where it matters</h2>
       <p>
         If you have articles, add <strong>JSON-LD</strong> (Article schema). If you have projects/products, consider the
-        relevant schema types. Structured data helps search engines understand your content; it doesn’t guarantee fancy
-        rich results, but it’s the closest thing SEO has to documentation.
+        relevant schema types. Structured data helps search engines understand your content; it doesn&apos;t guarantee fancy
+        rich results, but it&apos;s the closest thing SEO has to documentation.
       </p>
       <ul>
-        <li>Validate it using Google’s Rich Results test.</li>
-        <li>Don’t lie in schema (you’ll just get ignored or penalized).</li>
+        <li>Validate it using Google&apos;s Rich Results test.</li>
+        <li>Don&apos;t lie in schema (you&apos;ll just get ignored or penalized).</li>
       </ul>
 
       <h2>5) Performance is SEO (because users bounce, and Google notices)</h2>
@@ -92,7 +92,7 @@ function Content() {
       </ul>
 
       <p>
-        The trade-off: doing SEO “properly” means being disciplined about content structure and performance. It’s not
+        The trade-off: doing SEO &quot;properly&quot; means being disciplined about content structure and performance. It&apos;s not
         glamorous—like tests—but it saves you from explaining to your manager why your homepage ranks for “untitled
         document.”
       </p>

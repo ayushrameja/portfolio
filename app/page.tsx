@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "sonner";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
+
 import { IProject } from "@/types/IProject";
 import { projects } from "@/utils/projectData";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
 
 export default function Home() {
   const [name, setName] = useState("");

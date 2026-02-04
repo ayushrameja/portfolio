@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { NextResponse } from "next/server";
 
-const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS = 3;
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
 
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
-      to: process.env.CONTACT_EMAIL || process.env.SMTP_EMAIL,
+      to: process.env.CONTACT_EMAIL ?? process.env.SMTP_EMAIL,
       replyTo: email,
       subject: `Portfolio Contact: ${sanitizedName}`,
       text: `Name: ${sanitizedName}\nEmail: ${sanitizedEmail}\n\nMessage:\n${sanitizedMessage}`,
