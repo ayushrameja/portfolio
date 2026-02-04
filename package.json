@@ -11,16 +11,19 @@
   "dependencies": {
     "framer-motion": "^11.15.0",
     "lenis": "^1.1.18",
+    "lucide-react": "^0.563.0",
     "next": "^16",
+    "nodemailer": "^8.0.0",
     "react": "^19",
     "react-dom": "^19",
-    "react-toastify": "^11.0.0",
+    "sonner": "^2.0.7",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
+    "@types/nodemailer": "^7.0.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

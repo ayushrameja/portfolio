@@ -4,22 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { IProject } from "@/types/IProject";
 import { projects } from "@/utils/projectData";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { THEME_CHANGE_EVENT } from "@/utils/storm";
+import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
 export default function Home() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  const [prevName, setPrevName] = useState("");
-  const [prevEmail, setPrevEmail] = useState("");
-  const [prevMessage, setPrevMessage] = useState("");
+  const [submittedName, setSubmittedName] = useState("");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,61 +33,63 @@ export default function Home() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (name === prevName && email === prevEmail && message === prevMessage) {
-      setIsDisabled(true);
-    } else {
-      setPrevName(name);
-      setPrevEmail(email);
-      setPrevMessage(message);
-      setIsSubmitted(true);
-      setIsDisabled(false);
+    if (isSubmitting) return;
 
-      toast.info(`Thanks for the message, ${name}!`);
+    setIsSubmitting(true);
+
+    try {
+      const nextSubmittedName = name;
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      setIsSubmitted(true);
+      setSubmittedName(nextSubmittedName);
+      setName("");
+      setEmail("");
+      setMessage("");
+      toast.success(`Message sent. I'll get back to you soon.`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const resetContact = () => {
+    setIsSubmitted(false);
+    setSubmittedName("");
   };
 
   const handleNameChange = (value: string) => {
     setName(value);
     setIsSubmitted(false);
-    setIsDisabled(false);
   };
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
     setIsSubmitted(false);
-    setIsDisabled(false);
   };
 
   const handleMessageChange = (value: string) => {
     setMessage(value);
     setIsSubmitted(false);
-    setIsDisabled(false);
   };
-
-  const [toastTheme, setToastTheme] = useState<"light" | "dark">("dark");
-
-  useEffect(() => {
-    const apply = () => {
-      setToastTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
-    };
-    apply();
-    window.addEventListener(THEME_CHANGE_EVENT, apply as EventListener);
-    return () => window.removeEventListener(THEME_CHANGE_EVENT, apply as EventListener);
-  }, []);
 
   return (
     <main className="min-h-dvh pb-28">
-      <ToastContainer
-        position="bottom-right"
-        theme={toastTheme}
-        toastClassName="!rounded-xl !border !border-zinc-200/70 !bg-white !text-zinc-900 !shadow-[0_20px_60px_-40px_rgba(0,0,0,0.25)] dark:!border-zinc-700/60 dark:!bg-zinc-800 dark:!text-zinc-100 dark:!shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]"
-        progressClassName="!bg-fuchsia-500 dark:!bg-fuchsia-400"
-        closeButton={false}
-      />
-
       <section id="about" className="relative flex min-h-screen items-center px-6 py-16">
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-b from-white via-zinc-50 to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-950" />
@@ -191,7 +189,7 @@ export default function Home() {
 		                            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7">
 		                              <div className="flex flex-wrap items-end justify-between gap-4">
 		                                <div className="min-w-0">
-		                                  <p className="text-sm font-semibold text-zinc-50">Ayush Rameja</p>
+		                                  <p className="text-lg font-semibold text-zinc-50">Ayush Rameja</p>
 		                                  <p className="mt-1 text-sm text-zinc-200/90">
 		                                    <span className="font-semibold text-zinc-50">Software Engineer</span> at{" "}
 		                                    <Link
@@ -202,9 +200,6 @@ export default function Home() {
 		                                    >
 		                                      Autodesk
 		                                    </Link>
-		                                  </p>
-		                                  <p className="mt-1 text-sm text-zinc-200/90">
-		                                    Building web products across UI, APIs, and data
 		                                  </p>
 		                                </div>
 	                              </div>
@@ -407,73 +402,103 @@ export default function Home() {
               <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-stretch">
                 <div className="lg:col-span-7">
                   <div className="h-full rounded-3xl border border-zinc-200/70 bg-white/65 p-8 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.18)] backdrop-blur dark:border-white/10 dark:bg-zinc-950/35 dark:shadow-[0_24px_70px_-55px_rgba(0,0,0,0.85)]">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div>
-                        <label htmlFor="name" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={name}
-                          onChange={(e) => handleNameChange(e.target.value)}
-                          required
-                          placeholder="Your name"
-                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={email}
-                          onChange={(e) => handleEmailChange(e.target.value)}
-                          required
-                          placeholder="you@domain.com"
-                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="message" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
-                          Message
-                        </label>
-                        <textarea
-                          name="message"
-                          id="message"
-                          value={message}
-                          onChange={(e) => handleMessageChange(e.target.value)}
-                          required
-                          placeholder="What are you building, and what do you need help with?"
-                          className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
-
-                      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
-                          Prefer email?{" "}
+                    {isSubmitted ? (
+                      <div className="flex h-full flex-col items-center justify-center text-center">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 shadow-[0_18px_50px_-38px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-950/45 dark:shadow-[0_18px_50px_-38px_rgba(0,0,0,0.85)]">
+                          <CheckCircle2 className="h-7 w-7 text-fuchsia-600 dark:text-fuchsia-300" />
+                        </div>
+                        <h3 className="mt-5 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+                          Message sent
+                        </h3>
+                        <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-200/85">
+                          {submittedName ? `Thanks, ${submittedName}. ` : null}
+                          I got your note and I&apos;ll reply soon.
+                        </p>
+                        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <button
+                            type="button"
+                            onClick={resetContact}
+                            className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
+                          >
+                            Send another
+                          </button>
                           <Link
                             href="mailto:ayushrameja@gmail.com"
-                            className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
+                            className="inline-flex items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:hover:bg-zinc-950/55"
                           >
-                            ayushrameja@gmail.com
+                            Email instead
                           </Link>
-                        </p>
-                        <button
-                          type="submit"
-                          disabled={isDisabled || isSubmitted}
-                          className="inline-flex items-center justify-center rounded-2xl bg-linear-to-r from-fuchsia-500 to-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-32px_rgba(236,72,153,0.55)] transition enabled:hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-[0_18px_55px_-32px_rgba(236,72,153,0.75)] dark:focus-visible:ring-fuchsia-400/30"
-                        >
-                          {isSubmitted ? "Sent" : "Send"}
-                        </button>
+                        </div>
                       </div>
-                    </form>
+                    ) : (
+                      <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                          <label htmlFor="name" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={name}
+                            onChange={(e) => handleNameChange(e.target.value)}
+                            required
+                            placeholder="Your name"
+                            className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => handleEmailChange(e.target.value)}
+                            required
+                            placeholder="you@domain.com"
+                            className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="message" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                            Message
+                          </label>
+                          <textarea
+                            name="message"
+                            id="message"
+                            value={message}
+                            onChange={(e) => handleMessageChange(e.target.value)}
+                            required
+                            placeholder="What are you building, and what do you need help with?"
+                            className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                          />
+                        </div>
+
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
+                            Prefer email?{" "}
+                            <Link
+                              href="mailto:ayushrameja@gmail.com"
+                              className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
+                            >
+                              ayushrameja@gmail.com
+                            </Link>
+                          </p>
+                          <button
+                            type="submit"
+                            disabled={isSubmitting || isSubmitted}
+                            className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
+                          >
+                            {isSubmitting ? "Sending..." : isSubmitted ? "Sent!" : "Send"}
+                          </button>
+                        </div>
+                      </form>
+                    )}
                   </div>
                 </div>
 
