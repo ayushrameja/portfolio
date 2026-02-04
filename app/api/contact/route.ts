@@ -1,0 +1,131 @@
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const MAX_REQUESTS = 3;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record) {
+    rateLimitMap.set(ip, { count: 1, lastRequest: now });
+    return false;
+  }
+
+  if (now - record.lastRequest > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { count: 1, lastRequest: now });
+    return false;
+  }
+
+  if (record.count >= MAX_REQUESTS) {
+    return true;
+  }
+
+  record.count++;
+  record.lastRequest = now;
+  return false;
+}
+
+function sanitize(str: string): string {
+  return str
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .trim();
+}
+
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+export async function POST(request: Request) {
+  try {
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json();
+    const { name, email, message } = body;
+
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: "All fields are required." },
+        { status: 400 }
+      );
+    }
+
+    if (typeof name !== "string" || name.length > 100) {
+      return NextResponse.json(
+        { error: "Invalid name." },
+        { status: 400 }
+      );
+    }
+
+    if (typeof email !== "string" || !isValidEmail(email) || email.length > 254) {
+      return NextResponse.json(
+        { error: "Invalid email address." },
+        { status: 400 }
+      );
+    }
+
+    if (typeof message !== "string" || message.length > 5000) {
+      return NextResponse.json(
+        { error: "Message is too long." },
+        { status: 400 }
+      );
+    }
+
+    const sanitizedName = sanitize(name);
+    const sanitizedEmail = sanitize(email);
+    const sanitizedMessage = sanitize(message);
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_EMAIL,
+      to: process.env.CONTACT_EMAIL || process.env.SMTP_EMAIL,
+      replyTo: email,
+      subject: `Portfolio Contact: ${sanitizedName}`,
+      text: `Name: ${sanitizedName}\nEmail: ${sanitizedEmail}\n\nMessage:\n${sanitizedMessage}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #18181b; border-bottom: 2px solid #e4e4e7; padding-bottom: 12px;">New Contact Form Submission</h2>
+          <div style="background: #fafafa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 0 0 12px 0;"><strong style="color: #52525b;">Name:</strong> ${sanitizedName}</p>
+            <p style="margin: 0 0 12px 0;"><strong style="color: #52525b;">Email:</strong> <a href="mailto:${sanitizedEmail}" style="color: #a21caf;">${sanitizedEmail}</a></p>
+          </div>
+          <div style="background: #fff; border: 1px solid #e4e4e7; padding: 20px; border-radius: 8px;">
+            <p style="margin: 0 0 8px 0;"><strong style="color: #52525b;">Message:</strong></p>
+            <p style="margin: 0; color: #3f3f46; white-space: pre-wrap;">${sanitizedMessage}</p>
+          </div>
+          <p style="color: #a1a1aa; font-size: 12px; margin-top: 24px;">This message was sent from your portfolio contact form.</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Contact form error:", error);
+    return NextResponse.json(
+      { error: "Failed to send message. Please try again later." },
+      { status: 500 }
+    );
+  }
+}

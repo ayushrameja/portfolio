@@ -6,6 +6,7 @@ import { useAppStore } from "@/store/store";
 import Nav from "@/components/Nav";
 import StormTransition from "@/components/StormTransition";
 import { triggerStorm } from "@/utils/storm";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function ClientLayout({
   children,
@@ -45,6 +46,7 @@ export default function ClientLayout({
           <Nav />
         </Suspense>
       </div>
+      <Toaster />
       <StormTransition />
     </div>
   );

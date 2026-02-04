@@ -172,7 +172,7 @@ const Nav = () => {
         {blogBackLink ? (
           <MotionLink
             href={blogBackLink.href}
-            className="group inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+            className="group inline-flex items-center justify-center rounded-xl bg-black/5 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-black/10 hover:text-zinc-950 dark:bg-white/10 dark:text-zinc-200 dark:hover:bg-white/15 dark:hover:text-zinc-50"
             initial={{ opacity: 0, y: 6, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: enterDelay + 0.06, duration: 0.2, ease: "easeOut" }}

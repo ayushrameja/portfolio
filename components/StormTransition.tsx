@@ -20,10 +20,11 @@ const applyTheme = (nextTheme: ThemeMode) => {
   window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 };
 
-const setStorming = (value: boolean) => {
+const setStorming = (value: boolean | "load") => {
   if (typeof document === "undefined") return;
   if (value) {
-    document.documentElement.dataset.storming = "true";
+    document.documentElement.dataset.storming = value === "load" ? "load" : "true";
+    document.documentElement.removeAttribute("data-initial-load");
   } else {
     document.documentElement.removeAttribute("data-storming");
   }
@@ -52,7 +53,7 @@ export default function StormTransition() {
     const themeOffset = Math.round(duration * 0.45);
     activeRef.current = true;
     pendingThemeRef.current = detail.theme ?? null;
-    setStorming(true);
+    setStorming(detail.cause === "load" ? "load" : true);
     document.documentElement.style.setProperty("--storm-duration", `${duration}ms`);
 
     if (endTimerRef.current) window.clearTimeout(endTimerRef.current);
