@@ -15,4 +15,4 @@ export const RESUME = {
   },
 } as const;
 
-export const BASE_URL = "https://ayushrameja.com";
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ayush.im";

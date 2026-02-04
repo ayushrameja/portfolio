@@ -288,7 +288,7 @@ Organize hooks for discoverability.
 
 **Create directory and index:**
 
-```
+```text
 hooks/
 ├── index.ts              # Re-exports all hooks
 ├── useContactForm.ts     # From Plan 2
@@ -394,7 +394,7 @@ const activeHomeSection = useActiveSection(isHomeRoute);
 
 ## PR Description Template
 
-```
+```md
 ## Infrastructure & Polish
 
 ### Changes
