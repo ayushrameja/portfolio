@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { BlogPost } from "../_posts/post";
 
 export default function BlogPostShell({
@@ -11,14 +10,7 @@ export default function BlogPostShell({
   return (
     <main className="min-h-dvh px-6 py-10 pb-28">
       <div className="mx-auto w-full max-w-3xl">
-        <Link
-          href="/blogs"
-          className="inline-flex items-center gap-2 text-sm text-zinc-600 transition hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
-        >
-          <span aria-hidden>←</span> Back to blogs
-        </Link>
-
-        <header className="mt-6 rounded-3xl border border-zinc-200/70 bg-white/70 p-8 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/40 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]">
+        <header className="rounded-3xl border border-zinc-200/70 bg-white/70 p-8 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/40 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]">
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">{post.title}</h1>
           <p className="mt-3 text-zinc-600 dark:text-zinc-300">{post.description}</p>
           <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-zinc-600 dark:text-zinc-300">

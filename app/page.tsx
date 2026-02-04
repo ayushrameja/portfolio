@@ -506,7 +506,7 @@ export default function Home() {
                         </span>
                       </Link>
                       <Link
-                        href="https://github.com/RamejaAyush"
+                        href="https://github.com/ayushrameja"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
