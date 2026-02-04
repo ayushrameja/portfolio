@@ -42,6 +42,23 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
+function getRecipientEmail(): string {
+  const contactEmail = process.env.CONTACT_EMAIL?.trim();
+  const smtpEmail = process.env.SMTP_EMAIL?.trim();
+
+  if (contactEmail && contactEmail !== "") {
+    return contactEmail;
+  }
+
+  if (smtpEmail && smtpEmail !== "") {
+    return smtpEmail;
+  }
+
+  throw new Error(
+    "Email configuration error: Neither CONTACT_EMAIL nor SMTP_EMAIL is configured. Please set at least one valid email address in your environment variables."
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -96,9 +113,11 @@ export async function POST(request: Request) {
       },
     });
 
+    const recipientEmail = getRecipientEmail();
+
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
-      to: process.env.CONTACT_EMAIL ?? process.env.SMTP_EMAIL,
+      to: recipientEmail,
       replyTo: email,
       subject: `Portfolio Contact: ${sanitizedName}`,
       text: `Name: ${sanitizedName}\nEmail: ${sanitizedEmail}\n\nMessage:\n${sanitizedMessage}`,
