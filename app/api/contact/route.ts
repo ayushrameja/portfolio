@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { NextResponse } from "next/server";
 
-const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS = 3;
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const rateLimitMap = new Map<string, { count: number; lastRequest: number }>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -40,6 +40,23 @@ function sanitize(str: string): string {
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+function getRecipientEmail(): string {
+  const contactEmail = process.env.CONTACT_EMAIL?.trim();
+  const smtpEmail = process.env.SMTP_EMAIL?.trim();
+
+  if (contactEmail && contactEmail !== "") {
+    return contactEmail;
+  }
+
+  if (smtpEmail && smtpEmail !== "") {
+    return smtpEmail;
+  }
+
+  throw new Error(
+    "Email configuration error: Neither CONTACT_EMAIL nor SMTP_EMAIL is configured. Please set at least one valid email address in your environment variables."
+  );
 }
 
 export async function POST(request: Request) {
@@ -96,9 +113,11 @@ export async function POST(request: Request) {
       },
     });
 
+    const recipientEmail = getRecipientEmail();
+
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
-      to: process.env.CONTACT_EMAIL || process.env.SMTP_EMAIL,
+      to: recipientEmail,
       replyTo: email,
       subject: `Portfolio Contact: ${sanitizedName}`,
       text: `Name: ${sanitizedName}\nEmail: ${sanitizedEmail}\n\nMessage:\n${sanitizedMessage}`,

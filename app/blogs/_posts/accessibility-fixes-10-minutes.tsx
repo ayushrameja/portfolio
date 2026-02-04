@@ -4,13 +4,13 @@ function Content() {
   return (
     <>
       <p>
-        Accessibility isn’t a side quest. It’s just… the main quest, except nobody gives you XP until you break
-        something. Here are fixes that are genuinely “10 minutes” and actually help real people.
+        Accessibility isn't a side quest. It's just… the main quest, except nobody gives you XP until you break
+        something. Here are fixes that are genuinely "10 minutes" and actually help real people.
       </p>
 
       <h2>1) Visible focus (keyboard users exist)</h2>
       <p>
-        If you remove focus rings, you’re basically telling keyboard users “good luck, champ.” Ensure interactive
+        If you remove focus rings, you're basically telling keyboard users "good luck, champ." Ensure interactive
         elements have a clear <code>:focus-visible</code> state.
       </p>
 
@@ -27,13 +27,13 @@ function Content() {
         </li>
       </ul>
 
-      <h2>3) Label your inputs (screens readers aren’t telepathic)</h2>
+      <h2>3) Label your inputs (screens readers aren't telepathic)</h2>
       <p>
-        Every input needs a label: <code>&lt;label htmlFor&gt;</code> or <code>aria-label</code> if you truly can’t show
-        text. Placeholder text is not a label; it’s a suggestion that disappears.
+        Every input needs a label: <code>&lt;label htmlFor&gt;</code> or <code>aria-label</code> if you truly can't show
+        text. Placeholder text is not a label; it's a suggestion that disappears.
       </p>
 
-      <h2>4) Color contrast (pretty is optional, readable isn’t)</h2>
+      <h2>4) Color contrast (pretty is optional, readable isn't)</h2>
       <p>
         Check contrast for text and UI controls. Tailwind makes it easy to accidentally ship “zinc-400 on zinc-200” and
         call it minimalist.
@@ -51,13 +51,13 @@ function Content() {
         users nauseous.
       </p>
 
-      <h2>7) Images need alt text (and “image” isn’t helpful)</h2>
+      <h2>7) Images need alt text (and "image" isn't helpful)</h2>
       <ul>
         <li>Decorative images: empty alt (alt="").</li>
         <li>Meaningful images: describe what matters in context.</li>
       </ul>
 
-      <h2>8) Don’t trap focus in modals/menus</h2>
+      <h2>8) Don't trap focus in modals/menus</h2>
       <p>
         If you open a dialog, focus should move into it, and keyboard users should be able to escape. Focus traps are a
         real thing. They are also how your website becomes a haunted house.
@@ -71,8 +71,8 @@ function Content() {
       </ul>
 
       <p>
-        The trade-off: a11y work is iterative. You’ll “fix it” and then discover three more things. Congratulations—
-        you’ve unlocked the infinite backlog, but at least your site is usable.
+        The trade-off: a11y work is iterative. You'll "fix it" and then discover three more things. Congratulations—
+        you've unlocked the infinite backlog, but at least your site is usable.
       </p>
     </>
   );

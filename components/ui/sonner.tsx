@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Toaster as Sonner } from "sonner";
+import { useEffect, useState } from "react";
 import { THEME_CHANGE_EVENT } from "@/utils/storm";
 
 export function Toaster() {

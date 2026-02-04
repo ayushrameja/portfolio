@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { usePathname } from "next/navigation";
 
 import { useAppStore } from "@/store/store";
 import ThemeToggle from "@/components/ThemeToggle";
-import StaggeredText from "@/components/StaggerText";
 import { STORM_TRIGGER_EVENT } from "@/utils/storm";
+import StaggeredText from "@/components/StaggerText";
 
 import logo from "../public/assets/image/logo.svg";
 

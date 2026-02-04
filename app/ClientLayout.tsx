@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, Suspense, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useAppStore } from "@/store/store";
+import { useRef, useEffect, Suspense } from "react";
+
 import Nav from "@/components/Nav";
-import StormTransition from "@/components/StormTransition";
+import { useAppStore } from "@/store/store";
 import { triggerStorm } from "@/utils/storm";
 import { Toaster } from "@/components/ui/sonner";
+import StormTransition from "@/components/StormTransition";
 
 export default function ClientLayout({
   children,
@@ -14,10 +15,9 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const setNavClass = useAppStore((state) => state.setNavClass);
+  const hasMounted = useRef(false);
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
-  const hasMounted = useRef(false);
 
   useEffect(() => {
     let route = "Home";
@@ -27,7 +27,6 @@ export default function ClientLayout({
       route = "Resume";
     }
 
-    setNavClass("grey");
     setCurrentRoute(route);
     setShowExternal(false);
     if (!hasMounted.current) {
@@ -36,7 +35,7 @@ export default function ClientLayout({
     } else {
       triggerStorm({ cause: "route" });
     }
-  }, [pathname, setCurrentRoute, setNavClass, setShowExternal]);
+  }, [pathname, setCurrentRoute, setShowExternal]);
 
   return (
     <div className="relative">

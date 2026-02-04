@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { allPosts } from "./_posts";
 
@@ -20,7 +20,7 @@ export default function BlogsPage() {
             <div>
               <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Blogs</h1>
               <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-                Short, practical posts. No “10x” anything. Just scars and fixes.
+                Short, practical posts. No &quot;10x&quot; anything. Just scars and fixes.
               </p>
             </div>
             <div className="rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-2 text-sm text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/30 dark:text-zinc-300">

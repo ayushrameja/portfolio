@@ -4,8 +4,8 @@ export type BlogPost = {
   slug: string;
   title: string;
   description: string;
-  publishedAt: string; // ISO date
-  updatedAt?: string; // ISO date
+  publishedAt: string; 
+  updatedAt?: string; 
   tags: string[];
   readingTime: string;
   Content: () => ReactElement;

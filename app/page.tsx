@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "sonner";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
+
 import { IProject } from "@/types/IProject";
 import { projects } from "@/utils/projectData";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { LINKS } from "@/constants/links";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -33,10 +35,39 @@ export default function Home() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
+  const validateForm = () => {
+    if (!name.trim()) {
+      toast.error("Please enter your name");
+      return false;
+    }
+
+    if (!email.trim()) {
+      toast.error("Please enter your email");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
+    if (!message.trim()) {
+      toast.error("Please enter a message");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (isSubmitting) return;
+
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -193,7 +224,7 @@ export default function Home() {
 		                                  <p className="mt-1 text-sm text-zinc-200/90">
 		                                    <span className="font-semibold text-zinc-50">Software Engineer</span> at{" "}
 		                                    <Link
-		                                      href="https://www.autodesk.com"
+		                                      href={LINKS.autodesk}
 		                                      target="_blank"
 		                                      rel="noopener noreferrer"
 		                                      className="font-semibold text-zinc-50 underline decoration-white/20 underline-offset-4 transition hover:decoration-white/50"
@@ -423,7 +454,7 @@ export default function Home() {
                             Send another
                           </button>
                           <Link
-                            href="mailto:ayushrameja@gmail.com"
+                            href={`mailto:${LINKS.email}`}
                             className="inline-flex items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:hover:bg-zinc-950/55"
                           >
                             Email instead
@@ -483,10 +514,10 @@ export default function Home() {
                           <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
                             Prefer email?{" "}
                             <Link
-                              href="mailto:ayushrameja@gmail.com"
+                              href={`mailto:${LINKS.email}`}
                               className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
                             >
-                              ayushrameja@gmail.com
+                              {LINKS.email}
                             </Link>
                           </p>
                           <button
@@ -511,7 +542,7 @@ export default function Home() {
 
                     <div className="mt-5 grid gap-3">
                       <Link
-                        href="mailto:ayushrameja@gmail.com"
+                        href={`mailto:${LINKS.email}`}
                         className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
                       >
                         <span>Mail</span>
@@ -520,7 +551,7 @@ export default function Home() {
                         </span>
                       </Link>
                       <Link
-                        href="https://www.linkedin.com/in/ayushrameja/"
+                        href={LINKS.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
@@ -531,7 +562,7 @@ export default function Home() {
                         </span>
                       </Link>
                       <Link
-                        href="https://github.com/ayushrameja"
+                        href={LINKS.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
