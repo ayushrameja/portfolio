@@ -10,6 +10,7 @@ import { useAppStore } from "@/store/store";
 import ThemeToggle from "@/components/ThemeToggle";
 import { STORM_TRIGGER_EVENT } from "@/utils/storm";
 import StaggeredText from "@/components/StaggerText";
+import { useActiveSection } from "@/hooks";
 
 import logo from "../public/assets/image/logo.svg";
 
@@ -18,9 +19,9 @@ const MotionLink = motion.create(Link);
 const Nav = () => {
   const pathname = usePathname();
   const [enterDelay, setEnterDelay] = useState(0.9);
-  const [activeHomeSection, setActiveHomeSection] = useState<"about" | "projects" | "contact">("about");
 
   const isHomeRoute = pathname === "/";
+  const activeHomeSection = useActiveSection(isHomeRoute);
   const isBlogsIndexRoute = pathname === "/blogs";
   const isBlogPostRoute = pathname.startsWith("/blogs/") && pathname !== "/blogs";
   const allowExternalLinks = !isBlogsIndexRoute && !isBlogPostRoute;
@@ -73,33 +74,6 @@ const Nav = () => {
       setShowExternal(false);
     }
   }, [allowExternalLinks, isHomeRoute, setShowExternal]);
-
-  useEffect(() => {
-    if (!isHomeRoute) return;
-
-    const sections = ["about", "projects", "contact"]
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (sections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
-
-        const next = visible[0]?.target?.id;
-        if (next === "about" || next === "projects" || next === "contact") {
-          setActiveHomeSection(next);
-        }
-      },
-      { root: null, threshold: [0.2, 0.35, 0.5, 0.65] }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [isHomeRoute]);
 
   const linkVariants = {
     hidden: { opacity: 0, y: 10, filter: "blur(6px)" },

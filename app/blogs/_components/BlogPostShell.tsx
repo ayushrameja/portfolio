@@ -1,4 +1,4 @@
-import type { BlogPost } from "../_posts/post";
+import type { BlogPost } from "@/types/blog";
 
 export default function BlogPostShell({
   post,

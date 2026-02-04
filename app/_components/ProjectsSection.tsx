@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { IProject } from "@/types/IProject";
+import type { Project } from "@/types/project";
 import { projects } from "@/utils/projectData";
 
 export default function ProjectsSection() {
@@ -26,7 +26,7 @@ export default function ProjectsSection() {
   );
 }
 
-function ProjectCard({ project }: { project: IProject }) {
+function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-white/60 p-8 shadow-[0_22px_70px_-55px_rgba(0,0,0,0.22)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.26)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_22px_70px_-55px_rgba(0,0,0,0.7)] dark:hover:border-zinc-600/70 dark:hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.85)]">
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">

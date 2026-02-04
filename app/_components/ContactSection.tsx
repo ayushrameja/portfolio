@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 
 import { LINKS } from "@/constants/links";
-import { useContactForm } from "@/hooks/useContactForm";
+import { useContactForm } from "@/hooks";
 
 export default function ContactSection() {
   const { formState, isSubmitting, isSubmitted, submittedName, updateField, handleSubmit, reset } = useContactForm();
