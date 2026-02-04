@@ -18,10 +18,23 @@ const MotionLink = motion.create(Link);
 const Nav = () => {
   const pathname = usePathname();
   const [enterDelay, setEnterDelay] = useState(0.9);
+  const [activeHomeSection, setActiveHomeSection] = useState<"about" | "projects" | "contact">("about");
+
+  const isHomeRoute = pathname === "/";
+  const isBlogsIndexRoute = pathname === "/blogs";
+  const isBlogPostRoute = pathname.startsWith("/blogs/") && pathname !== "/blogs";
+  const allowExternalLinks = !isBlogsIndexRoute && !isBlogPostRoute;
 
   const showExternal = useAppStore((state) => state.showExternal);
   const currentRoute = useAppStore((state) => state.currentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
+
+  const isRouteActive = (href: string) => {
+    if (href === "/blogs") return isBlogsIndexRoute;
+    if (href === "/resume") return pathname === "/resume";
+    if (href === "/") return isHomeRoute;
+    return pathname === href;
+  };
 
   useEffect(() => {
     const handleStorm = (event: Event) => {
@@ -39,6 +52,11 @@ const Nav = () => {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (!allowExternalLinks) {
+        setShowExternal(false);
+        return;
+      }
+
       if (window.scrollY > window.innerHeight * 0.5) {
         setShowExternal(true);
       } else {
@@ -48,13 +66,40 @@ const Nav = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [setShowExternal]);
+  }, [allowExternalLinks, setShowExternal]);
 
   useEffect(() => {
-    if (pathname === "/") {
+    if (isHomeRoute || !allowExternalLinks) {
       setShowExternal(false);
     }
-  }, [pathname, setShowExternal]);
+  }, [allowExternalLinks, isHomeRoute, setShowExternal]);
+
+  useEffect(() => {
+    if (!isHomeRoute) return;
+
+    const sections = ["about", "projects", "contact"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
+
+        const next = visible[0]?.target?.id;
+        if (next === "about" || next === "projects" || next === "contact") {
+          setActiveHomeSection(next);
+        }
+      },
+      { root: null, threshold: [0.2, 0.35, 0.5, 0.65] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [isHomeRoute]);
 
   const linkVariants = {
     hidden: { opacity: 0, y: 10, filter: "blur(6px)" },
@@ -83,6 +128,30 @@ const Nav = () => {
     [enterDelay]
   );
 
+  const homeLinks = useMemo(() => ["About", "Projects", "Contact"] as const, []);
+
+  const primaryLinks = useMemo(() => {
+    if (currentRoute === "Home") return null;
+
+    if (isBlogPostRoute) {
+      return [
+        { label: "Portfolio", href: "/" },
+        { label: "Resume", href: "/resume" },
+      ];
+    }
+
+    return [
+      { label: "Portfolio", href: "/" },
+      { label: "Blogs", href: "/blogs" },
+      { label: "Resume", href: "/resume" },
+    ];
+  }, [currentRoute, isBlogPostRoute]);
+
+  const blogBackLink = useMemo(() => {
+    if (!isBlogPostRoute) return null;
+    return { label: "← Blogs", href: "/blogs" };
+  }, [isBlogPostRoute]);
+
   return (
     <motion.nav className="fixed inset-x-0 bottom-0 z-50 pb-5 pt-10">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />
@@ -100,10 +169,21 @@ const Nav = () => {
         >
           <Image src={logo} alt="AXU" fill className="object-contain p-2" />
         </MotionLink>
+        {blogBackLink ? (
+          <MotionLink
+            href={blogBackLink.href}
+            className="group inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+            initial={{ opacity: 0, y: 6, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: enterDelay + 0.06, duration: 0.2, ease: "easeOut" }}
+          >
+            <StaggeredText text={blogBackLink.label} />
+          </MotionLink>
+        ) : null}
         <div className="flex items-center gap-0.5 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
           <div className="flex items-center gap-0.5">
             {currentRoute === "Home"
-              ? ["About", "Projects", "Contact"].map((link, i) => (
+              ? homeLinks.map((link, i) => (
                   <motion.a
                     key={link}
                     custom={i}
@@ -111,30 +191,39 @@ const Nav = () => {
                     initial="hidden"
                     animate="visible"
                     variants={linkVariants}
-                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+                    className={[
+                      "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
+                      activeHomeSection === link.toLowerCase()
+                        ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
+                        : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
+                    ].join(" ")}
                   >
                     <StaggeredText text={link} />
                   </motion.a>
                 ))
-              : ["Portfolio", "Blogs", "Resume"].map(
-                  (link: string, i: number) => (
-                    <MotionLink
-                      key={link}
-                      custom={i}
-                      initial="hidden"
-                      animate="visible"
-                      variants={linkVariants}
-                      className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
-                      href={link === "Portfolio" ? "/" : `/${link.toLowerCase()}`}
-                    >
-                      <StaggeredText text={link} />
-                    </MotionLink>
-                  )
-                )}
+              : (primaryLinks ?? []).map((link, i) => (
+                  <MotionLink
+                    key={link.label}
+                    custom={i}
+                    initial="hidden"
+                    animate="visible"
+                    variants={linkVariants}
+                    className={[
+                      "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
+                      isRouteActive(link.href)
+                        ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
+                        : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
+                    ].join(" ")}
+                    href={link.href}
+                  >
+                    <StaggeredText text={link.label} />
+                  </MotionLink>
+                ))}
           </div>
         </div>
         <AnimatePresence initial={false}>
           {showExternal &&
+            allowExternalLinks &&
             ["Blogs", "Resume"].map((externalLink: string, i: number) => (
               <motion.div
                 key={externalLink}
