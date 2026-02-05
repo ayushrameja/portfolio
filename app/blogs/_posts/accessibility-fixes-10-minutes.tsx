@@ -85,5 +85,9 @@ export const post: BlogPost = {
   publishedAt: "2026-02-03",
   tags: ["Accessibility", "Frontend", "UX"],
   readingTime: "5 min",
+  coverImage: {
+    src: "/assets/blog/blog-a11y.svg",
+    alt: "Abstract cover art for an accessibility fixes article.",
+  },
   Content,
 };

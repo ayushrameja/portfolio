@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="The Three Gunas">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A0A0C"/>
+      <stop offset="0.55" stop-color="#0E7490"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <radialGradient id="glow" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#22D3EE" stop-opacity="0.75"/>
+      <stop offset="0.55" stop-color="#22D3EE" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="23"/>
+      <feColorMatrix type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.08 0" />
+    </filter>
+
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M 72 0 L 0 0 0 72" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+    </pattern>
+
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34D399"/>
+      <stop offset="0.5" stop-color="#FBBF24"/>
+      <stop offset="1" stop-color="#F472B6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.55"/>
+
+  <!-- abstract forms -->
+  <g opacity="0.95">
+    <path d="M-40 540 C 140 420, 260 690, 430 540 S 740 360, 880 520 S 1120 730, 1280 540" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2"/>
+    <circle cx="980" cy="180" r="150" fill="rgba(255,255,255,0.10)" filter="url(#soft)"/>
+    <circle cx="980" cy="180" r="84" fill="rgba(255,255,255,0.10)"/>
+    <circle cx="980" cy="180" r="84" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2"/>
+
+    <path d="M 220 170 C 320 60, 520 60, 600 170 C 680 280, 600 410, 460 420 C 330 430, 210 310, 220 170 Z" fill="rgba(255,255,255,0.10)"/>
+    <path d="M 220 170 C 320 60, 520 60, 600 170" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  </g>
+
+  <!-- accent stroke -->
+  <path d="M 120 470 C 240 380, 420 560, 560 470 S 820 340, 980 450" fill="none" stroke="url(#accent)" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- noise overlay -->
+  <rect width="1200" height="630" filter="url(#noise)"/>
+
+  <!-- title block -->
+  <g>
+    <rect x="78" y="70" width="1044" height="170" rx="30" fill="rgba(0,0,0,0.20)" stroke="rgba(255,255,255,0.18)"/>
+    <text x="120" y="132" font-family="ui-serif, Georgia, serif" font-size="46" font-weight="700" fill="rgba(255,255,255,0.96)">The Three Gunas</text>
+    <text x="120" y="188" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" font-weight="600" letter-spacing="2" fill="rgba(255,255,255,0.80)">Clarity. Agitation. Inertia.</text>
+  </g>
+</svg>

@@ -22,6 +22,7 @@ export async function generateMetadata({
   const title = `${post.title} | Ayush Rameja`;
   const description = post.description;
   const canonical = `/blogs/${post.slug}`;
+  const images = post.coverImage?.src ? [{ url: post.coverImage.src }] : undefined;
 
   return {
     title,
@@ -32,11 +33,13 @@ export async function generateMetadata({
       description,
       type: "article",
       url: canonical,
+      images,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images,
     },
   };
 }

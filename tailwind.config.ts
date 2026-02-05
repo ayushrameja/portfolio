@@ -6,6 +6,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
+        editorial: ["var(--font-editorial)", "ui-serif", "Georgia", "serif"],
       },
     },
   },
