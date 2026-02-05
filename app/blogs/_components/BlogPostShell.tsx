@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { BlogPost } from "@/types/blog";
 import profile from "@/public/assets/image/profile.png";
+import BlogPostHeader from "./BlogPostHeader";
 
 export default function BlogPostShell({
   post,
@@ -12,6 +13,7 @@ export default function BlogPostShell({
 }) {
   return (
     <main className="min-h-dvh bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+      <BlogPostHeader title={post.title} />
       <article className="mx-auto max-w-[720px] px-6 py-14 sm:py-24 lg:py-28">
         <header className="mb-16">
           <div className="mb-8 flex items-center gap-3 text-xs font-bold tracking-widest uppercase text-zinc-400">
@@ -20,6 +22,7 @@ export default function BlogPostShell({
                 year: "numeric",
                 month: "long",
                 day: "numeric",
+                timeZone: "UTC",
               })}
             </time>
             <span className="h-0.5 w-0.5 rounded-full bg-zinc-400" />
