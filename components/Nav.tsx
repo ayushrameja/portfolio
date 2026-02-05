@@ -114,12 +114,19 @@ const Nav = () => {
       ];
     }
 
+    if (isBlogsIndexRoute) {
+      return [
+        { label: "Portfolio", href: "/" },
+        { label: "Resume", href: "/resume" },
+      ];
+    }
+
     return [
       { label: "Portfolio", href: "/" },
       { label: "Blogs", href: "/blogs" },
       { label: "Resume", href: "/resume" },
     ];
-  }, [currentRoute, isBlogPostRoute]);
+  }, [currentRoute, isBlogPostRoute, isBlogsIndexRoute]);
 
   const blogBackLink = useMemo(() => {
     if (!isBlogPostRoute) return null;
