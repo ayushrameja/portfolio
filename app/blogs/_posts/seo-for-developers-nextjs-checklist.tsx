@@ -107,5 +107,9 @@ export const post: BlogPost = {
   publishedAt: "2026-02-03",
   tags: ["Next.js", "SEO", "Web Performance"],
   readingTime: "6 min",
+  coverImage: {
+    src: "/assets/blog/blog-seo.svg",
+    alt: "Abstract cover art for an SEO checklist article.",
+  },
   Content,
 };

@@ -13,7 +13,6 @@ export default function Home() {
           <div className="h-px w-full bg-linear-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
         </div>
       </div>
-
       <ProjectsSection />
       <ContactSection />
       <Footer />
