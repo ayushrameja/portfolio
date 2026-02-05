@@ -76,11 +76,10 @@ const Nav = () => {
   }, [allowExternalLinks, isHomeRoute, setShowExternal]);
 
   const linkVariants = {
-    hidden: { opacity: 0, y: 10, scale: 0.95 },
+    hidden: { opacity: 0, y: 10 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      scale: 1,
       transition: {
         delay: enterDelay + i * 0.06,
         duration: 0.22,
@@ -91,11 +90,10 @@ const Nav = () => {
 
   const containerMotion = useMemo(
     () => ({
-      initial: { opacity: 0, y: 10, scale: 0.96 },
+      initial: { opacity: 0, y: 10 },
       animate: {
         opacity: 1,
         y: 0,
-        scale: 1,
         transition: { delay: enterDelay, duration: 0.32, ease: "easeOut" },
       },
     }),
@@ -114,19 +112,12 @@ const Nav = () => {
       ];
     }
 
-    if (isBlogsIndexRoute) {
-      return [
-        { label: "Portfolio", href: "/" },
-        { label: "Resume", href: "/resume" },
-      ];
-    }
-
     return [
       { label: "Portfolio", href: "/" },
       { label: "Blogs", href: "/blogs" },
       { label: "Resume", href: "/resume" },
     ];
-  }, [currentRoute, isBlogPostRoute, isBlogsIndexRoute]);
+  }, [currentRoute, isBlogPostRoute]);
 
   const blogBackLink = useMemo(() => {
     if (!isBlogPostRoute) return null;
@@ -144,8 +135,8 @@ const Nav = () => {
         <MotionLink
           href="/"
           className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black ring-1 ring-inset ring-black/10 dark:bg-black dark:ring-zinc-700/60"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: enterDelay, duration: 0.2, ease: "easeOut" }}
         >
           <Image src={logo} alt="AXU" fill className="object-contain p-2" />
@@ -153,9 +144,9 @@ const Nav = () => {
         {blogBackLink ? (
           <MotionLink
             href={blogBackLink.href}
-            className="group inline-flex items-center justify-center rounded-xl bg-black/5 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-black/10 hover:text-zinc-950 dark:bg-white/10 dark:text-zinc-200 dark:hover:bg-white/15 dark:hover:text-zinc-50"
-            initial={{ opacity: 0, y: 6, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-black/5 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-black/10 hover:text-zinc-950 dark:bg-white/10 dark:text-zinc-200 dark:hover:bg-white/15 dark:hover:text-zinc-50"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: enterDelay + 0.06, duration: 0.2, ease: "easeOut" }}
           >
             <StaggeredText text={blogBackLink.label} />

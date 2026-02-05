@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import { LINKS } from "@/constants/links";
+import { fadeInUp, staggerContainer } from "@/lib/animations";
 
 export default function HeroSection() {
   return (
@@ -28,17 +29,12 @@ export default function HeroSection() {
 
       <motion.div
         className="mx-auto w-full max-w-6xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        variants={staggerContainer()}
+        initial="hidden"
+        animate="visible"
       >
         <div className="flex flex-col items-center text-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-            className="w-full max-w-3xl"
-          >
+          <motion.div variants={fadeInUp} className="w-full max-w-3xl">
             <div className="inline-flex flex-wrap items-center justify-center gap-2">
               <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-white/60 px-4 py-2 text-xs font-semibold tracking-widest text-zinc-700 backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200">
                 PRODUCT · UI · SYSTEMS
@@ -79,12 +75,7 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
-            className="mt-12 w-full"
-          >
+          <motion.div variants={fadeInUp} className="mt-12 w-full">
             <div className="relative mx-auto w-full max-w-5xl">
               <div className="pointer-events-none absolute -inset-10 -z-10 opacity-70">
                 <div className="absolute inset-0 rounded-[44px] bg-linear-to-br from-fuchsia-500/12 via-violet-500/8 to-cyan-500/12 blur-2xl dark:from-fuchsia-400/10 dark:via-violet-400/7 dark:to-cyan-400/9" />
@@ -97,7 +88,7 @@ export default function HeroSection() {
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-400/90" />
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/90" />
                   </div>
-                  <p className="text-xs font-semibold tracking-widest text-zinc-600 dark:text-zinc-300">PORTFOLIO</p>
+                  <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">PORTFOLIO</p>
                   <div className="w-[52px]" aria-hidden />
                 </div>
 
@@ -111,8 +102,6 @@ export default function HeroSection() {
                             alt="Ayush Rameja"
                             fill
                             priority
-                            fetchPriority="high"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 45vw, 420px"
                             className="object-cover"
                           />
                           <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-zinc-950/55 via-zinc-950/10 to-transparent dark:from-zinc-950/70" />
@@ -142,7 +131,7 @@ export default function HeroSection() {
 
                   <div className="border-t border-zinc-200/70 lg:col-span-5 lg:border-l lg:border-t-0 dark:border-zinc-700/60">
                     <div className="flex h-full flex-col p-6 sm:p-8">
-                      <p className="text-xs font-semibold tracking-widest text-zinc-600 dark:text-zinc-300">
+                      <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
                         QUICK LINKS
                       </p>
                       <div className="mt-5 grid gap-3">
@@ -152,7 +141,7 @@ export default function HeroSection() {
                         >
                           Resume
                           <span
-                            className="text-zinc-600 transition group-hover:translate-x-0.5 dark:text-zinc-300"
+                            className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400"
                             aria-hidden
                           >
                             ↗
@@ -164,7 +153,7 @@ export default function HeroSection() {
                         >
                           Blogs
                           <span
-                            className="text-zinc-600 transition group-hover:translate-x-0.5 dark:text-zinc-300"
+                            className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400"
                             aria-hidden
                           >
                             ↗
@@ -176,7 +165,7 @@ export default function HeroSection() {
                         >
                           Contact
                           <span
-                            className="text-zinc-600 transition group-hover:translate-x-0.5 dark:text-zinc-300"
+                            className="text-zinc-500 transition group-hover:translate-x-0.5 dark:text-zinc-400"
                             aria-hidden
                           >
                             ↗
@@ -184,7 +173,7 @@ export default function HeroSection() {
                         </Link>
                       </div>
                       <div className="mt-auto rounded-3xl border border-zinc-200/70 bg-white/55 p-6 text-left backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/20">
-                        <p className="text-xs font-semibold tracking-widest text-zinc-600 dark:text-zinc-300">
+                        <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
                           WHAT I DO
                         </p>
                         <ul className="mt-4 grid gap-3 text-sm text-zinc-700 dark:text-zinc-200">
@@ -209,12 +198,7 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
-            className="mt-10"
-          >
+          <motion.div variants={fadeInUp} className="mt-10">
             <Link
               href="#projects"
               className="group inline-flex items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
