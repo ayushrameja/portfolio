@@ -31,7 +31,7 @@ export default function ClientLayout({
     setShowExternal(false);
     if (!hasMounted.current) {
       hasMounted.current = true;
-      triggerStorm({ cause: "load" });
+      setTimeout(() => triggerStorm({ cause: "load" }), 100);
     } else {
       triggerStorm({ cause: "route" });
     }
