@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useRef, useEffect, Suspense } from "react";
+import { useLayoutEffect, useRef, Suspense } from "react";
 
 import Nav from "@/components/Nav";
 import { useAppStore } from "@/store/store";
@@ -19,7 +19,7 @@ export default function ClientLayout({
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     let route = "Home";
     if (pathname.includes("/blogs")) {
       route = "Blogs";
@@ -31,7 +31,6 @@ export default function ClientLayout({
     setShowExternal(false);
     if (!hasMounted.current) {
       hasMounted.current = true;
-      triggerStorm({ cause: "load" });
     } else {
       triggerStorm({ cause: "route" });
     }
@@ -41,7 +40,7 @@ export default function ClientLayout({
     <div className="relative">
       <div className="relative" id="app-shell">
         <Suspense fallback={<LoadingSpinner />}>
-          {children}
+          <div id="page-shell">{children}</div>
           <Nav />
         </Suspense>
       </div>

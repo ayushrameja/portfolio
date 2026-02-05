@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { STORM_TRIGGER_EVENT, THEME_CHANGE_EVENT, StormTriggerDetail, ThemeMode } from "@/utils/storm";
+import { STORM_TRIGGER_EVENT, THEME_CHANGE_EVENT, StormCause, StormTriggerDetail, ThemeMode } from "@/utils/storm";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -14,17 +14,13 @@ const applyTheme = (nextTheme: ThemeMode) => {
   } else {
     document.documentElement.classList.remove("dark");
   }
-  try {
-    localStorage.setItem("theme", nextTheme);
-  } catch {}
   window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 };
 
-const setStorming = (value: boolean | "load") => {
+const setStorming = (cause: StormCause | null) => {
   if (typeof document === "undefined") return;
-  if (value) {
-    document.documentElement.dataset.storming = value === "load" ? "load" : "true";
-    document.documentElement.removeAttribute("data-initial-load");
+  if (cause) {
+    document.documentElement.dataset.storming = cause;
   } else {
     document.documentElement.removeAttribute("data-storming");
   }
@@ -49,11 +45,12 @@ export default function StormTransition() {
       return;
     }
 
-    const duration = detail.cause === "route" ? 520 : detail.cause === "theme" ? 680 : 760;
+    const duration = detail.cause === "theme" ? 680 : detail.cause === "load" ? 520 : 360;
     const themeOffset = Math.round(duration * 0.45);
+    const cause: StormCause = detail.cause ?? "route";
     activeRef.current = true;
     pendingThemeRef.current = detail.theme ?? null;
-    setStorming(detail.cause === "load" ? "load" : true);
+    setStorming(cause);
     document.documentElement.style.setProperty("--storm-duration", `${duration}ms`);
 
     if (endTimerRef.current) window.clearTimeout(endTimerRef.current);
@@ -69,7 +66,7 @@ export default function StormTransition() {
     endTimerRef.current = window.setTimeout(() => {
       activeRef.current = false;
       pendingThemeRef.current = null;
-      setStorming(false);
+      setStorming(null);
     }, duration);
   }, []);
 
@@ -83,10 +80,34 @@ export default function StormTransition() {
   }, [startStorm]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!mediaQuery) return;
+
+    const onChange = () => {
+      let storedTheme: string | null = null;
+      try {
+        storedTheme = localStorage.getItem("theme");
+      } catch {}
+
+      if (storedTheme === "light" || storedTheme === "dark") return;
+      startStorm({ cause: "theme", theme: mediaQuery.matches ? "dark" : "light" });
+    };
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", onChange);
+      return () => mediaQuery.removeEventListener("change", onChange);
+    }
+
+    mediaQuery.addListener(onChange);
+    return () => mediaQuery.removeListener(onChange);
+  }, [startStorm]);
+
+  useEffect(() => {
     return () => {
       if (endTimerRef.current) window.clearTimeout(endTimerRef.current);
       if (themeTimerRef.current) window.clearTimeout(themeTimerRef.current);
-      setStorming(false);
+      setStorming(null);
     };
   }, []);
 

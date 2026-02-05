@@ -53,22 +53,23 @@
 :root {
   --storm-blur: 14px;
   --storm-scale: 1.015;
+  --storm-rise: 14px;
   --storm-duration: 1000ms;
 }
 
-html[data-initial-load="true"] #app-shell {
-  filter: blur(var(--storm-blur));
-  transform: scale(var(--storm-scale));
-}
-
-html[data-storming="true"] #app-shell {
+html[data-storming="theme"] #app-shell {
   animation: storm-blur var(--storm-duration) ease;
   will-change: filter, transform;
 }
 
-html[data-storming="load"] #app-shell {
-  animation: storm-blur-load var(--storm-duration) ease;
-  will-change: filter, transform;
+html[data-storming="route"] #page-shell {
+  animation: storm-rise var(--storm-duration) ease;
+  will-change: opacity, transform;
+}
+
+html[data-storming="load"] #page-shell {
+  animation: storm-rise var(--storm-duration) ease;
+  will-change: opacity, transform;
 }
 
 @keyframes storm-blur {
@@ -86,13 +87,13 @@ html[data-storming="load"] #app-shell {
   }
 }
 
-@keyframes storm-blur-load {
+@keyframes storm-rise {
   0% {
-    filter: blur(var(--storm-blur));
-    transform: scale(var(--storm-scale));
+    opacity: 0;
+    transform: translateY(var(--storm-rise));
   }
   100% {
-    filter: blur(0px);
-    transform: scale(1);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
