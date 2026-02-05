@@ -16,6 +16,7 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
   const hasMounted = useRef(false);
+  const previousPathname = useRef<string | null>(null);
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
 
@@ -29,12 +30,19 @@ export default function ClientLayout({
 
     setCurrentRoute(route);
     setShowExternal(false);
+
+    const isBlogPost = pathname.startsWith("/blogs/") && pathname !== "/blogs";
+    const wasBlogPost = previousPathname.current?.startsWith("/blogs/") && previousPathname.current !== "/blogs";
+    const isWithinBlogPosts = isBlogPost && wasBlogPost;
+
     if (!hasMounted.current) {
       hasMounted.current = true;
       setTimeout(() => triggerStorm({ cause: "load" }), 100);
-    } else {
+    } else if (!isWithinBlogPosts) {
       triggerStorm({ cause: "route" });
     }
+
+    previousPathname.current = pathname;
   }, [pathname, setCurrentRoute, setShowExternal]);
 
   return (
