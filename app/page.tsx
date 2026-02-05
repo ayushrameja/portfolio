@@ -1,6 +1,6 @@
-import ContactSection from "./_components/ContactSection";
 import Footer from "./_components/Footer";
 import HeroSection from "./_components/HeroSection";
+import ContactSection from "./_components/ContactSection";
 import ProjectsSection from "./_components/ProjectsSection";
 
 export default function Home() {

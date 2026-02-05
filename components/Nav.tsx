@@ -23,7 +23,8 @@ const Nav = () => {
   const isHomeRoute = pathname === "/";
   const activeHomeSection = useActiveSection(isHomeRoute);
   const isBlogsIndexRoute = pathname === "/blogs";
-  const isBlogPostRoute = pathname.startsWith("/blogs/") && pathname !== "/blogs";
+  const isBlogPostRoute = pathname.startsWith("/blogs/") &&
+    pathname !== "/blogs";
   const allowExternalLinks = !isBlogsIndexRoute && !isBlogPostRoute;
 
   const showExternal = useAppStore((state) => state.showExternal);
@@ -48,7 +49,11 @@ const Nav = () => {
     };
     window.addEventListener(STORM_TRIGGER_EVENT, handleStorm as EventListener);
 
-    return () => window.removeEventListener(STORM_TRIGGER_EVENT, handleStorm as EventListener);
+    return () =>
+      window.removeEventListener(
+        STORM_TRIGGER_EVENT,
+        handleStorm as EventListener,
+      );
   }, []);
 
   useEffect(() => {
@@ -97,10 +102,13 @@ const Nav = () => {
         transition: { delay: enterDelay, duration: 0.32, ease: "easeOut" },
       },
     }),
-    [enterDelay]
+    [enterDelay],
   );
 
-  const homeLinks = useMemo(() => ["About", "Projects", "Contact"] as const, []);
+  const homeLinks = useMemo(
+    () => ["About", "Projects", "Contact"] as const,
+    [],
+  );
 
   const primaryLinks = useMemo(() => {
     if (currentRoute === "Home") return null;
@@ -132,65 +140,89 @@ const Nav = () => {
         initial={containerMotion.initial}
         animate={containerMotion.animate}
       >
-        <MotionLink
-          href="/"
-          className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black ring-1 ring-inset ring-black/10 dark:bg-black dark:ring-zinc-700/60"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: enterDelay, duration: 0.2, ease: "easeOut" }}
-        >
-          <Image src={logo} alt="AXU" fill className="object-contain p-2" />
-        </MotionLink>
-        {blogBackLink ? (
+        <div className="flex items-center gap-3">
           <MotionLink
-            href={blogBackLink.href}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-black/5 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-black/10 hover:text-zinc-950 dark:bg-white/10 dark:text-zinc-200 dark:hover:bg-white/15 dark:hover:text-zinc-50"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: enterDelay + 0.06, duration: 0.2, ease: "easeOut" }}
+            href="/"
+            className={`relative flex h-10 shrink-0 items-center overflow-hidden rounded-xl bg-zinc-50 ring-1 ring-inset ring-black/10 transition-all duration-300 dark:bg-zinc-900 dark:ring-zinc-700/60 ${
+              isBlogsIndexRoute || isBlogPostRoute
+                ? "px-3"
+                : "w-10 justify-center"
+            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: enterDelay, duration: 0.2, ease: "easeOut" }}
           >
-            <StaggeredText text={blogBackLink.label} />
+            <div className="relative h-6 w-6 shrink-0">
+              <Image src={logo} alt="AXU" fill className="object-contain" />
+            </div>
+            {(isBlogsIndexRoute || isBlogPostRoute) && (
+              <motion.div
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="ml-2 flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+              >
+                <span className="text-zinc-400">·</span>
+                <span>Blogs</span>
+              </motion.div>
+            )}
           </MotionLink>
-        ) : null}
+        </div>
+        {blogBackLink
+          ? (
+            <MotionLink
+              href={blogBackLink.href}
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-black/5 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-black/10 hover:text-zinc-950 dark:bg-white/10 dark:text-zinc-200 dark:hover:bg-white/15 dark:hover:text-zinc-50"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: enterDelay + 0.06,
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+            >
+              <StaggeredText text={blogBackLink.label} />
+            </MotionLink>
+          )
+          : null}
         <div className="flex items-center gap-0.5 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
           <div className="flex items-center gap-0.5">
             {currentRoute === "Home"
               ? homeLinks.map((link, i) => (
-                  <motion.a
-                    key={link}
-                    custom={i}
-                    href={`/#${link.toLowerCase()}`}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                    className={[
-                      "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
-                      activeHomeSection === link.toLowerCase()
-                        ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
-                        : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
-                    ].join(" ")}
-                  >
-                    <StaggeredText text={link} />
-                  </motion.a>
-                ))
+                <motion.a
+                  key={link}
+                  custom={i}
+                  href={`/#${link.toLowerCase()}`}
+                  initial="hidden"
+                  animate="visible"
+                  variants={linkVariants}
+                  className={[
+                    "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
+                    activeHomeSection === link.toLowerCase()
+                      ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
+                      : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
+                  ].join(" ")}
+                >
+                  <StaggeredText text={link} />
+                </motion.a>
+              ))
               : (primaryLinks ?? []).map((link, i) => (
-                  <MotionLink
-                    key={link.label}
-                    custom={i}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                    className={[
-                      "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
-                      isRouteActive(link.href)
-                        ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
-                        : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
-                    ].join(" ")}
-                    href={link.href}
-                  >
-                    <StaggeredText text={link.label} />
-                  </MotionLink>
-                ))}
+                <MotionLink
+                  key={link.label}
+                  custom={i}
+                  initial="hidden"
+                  animate="visible"
+                  variants={linkVariants}
+                  className={[
+                    "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
+                    isRouteActive(link.href)
+                      ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
+                      : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
+                  ].join(" ")}
+                  href={link.href}
+                >
+                  <StaggeredText text={link.label} />
+                </MotionLink>
+              ))}
           </div>
         </div>
         <AnimatePresence initial={false}>
