@@ -138,7 +138,7 @@ const Nav = () => {
   }, [isBlogsRoute, isResumeRoute]);
 
   return (
-    <motion.nav className="fixed inset-x-0 bottom-0 z-50 pb-5 pt-10">
+    <motion.nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 pb-5 pt-10">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />
       <motion.div
         className="pointer-events-auto mx-auto flex w-fit max-w-[min(52rem,calc(100vw-2rem))] items-center gap-1.5 rounded-2xl border border-zinc-200/70 bg-white/70 p-1.5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-800/60 dark:shadow-[0_10px_40px_-20px_rgba(0,0,0,0.8)]"
