@@ -41,9 +41,9 @@ export default function ClientLayout({
       <div className="relative" id="app-shell">
         <Suspense fallback={<LoadingSpinner />}>
           <div id="page-shell">{children}</div>
-          <Nav />
         </Suspense>
       </div>
+      <Nav />
       <Toaster />
       <StormTransition />
     </div>

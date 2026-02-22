@@ -9,7 +9,10 @@ import { fadeInUp, staggerContainer } from "@/lib/animations";
 
 export default function HeroSection() {
   return (
-    <section id="about" className="relative flex min-h-screen items-center px-6 py-16">
+    <section
+      id="about"
+      className="relative flex min-h-screen items-center overflow-x-clip px-6 py-16"
+    >
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-b from-white via-zinc-50 to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-950" />
         <div
@@ -46,7 +49,9 @@ export default function HeroSection() {
                 <span className="bg-linear-to-r from-fuchsia-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent dark:from-fuchsia-300 dark:via-violet-300 dark:to-cyan-300">
                   Software engineer
                 </span>
-                <span className="text-zinc-950 dark:text-zinc-50"> who ships end to end.</span>
+                <span className="text-zinc-950 dark:text-zinc-50">
+                  who ships end to end.
+                </span>
                 <span
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-full h-px w-44 -translate-x-1/2 bg-linear-to-r from-transparent via-zinc-300/80 to-transparent dark:via-zinc-700/70"
@@ -55,8 +60,8 @@ export default function HeroSection() {
             </h1>
 
             <p className="mt-6 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-              I build web products across UI, APIs, and data. I try to keep the code clean, the UX calm, and the
-              systems boring in the best way.
+              I build web products across UI, APIs, and data. I try to keep the
+              code clean, the UX calm, and the systems boring in the best way.
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -88,7 +93,9 @@ export default function HeroSection() {
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-400/90" />
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/90" />
                   </div>
-                  <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">PORTFOLIO</p>
+                  <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+                    PORTFOLIO
+                  </p>
                   <div className="w-[52px]" aria-hidden />
                 </div>
 
@@ -109,16 +116,21 @@ export default function HeroSection() {
                           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7">
                             <div className="flex flex-wrap items-end justify-between gap-4">
                               <div className="min-w-0">
-                                <p className="text-lg font-semibold text-zinc-50">Ayush Rameja</p>
+                                <p className="text-lg font-semibold text-zinc-50">
+                                  Ayush Rameja
+                                </p>
                                 <p className="mt-1 text-sm text-zinc-200/90">
-                                  <span className="font-semibold text-zinc-50">Software Engineer</span> at{" "}
+                                  <span className="font-semibold text-zinc-50">
+                                    Software Engineer
+                                  </span>{" "}
+                                  at{" "}
                                   <Link
-                                    href={LINKS.autodesk}
+                                    href={LINKS.quarks}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="font-semibold text-zinc-50 underline decoration-white/20 underline-offset-4 transition hover:decoration-white/50"
                                   >
-                                    Autodesk
+                                    Quarks
                                   </Link>
                                 </p>
                               </div>
@@ -172,7 +184,7 @@ export default function HeroSection() {
                           </span>
                         </Link>
                       </div>
-                      <div className="mt-auto rounded-3xl border border-zinc-200/70 bg-white/55 p-6 text-left backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/20">
+                      <div className="mt-8 rounded-3xl border border-zinc-200/70 bg-white/55 p-6 text-left backdrop-blur lg:mt-auto dark:border-zinc-700/60 dark:bg-zinc-950/20">
                         <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
                           WHAT I DO
                         </p>
@@ -199,15 +211,19 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div variants={fadeInUp} className="mt-10">
-            <Link
-              href="#projects"
-              className="group inline-flex items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById("projects")?.scrollIntoView({
+                  behavior: "smooth",
+                })}
+              className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
             >
               Scroll
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-200/70 bg-white/70 text-zinc-700 transition group-hover:translate-y-0.5 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200">
                 ↓
               </span>
-            </Link>
+            </button>
           </motion.div>
         </div>
       </motion.div>

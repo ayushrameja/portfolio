@@ -1,13 +1,20 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 import { BASE_URL } from "@/constants/links";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: "Ayush Rameja | Portfolio",
-  description: "Software Engineer at Autodesk building fast, thoughtful web experiences",
+  description:
+    "Software Engineer at Quarks building fast, thoughtful web experiences",
 };
 
 export default function RootLayout({
@@ -18,14 +25,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="scroll-smooth"
+      className="scroll-smooth overflow-x-hidden"
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicon-96x96.png"
+          sizes="96x96"
+        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
         <meta name="apple-mobile-web-app-title" content="Ayush Rameja" />
         <link rel="manifest" href="/site.webmanifest" />
         <script
@@ -35,7 +51,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-dvh bg-zinc-200 font-sans text-zinc-950 antialiased dark:bg-zinc-900 dark:text-zinc-100">
+      <body className="min-h-dvh overflow-x-hidden bg-zinc-200 font-sans text-zinc-950 antialiased dark:bg-zinc-900 dark:text-zinc-100">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
