@@ -1,6 +1,4 @@
-"use client";
-
-import TextReveal from "@/components/TextReveal";
+import FooterReveal from "./FooterReveal";
 
 export default function Footer() {
   return (
@@ -8,12 +6,12 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-7xl">
         <div className="h-px w-full bg-linear-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
         <div className="mt-6 flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-300 sm:flex-row sm:items-center sm:justify-between">
-          <TextReveal as="p">
+          <FooterReveal>
             {`© ${new Date().getFullYear()} Ayush Rameja. All rights reserved.`}
-          </TextReveal>
-          <TextReveal as="p" delay={0.08} className="text-zinc-500 dark:text-zinc-400">
+          </FooterReveal>
+          <FooterReveal delay={0.08} className="text-zinc-500 dark:text-zinc-400">
             Code licensed under Apache License 2.0.
-          </TextReveal>
+          </FooterReveal>
         </div>
       </div>
     </footer>
