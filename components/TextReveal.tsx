@@ -1,11 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import type { HTMLAttributes } from "react";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
 type Tag = "h1" | "h2" | "h3" | "h4" | "p" | "span";
 
-interface TextRevealProps extends HTMLAttributes<HTMLElement> {
+interface TextRevealProps extends Omit<HTMLMotionProps<any>, "children"> {
   children: string;
   as?: Tag;
   delay?: number;
