@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 
 import { LINKS } from "@/constants/links";
 import { useContactForm } from "@/hooks";
+import { scrollFadeUp } from "@/lib/animations";
+import TextReveal from "@/components/TextReveal";
 
 export default function ContactSection() {
   const { formState, isSubmitting, isSubmitted, submittedName, updateField, handleSubmit, reset } = useContactForm();
@@ -12,7 +15,13 @@ export default function ContactSection() {
   return (
     <section id="contact" className="px-6 py-20">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-cover bg-center shadow-[0_28px_90px_-70px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:shadow-[0_28px_90px_-70px_rgba(0,0,0,0.9)]">
+        <motion.div
+          className="relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-cover bg-center shadow-[0_28px_90px_-70px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:shadow-[0_28px_90px_-70px_rgba(0,0,0,0.9)]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={scrollFadeUp}
+        >
           <div className="absolute inset-0 bg-linear-to-tr from-white/92 via-white/70 to-white/40 dark:from-zinc-950/90 dark:via-zinc-950/60 dark:to-zinc-950/25" />
           <div className="pointer-events-none absolute inset-0 opacity-70 dark:opacity-70">
             <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-500/16 blur-3xl dark:bg-fuchsia-400/12" />
@@ -21,13 +30,15 @@ export default function ContactSection() {
 
           <div className="relative p-8 md:p-10">
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-300/80">CONTACT</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-                Ping me <span className="text-fuchsia-700 dark:text-fuchsia-200">let&apos;s build something</span>
-              </h2>
-              <p className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-200/85">
+              <TextReveal as="p" className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-300/80">
+                CONTACT
+              </TextReveal>
+              <TextReveal as="h2" delay={0.08} className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+                Ping me let&apos;s build something
+              </TextReveal>
+              <TextReveal as="p" delay={0.15} className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-200/85">
                 Short message is perfect. I usually reply fast (assuming Slack isn&apos;t on fire).
-              </p>
+              </TextReveal>
             </div>
 
             <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-stretch">
@@ -201,7 +212,7 @@ export default function ContactSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

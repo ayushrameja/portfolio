@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, Suspense } from "react";
 
 import Nav from "@/components/Nav";
+import SmoothScroll from "@/components/SmoothScroll";
 import { useAppStore } from "@/store/store";
 import { triggerStorm } from "@/utils/storm";
 import { Toaster } from "@/components/ui/sonner";
@@ -37,16 +38,18 @@ export default function ClientLayout({
   }, [pathname, setCurrentRoute, setShowExternal]);
 
   return (
-    <div className="relative">
-      <div className="relative" id="app-shell">
-        <Suspense fallback={<LoadingSpinner />}>
-          <div id="page-shell">{children}</div>
-        </Suspense>
+    <SmoothScroll>
+      <div className="relative">
+        <div className="relative" id="app-shell">
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="page-shell">{children}</div>
+          </Suspense>
+        </div>
+        <Nav />
+        <Toaster />
+        <StormTransition />
       </div>
-      <Nav />
-      <Toaster />
-      <StormTransition />
-    </div>
+    </SmoothScroll>
   );
 }
 

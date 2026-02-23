@@ -20,7 +20,7 @@
 @layer base {
   html,
   body {
-    height: 100%;
+    height: auto;
   }
 }
 
@@ -52,6 +52,7 @@
 }
 
 :root {
+  color-scheme: light;
   --font-sans: "Inter";
   --font-serif: "Lora";
   --font-editorial: "Space Grotesk";
@@ -59,6 +60,18 @@
   --storm-scale: 1.015;
   --storm-rise: 14px;
   --storm-duration: 1000ms;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-color: rgba(161, 161, 170, 0.45) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgba(63, 63, 70, 0.6) transparent;
 }
 
 html[data-storming="theme"] #app-shell {

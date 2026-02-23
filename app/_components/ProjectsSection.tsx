@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import type { Project } from "@/types/project";
 import { projects } from "@/utils/projectData";
+import { scrollFadeUp } from "@/lib/animations";
+import TextReveal from "@/components/TextReveal";
 
 export default function ProjectsSection() {
   return (
@@ -9,16 +14,26 @@ export default function ProjectsSection() {
       <div className="mx-auto w-full max-w-7xl">
         <div className="flex items-end justify-between gap-6">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Selected work</h2>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-300">
+            <TextReveal as="h2" className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+              Selected work
+            </TextReveal>
+            <TextReveal as="p" delay={0.1} className="mt-2 text-zinc-600 dark:text-zinc-300">
               A few projects that highlight my role, skills, and impact.
-            </p>
+            </TextReveal>
           </div>
         </div>
 
         <div className="mt-10 space-y-10">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <motion.div
+              key={project.id}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={scrollFadeUp}
+            >
+              <ProjectCard project={project} />
+            </motion.div>
           ))}
         </div>
       </div>
