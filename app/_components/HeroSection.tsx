@@ -48,7 +48,7 @@ export default function HeroSection() {
               <span className="relative mt-4 block text-2xl font-semibold tracking-tight sm:text-3xl">
                 <span className="bg-linear-to-r from-fuchsia-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent dark:from-fuchsia-300 dark:via-violet-300 dark:to-cyan-300">
                   Software engineer
-                </span>
+                </span>{" "}
                 <span className="text-zinc-950 dark:text-zinc-50">
                   who ships end to end.
                 </span>
