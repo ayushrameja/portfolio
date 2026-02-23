@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLenis } from "lenis/react";
 
 import { useAppStore } from "@/store/store";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -18,6 +19,7 @@ const MotionLink = motion.create(Link);
 
 const Nav = () => {
   const pathname = usePathname();
+  const lenis = useLenis();
   const [enterDelay, setEnterDelay] = useState(0.9);
 
   const isHomeRoute = pathname === "/";
@@ -172,22 +174,30 @@ const Nav = () => {
           <div className="flex items-center gap-0.5">
             {currentRoute === "Home"
               ? homeLinks.map((link, i) => (
-                <motion.a
+                <motion.button
                   key={link}
+                  type="button"
                   custom={i}
-                  href={`/#${link.toLowerCase()}`}
+                  onClick={() => {
+                    const target = `#${link.toLowerCase()}`;
+                    if (lenis) {
+                      lenis.scrollTo(target);
+                    } else {
+                      document.getElementById(link.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   initial="hidden"
                   animate="visible"
                   variants={linkVariants}
                   className={[
-                    "group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
+                    "group relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
                     activeHomeSection === link.toLowerCase()
                       ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
                       : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
                   ].join(" ")}
                 >
                   <StaggeredText text={link} />
-                </motion.a>
+                </motion.button>
               ))
               : (navLinks ?? []).map((link, i) => (
                 <MotionLink
