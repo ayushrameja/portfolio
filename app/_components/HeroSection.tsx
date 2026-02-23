@@ -7,6 +7,7 @@ import { useLenis } from "lenis/react";
 
 import { LINKS } from "@/constants/links";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { scrollToTarget } from "@/utils/scroll";
 
 export default function HeroSection() {
   const lenis = useLenis();
@@ -70,26 +71,14 @@ export default function HeroSection() {
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <button
                 type="button"
-                onClick={() => {
-                  if (lenis) {
-                    lenis.scrollTo("#projects");
-                  } else {
-                    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
+                onClick={() => scrollToTarget("projects", lenis as any)}
                 className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-zinc-950 px-6 py-3 text-sm font-semibold text-zinc-50 shadow-[0_20px_65px_-45px_rgba(0,0,0,0.45)] transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/25 sm:w-auto dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
               >
                 See selected work
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  if (lenis) {
-                    lenis.scrollTo("#contact");
-                  } else {
-                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
+                onClick={() => scrollToTarget("contact", lenis as any)}
                 className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-6 py-3 text-sm font-semibold text-zinc-900 backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/25 sm:w-auto dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-50 dark:hover:bg-zinc-950/45"
               >
                 Let&apos;s talk
@@ -190,13 +179,7 @@ export default function HeroSection() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => {
-                            if (lenis) {
-                              lenis.scrollTo("#contact");
-                            } else {
-                              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                            }
-                          }}
+                          onClick={() => scrollToTarget("contact", lenis as any)}
                           className="group flex w-full cursor-pointer items-center justify-between rounded-3xl border border-zinc-200/70 bg-white/65 px-5 py-4 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-100 dark:hover:bg-zinc-950/35"
                         >
                           Contact
@@ -237,15 +220,7 @@ export default function HeroSection() {
           <motion.div variants={fadeInUp} className="mt-10">
             <button
               type="button"
-              onClick={() => {
-                if (lenis) {
-                  lenis.scrollTo("#projects");
-                } else {
-                  document.getElementById("projects")?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={() => scrollToTarget("projects", lenis as any)}
               className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
             >
               Scroll

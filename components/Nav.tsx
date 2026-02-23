@@ -14,6 +14,7 @@ import StaggeredText from "@/components/StaggerText";
 import { useActiveSection } from "@/hooks";
 
 import logo from "../public/assets/image/logo.svg";
+import { scrollToTarget } from "@/utils/scroll";
 
 const MotionLink = motion.create(Link);
 
@@ -178,14 +179,7 @@ const Nav = () => {
                   key={link}
                   type="button"
                   custom={i}
-                  onClick={() => {
-                    const target = `#${link.toLowerCase()}`;
-                    if (lenis) {
-                      lenis.scrollTo(target);
-                    } else {
-                      document.getElementById(link.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
+                  onClick={() => scrollToTarget(link.toLowerCase(), lenis as any)}
                   initial="hidden"
                   animate="visible"
                   variants={linkVariants}

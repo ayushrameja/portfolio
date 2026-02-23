@@ -1,13 +1,9 @@
 @import "tailwindcss";
 
-*, *::before, *::after {
-  scroll-behavior: smooth;
-}
-
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-serif: "Lora", ui-serif, Georgia, serif;
-  --font-editorial: "Space Grotesk", ui-serif, Georgia, serif;
+  --font-serif: "Lora", ui-serif, georgia, serif;
+  --font-editorial: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
 
   --color-zinc-50: #fafafa;
   --color-zinc-100: #f4f4f5;
