@@ -12,7 +12,7 @@ export default function BlogPostShell({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-dvh bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+    <main className="min-h-dvh bg-white pb-28 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
       <BlogPostHeader title={post.title} />
       <article className="mx-auto max-w-[720px] px-6 py-14 sm:py-24 lg:py-28">
         <header className="mb-16">
