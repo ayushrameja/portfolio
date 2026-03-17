@@ -6,8 +6,14 @@ import { post as gitaThreeGunasPracticalModel } from "./gita-three-gunas-practic
 import { post as gitaDetachmentVsApathy } from "./gita-detachment-vs-apathy";
 import { post as gitaArjunaAnxietyDecisionMaking } from "./gita-arjuna-anxiety-decision-making";
 import { post as gita10MinuteDailyPractice } from "./gita-10-minute-daily-practice";
+import { post as codeReviewCommentsThatActuallyHelp } from "./code-review-comments-that-actually-help";
+import { post as howIScopeFrontendWorkWhenEverythingIsUrgent } from "./how-i-scope-frontend-work-when-everything-is-urgent";
+import { post as howDevelopersShouldWritePortfolioCaseStudies } from "./how-developers-should-write-portfolio-case-studies";
 
 export const allPosts: BlogPost[] = [
+  codeReviewCommentsThatActuallyHelp,
+  howIScopeFrontendWorkWhenEverythingIsUrgent,
+  howDevelopersShouldWritePortfolioCaseStudies,
   seoForDevelopers,
   accessibilityFixes,
   gitaKarmaYogaModernWork,

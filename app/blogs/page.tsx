@@ -38,7 +38,7 @@ export default function BlogsPage() {
   const remaining = rest.slice(3);
 
   return (
-    <main className="min-h-dvh bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+    <main className="min-h-dvh bg-zinc-50 pb-28 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
       <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
         {/* Top Section: Featured + List */}
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
