@@ -9,8 +9,12 @@ import { post as gita10MinuteDailyPractice } from "./gita-10-minute-daily-practi
 import { post as codeReviewCommentsThatActuallyHelp } from "./code-review-comments-that-actually-help";
 import { post as howIScopeFrontendWorkWhenEverythingIsUrgent } from "./how-i-scope-frontend-work-when-everything-is-urgent";
 import { post as howDevelopersShouldWritePortfolioCaseStudies } from "./how-developers-should-write-portfolio-case-studies";
+import { post as engineeringDecisionDocsThatTeamsActuallyUse } from "./engineering-decision-docs-that-teams-actually-use";
+import { post as gitaDharmaVsPeoplePleasing } from "./gita-dharma-vs-people-pleasing";
 
 export const allPosts: BlogPost[] = [
+  engineeringDecisionDocsThatTeamsActuallyUse,
+  gitaDharmaVsPeoplePleasing,
   codeReviewCommentsThatActuallyHelp,
   howIScopeFrontendWorkWhenEverythingIsUrgent,
   howDevelopersShouldWritePortfolioCaseStudies,
