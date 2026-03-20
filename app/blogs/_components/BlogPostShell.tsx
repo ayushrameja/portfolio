@@ -46,6 +46,19 @@ export default function BlogPostShell({
               <p className="text-zinc-500">Software Engineer</p>
             </div>
           </div>
+
+          {post.coverImage && (
+            <div className="relative mt-10 aspect-[1200/630] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <Image
+                src={post.coverImage.src}
+                alt={post.coverImage.alt}
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 720px, 100vw"
+                priority
+              />
+            </div>
+          )}
         </header>
 
         <div
