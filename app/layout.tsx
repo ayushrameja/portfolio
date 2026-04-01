@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: "Ayush Rameja | Portfolio",
   description:
-    "Software Engineer at Quarks building fast, thoughtful web experiences",
+    "Full-stack engineer building scalable web platforms with React, Next.js, Node.js, and AWS. Based in Bangalore, India.",
 };
 
 export default function RootLayout({

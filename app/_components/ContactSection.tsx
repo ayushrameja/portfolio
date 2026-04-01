@@ -153,10 +153,38 @@ export default function ContactSection() {
 
                   <div className="mt-5 grid gap-3">
                     <Link
+                      href={LINKS.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
+                    >
+                      <span>Website</span>
+                      <span
+                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
+                        aria-hidden
+                      >
+                        ↗
+                      </span>
+                    </Link>
+                    <Link
                       href={`mailto:${LINKS.email}`}
                       className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
                     >
                       <span>Mail</span>
+                      <span
+                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
+                        aria-hidden
+                      >
+                        ↗
+                      </span>
+                    </Link>
+                    <Link
+                      href={`tel:${LINKS.phone}`}
+                      aria-label={`Call ${LINKS.phoneDisplay}`}
+                      title={LINKS.phoneDisplay}
+                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
+                    >
+                      <span>Phone</span>
                       <span
                         className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
                         aria-hidden
@@ -199,13 +227,13 @@ export default function ContactSection() {
                   <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">What I&apos;m Great At</h3>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <span className="rounded-full border border-fuchsia-500/25 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold text-fuchsia-800 dark:border-fuchsia-400/25 dark:bg-fuchsia-400/10 dark:text-fuchsia-100">
-                      Shipping UI polish
+                      Performance optimization
                     </span>
                     <span className="rounded-full border border-zinc-200/70 bg-white/40 px-3 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-200">
-                      Product-minded engineering
+                      System design
                     </span>
                     <span className="rounded-full border border-zinc-200/70 bg-white/40 px-3 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-200">
-                      Performance & DX
+                      Full-stack platforms
                     </span>
                   </div>
                 </div>

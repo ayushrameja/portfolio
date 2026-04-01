@@ -27,6 +27,7 @@ const Nav = () => {
   const activeHomeSection = useActiveSection(isHomeRoute);
   const isBlogsRoute = pathname === "/blogs" || pathname.startsWith("/blogs/");
   const isResumeRoute = pathname === "/resume";
+  const isExperienceRoute = pathname.startsWith("/experience");
 
   const showExternal = useAppStore((state) => state.showExternal);
   const currentRoute = useAppStore((state) => state.currentRoute);
@@ -52,7 +53,7 @@ const Nav = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (isBlogsRoute || isResumeRoute) {
+      if (isBlogsRoute || isResumeRoute || isExperienceRoute) {
         setShowExternal(false);
         return;
       }
@@ -66,13 +67,13 @@ const Nav = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isBlogsRoute, isResumeRoute, setShowExternal]);
+  }, [isBlogsRoute, isResumeRoute, isExperienceRoute, setShowExternal]);
 
   useEffect(() => {
-    if (isHomeRoute || isBlogsRoute || isResumeRoute) {
+    if (isHomeRoute || isBlogsRoute || isResumeRoute || isExperienceRoute) {
       setShowExternal(false);
     }
-  }, [isHomeRoute, isBlogsRoute, isResumeRoute, setShowExternal]);
+  }, [isHomeRoute, isBlogsRoute, isResumeRoute, isExperienceRoute, setShowExternal]);
 
   const linkVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -100,7 +101,7 @@ const Nav = () => {
   );
 
   const homeLinks = useMemo(
-    () => ["About", "Projects", "Contact"] as const,
+    () => ["About", "Experience", "Contact"] as const,
     [],
   );
 
@@ -131,14 +132,16 @@ const Nav = () => {
   const logoHref = useMemo(() => {
     if (isBlogsRoute) return "/blogs";
     if (isResumeRoute) return "/resume";
+    if (isExperienceRoute) return "/";
     return "/";
-  }, [isBlogsRoute, isResumeRoute]);
+  }, [isBlogsRoute, isResumeRoute, isExperienceRoute]);
 
   const logoLabel = useMemo(() => {
     if (isBlogsRoute) return "Blogs";
     if (isResumeRoute) return "Resume";
+    if (isExperienceRoute) return "Experience";
     return null;
-  }, [isBlogsRoute, isResumeRoute]);
+  }, [isBlogsRoute, isResumeRoute, isExperienceRoute]);
 
   return (
     <motion.nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] pt-10">
@@ -212,6 +215,7 @@ const Nav = () => {
           {showExternal &&
             !isBlogsRoute &&
             !isResumeRoute &&
+            !isExperienceRoute &&
             ["Blogs", "Resume"].map((externalLink: string, i: number) => (
               <motion.div
                 key={externalLink}

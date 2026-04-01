@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Section = "about" | "projects" | "contact";
+type Section = "about" | "experience" | "contact";
 
 export function useActiveSection(enabled: boolean): Section {
   const [activeSection, setActiveSection] = useState<Section>("about");
@@ -8,7 +8,7 @@ export function useActiveSection(enabled: boolean): Section {
   useEffect(() => {
     if (!enabled) return;
 
-    const sections = (["about", "projects", "contact"] as const)
+    const sections = (["about", "experience", "contact"] as const)
       .map((id) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
 
