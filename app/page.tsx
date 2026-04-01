@@ -1,7 +1,7 @@
 import Footer from "./_components/Footer";
 import HeroSection from "./_components/HeroSection";
 import ContactSection from "./_components/ContactSection";
-import ProjectsSection from "./_components/ProjectsSection";
+import ExperienceSection from "./_components/ExperienceSection";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
           <div className="h-px w-full bg-linear-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
         </div>
       </div>
-      <ProjectsSection />
+      <ExperienceSection />
       <ContactSection />
       <Footer />
     </main>

@@ -44,14 +44,14 @@ export default function HeroSection() {
           <motion.div variants={fadeInUp} className="w-full max-w-3xl">
             <div className="inline-flex flex-wrap items-center justify-center gap-2">
               <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-white/60 px-4 py-2 text-xs font-semibold tracking-widest text-zinc-700 backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200">
-                PRODUCT · UI · SYSTEMS
+                FULL-STACK · REACT · NEXT.JS · AWS
               </span>
             </div>
             <h1 className="mt-8 text-6xl font-semibold tracking-tight text-zinc-950 sm:text-7xl dark:text-zinc-50">
               Ayush Rameja
               <span className="relative mt-4 block text-2xl font-semibold tracking-tight sm:text-3xl">
                 <span className="bg-linear-to-r from-fuchsia-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent dark:from-fuchsia-300 dark:via-violet-300 dark:to-cyan-300">
-                  Software engineer
+                  Full-stack engineer
                 </span>{" "}
                 <span className="text-zinc-950 dark:text-zinc-50">
                   who ships end to end.
@@ -64,17 +64,18 @@ export default function HeroSection() {
             </h1>
 
             <p className="mt-6 text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-              I build web products across UI, APIs, and data. I try to keep the
-              code clean, the UX calm, and the systems boring in the best way.
+              4+ years building scalable web platforms and content-driven
+              systems. Focused on performance, clean architecture, and reliable
+              solutions across React, Next.js, Node.js, microservices, and AWS.
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <button
                 type="button"
-                onClick={() => scrollToTarget("projects", lenis as any)}
+                onClick={() => scrollToTarget("experience", lenis as any)}
                 className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-zinc-950 px-6 py-3 text-sm font-semibold text-zinc-50 shadow-[0_20px_65px_-45px_rgba(0,0,0,0.45)] transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/25 sm:w-auto dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
               >
-                See selected work
+                See experience
               </button>
               <button
                 type="button"
@@ -125,19 +126,26 @@ export default function HeroSection() {
                                 <p className="text-lg font-semibold text-zinc-50">
                                   Ayush Rameja
                                 </p>
-                                <p className="mt-1 text-sm text-zinc-200/90">
+                                <p className="mt-1 text-sm leading-snug text-zinc-200/90">
                                   <span className="font-semibold text-zinc-50">
-                                    Software Engineer
-                                  </span>{" "}
-                                  at{" "}
-                                  <Link
-                                    href={LINKS.quarks}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="font-semibold text-zinc-50 underline decoration-white/20 underline-offset-4 transition hover:decoration-white/50"
-                                  >
-                                    Quarks
-                                  </Link>
+                                    Senior Software Engineer
+                                  </span>
+                                  <br className="sm:hidden" aria-hidden />
+                                  <span className="hidden sm:inline"> · </span>
+                                  <span>Autodesk</span>
+                                  <span className="text-zinc-300/90">
+                                    {" "}
+                                    (via{" "}
+                                    <Link
+                                      href={LINKS.quarks}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-semibold text-zinc-50 underline decoration-white/20 underline-offset-4 transition hover:decoration-white/50"
+                                    >
+                                      Quarks
+                                    </Link>
+                                    )
+                                  </span>
                                 </p>
                               </div>
                             </div>
@@ -198,15 +206,15 @@ export default function HeroSection() {
                         <ul className="mt-4 grid gap-3 text-sm text-zinc-700 dark:text-zinc-200">
                           <li className="flex gap-3">
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-500/80 dark:bg-fuchsia-400/70" />
-                            Build clean, scalable frontends
+                            Performance, scalability, and real-world impact
                           </li>
                           <li className="flex gap-3">
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500/70 dark:bg-violet-400/60" />
-                            Ship APIs and services that hold up
+                            Event-driven systems with Redis and queues
                           </li>
                           <li className="flex gap-3">
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500/70 dark:bg-cyan-400/60" />
-                            Keep performance and DX honest
+                            Full-stack delivery from UI to microservices
                           </li>
                         </ul>
                       </div>
@@ -220,7 +228,7 @@ export default function HeroSection() {
           <motion.div variants={fadeInUp} className="mt-10">
             <button
               type="button"
-              onClick={() => scrollToTarget("projects", lenis as any)}
+              onClick={() => scrollToTarget("experience", lenis as any)}
               className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-zinc-200/70 bg-white/65 px-5 py-2.5 text-sm font-semibold text-zinc-800 backdrop-blur transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-200 dark:hover:bg-zinc-950/45"
             >
               Scroll

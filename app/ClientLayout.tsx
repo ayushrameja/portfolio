@@ -26,6 +26,8 @@ export default function ClientLayout({
       route = "Blogs";
     } else if (pathname.includes("/resume")) {
       route = "Resume";
+    } else if (pathname.includes("/experience")) {
+      route = "Experience";
     }
 
     setCurrentRoute(route);
