@@ -1,28 +1,54 @@
 import Link from "next/link";
 
 import type { Project } from "@/types/project";
+import { getExperienceTheme } from "@/lib/experienceThemes";
 import { experiencePath } from "@/utils/experienceData";
+
+const defaultShell =
+  "border border-zinc-200/70 bg-white/60 shadow-[0_22px_70px_-55px_rgba(0,0,0,0.22)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.26)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_22px_70px_-55px_rgba(0,0,0,0.7)] dark:hover:border-zinc-600/70 dark:hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.85)]";
+
+const defaultGlowA = "bg-fuchsia-500/12 blur-3xl dark:bg-fuchsia-400/10";
+const defaultGlowB = "bg-violet-500/10 blur-3xl dark:bg-violet-400/8";
+const defaultRoleChip =
+  "border border-fuchsia-500/25 bg-fuchsia-500/10 text-fuchsia-700 dark:border-fuchsia-400/30 dark:bg-fuchsia-400/10 dark:text-fuchsia-200";
+const defaultBullet = "bg-fuchsia-500 dark:bg-fuchsia-300";
+const defaultBadgeLinkRing = "focus-visible:ring-fuchsia-500/40";
 
 type ProjectCardProps = {
   project: Project;
   linkEmployerBadge?: boolean;
+  useEmployerTheme?: boolean;
 };
 
 export default function ProjectCard({
   project,
   linkEmployerBadge = true,
+  useEmployerTheme = false,
 }: ProjectCardProps) {
+  const et = useEmployerTheme ? getExperienceTheme(project.employerKey) : null;
+  const pc = et?.projectCard;
+
   const clientBadge = (
     <span className="rounded-full border border-zinc-200/70 bg-zinc-950/5 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-300">
       {project.client}
     </span>
   );
 
+  const badgeLinkClass = useEmployerTheme && et
+    ? `inline-flex rounded-full transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ${et.card.focusRing}`
+    : `inline-flex rounded-full transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 ${defaultBadgeLinkRing}`;
+
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-white/60 p-8 shadow-[0_22px_70px_-55px_rgba(0,0,0,0.22)] backdrop-blur transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.26)] dark:border-zinc-700/60 dark:bg-zinc-900/30 dark:shadow-[0_22px_70px_-55px_rgba(0,0,0,0.7)] dark:hover:border-zinc-600/70 dark:hover:shadow-[0_30px_90px_-60px_rgba(0,0,0,0.85)]">
+    <div
+      className={`group relative overflow-hidden rounded-3xl p-8 ${pc?.shell ?? defaultShell}`}
+    >
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-        <div className="absolute -right-28 -top-28 h-72 w-72 rounded-full bg-fuchsia-500/12 blur-3xl dark:bg-fuchsia-400/10" />
-        <div className="absolute -bottom-32 -left-28 h-72 w-72 rounded-full bg-violet-500/10 blur-3xl dark:bg-violet-400/8" />
+        <div
+          className={`absolute -right-28 -top-28 h-72 w-72 rounded-full ${pc?.glowA ?? defaultGlowA}`}
+        />
+        <div
+          className={`absolute -bottom-32 -left-28 h-72 w-72 rounded-full ${pc?.glowB ?? defaultGlowB}`}
+        />
       </div>
 
       <div className="relative grid gap-8 lg:grid-cols-12 lg:items-start">
@@ -30,16 +56,15 @@ export default function ProjectCard({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {linkEmployerBadge ? (
-                <Link
-                  href={experiencePath(project.employerKey)}
-                  className="inline-flex rounded-full transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/40"
-                >
+                <Link href={experiencePath(project.employerKey)} className={badgeLinkClass}>
                   {clientBadge}
                 </Link>
               ) : (
                 clientBadge
               )}
-              <span className="rounded-full border border-fuchsia-500/25 bg-fuchsia-500/10 px-3 py-1 text-xs font-medium text-fuchsia-700 dark:border-fuchsia-400/30 dark:bg-fuchsia-400/10 dark:text-fuchsia-200">
+              <span
+                className={`rounded-full border px-3 py-1 text-xs font-medium ${pc?.roleChip ?? defaultRoleChip}`}
+              >
                 {project.role}
               </span>
             </div>
@@ -90,7 +115,7 @@ export default function ProjectCard({
               <li key={index} className="flex gap-4">
                 <span
                   aria-hidden
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-500 dark:bg-fuchsia-300"
+                  className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${pc?.bullet ?? defaultBullet}`}
                 />
                 <span className="text-base leading-7 text-zinc-700 dark:text-zinc-200">
                   {point}

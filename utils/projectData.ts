@@ -64,6 +64,8 @@ export const projects: Project[] = [
     points: [
       "Led development of a scalable industrial monitoring system, reducing monitoring time by 40%.",
       "Improved API performance and data handling through microservices, MQTT integration, and optimized frontend state management.",
+      "Delivered from concept to production with iterative POCs, user testing cycles, and Docker-based containerized releases.",
+      "Built real-time performance views and operator workflows in React with Zustand for responsive industrial dashboards.",
     ],
     link: "",
   },
@@ -84,6 +86,8 @@ export const projects: Project[] = [
     points: [
       "Built a web-based industrial monitoring platform with real-time synchronization and multi-service backend architecture.",
       "Improved setup time, data operations, and reporting efficiency through OPCUA/FOCUS integrations and performance optimizations.",
+      "Reduced data lag with WebSocket synchronization and MQTT integration for reliable machine-to-cloud feedback loops.",
+      "Delivered production builds with Docker and Nexe, streamlining deployments and packaged executables for shop-floor installs.",
     ],
     link: "",
   },

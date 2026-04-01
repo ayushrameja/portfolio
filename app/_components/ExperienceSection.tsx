@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 import { scrollFadeUp } from "@/lib/animations";
 import TextReveal from "@/components/TextReveal";
+import { getExperienceTheme } from "@/lib/experienceThemes";
 import ExperienceCard from "./ExperienceCard";
 import {
   getOrderedExperiences,
@@ -47,6 +48,7 @@ export default function ExperienceSection() {
             >
               <ExperienceCard
                 exp={exp}
+                theme={getExperienceTheme(exp.slug)}
                 projectCount={getProjectsForEmployer(exp.slug).length}
               />
             </motion.div>
