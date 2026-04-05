@@ -143,6 +143,10 @@ const Nav = () => {
     return null;
   }, [isBlogsRoute, isResumeRoute, isExperienceRoute]);
 
+  if (isResumeRoute) {
+    return null;
+  }
+
   return (
     <motion.nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] pt-10">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
-import { startTransition, useEffect, useState } from "react";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
+import { startTransition, useEffect, useState } from 'react';
 
-import { LINKS } from "@/constants/links";
-import { useContactForm } from "@/hooks";
-import { scrollFadeUp } from "@/lib/animations";
-import TextReveal from "@/components/TextReveal";
+import { LINKS } from '@/constants/links';
+import { useContactForm } from '@/hooks';
+import { scrollFadeUp } from '@/lib/animations';
+import TextReveal from '@/components/TextReveal';
 
 function ContactFormSkeleton() {
   return (
@@ -95,126 +95,123 @@ export default function ContactSection() {
             <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-stretch">
               <div className="lg:col-span-7">
                 <div className="h-full rounded-3xl border border-zinc-200/70 bg-white/65 p-8 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.18)] backdrop-blur dark:border-white/10 dark:bg-zinc-950/35 dark:shadow-[0_24px_70px_-55px_rgba(0,0,0,0.85)]">
-                  {isSubmitted
-                    ? (
-                      <div className="flex h-full flex-col items-center justify-center text-center">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 shadow-[0_18px_50px_-38px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-950/45 dark:shadow-[0_18px_50px_-38px_rgba(0,0,0,0.85)]">
-                          <CheckCircle2 className="h-7 w-7 text-fuchsia-600 dark:text-fuchsia-300" />
-                        </div>
-                        <h3 className="mt-5 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-                          Message sent
-                        </h3>
-                        <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-200/85">
-                          {submittedName ? `Thanks, ${submittedName}. ` : null}
-                          I got your note and I&apos;ll reply soon.
-                        </p>
-                        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                          <button
-                            type="button"
-                            onClick={reset}
-                            className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
-                          >
-                            Send another
-                          </button>
+                  {isSubmitted ? (
+                    <div className="flex h-full flex-col items-center justify-center text-center">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 shadow-[0_18px_50px_-38px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-950/45 dark:shadow-[0_18px_50px_-38px_rgba(0,0,0,0.85)]">
+                        <CheckCircle2 className="h-7 w-7 text-fuchsia-600 dark:text-fuchsia-300" />
+                      </div>
+                      <h3 className="mt-5 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+                        Message sent
+                      </h3>
+                      <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-200/85">
+                        {submittedName ? `Thanks, ${submittedName}. ` : null}I
+                        got your note and I&apos;ll reply soon.
+                      </p>
+                      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <button
+                          type="button"
+                          onClick={reset}
+                          className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
+                        >
+                          Send another
+                        </button>
+                        <Link
+                          href={`mailto:${LINKS.email}`}
+                          className="inline-flex items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:hover:bg-zinc-950/55"
+                        >
+                          Email instead
+                        </Link>
+                      </div>
+                    </div>
+                  ) : formMounted ? (
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
+                        >
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={formState.name}
+                          onChange={(e) => updateField('name', e.target.value)}
+                          required
+                          placeholder="Your name"
+                          autoComplete="name"
+                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
+                        >
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formState.email}
+                          onChange={(e) => updateField('email', e.target.value)}
+                          required
+                          placeholder="you@domain.com"
+                          autoComplete="email"
+                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="message"
+                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
+                        >
+                          Message
+                        </label>
+                        <textarea
+                          name="message"
+                          id="message"
+                          value={formState.message}
+                          onChange={(e) =>
+                            updateField('message', e.target.value)
+                          }
+                          required
+                          placeholder="What are you building, and what do you need help with?"
+                          autoComplete="off"
+                          className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
+                        />
+                      </div>
+
+                      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
+                          Prefer email?{' '}
                           <Link
                             href={`mailto:${LINKS.email}`}
-                            className="inline-flex items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:hover:bg-zinc-950/55"
+                            className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
                           >
-                            Email instead
+                            {LINKS.email}
                           </Link>
-                        </div>
+                        </p>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting || isSubmitted}
+                          className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
+                        >
+                          {isSubmitting
+                            ? 'Sending...'
+                            : isSubmitted
+                              ? 'Sent!'
+                              : 'Send'}
+                        </button>
                       </div>
-                    )
-                    : formMounted
-                    ? (
-                      <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                          <label
-                            htmlFor="name"
-                            className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                          >
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formState.name}
-                            onChange={(e) =>
-                              updateField("name", e.target.value)}
-                            required
-                            placeholder="Your name"
-                            autoComplete="name"
-                            className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                          />
-                        </div>
-
-                        <div>
-                          <label
-                            htmlFor="email"
-                            className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                          >
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formState.email}
-                            onChange={(e) =>
-                              updateField("email", e.target.value)}
-                            required
-                            placeholder="you@domain.com"
-                            autoComplete="email"
-                            className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                          />
-                        </div>
-
-                        <div>
-                          <label
-                            htmlFor="message"
-                            className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                          >
-                            Message
-                          </label>
-                          <textarea
-                            name="message"
-                            id="message"
-                            value={formState.message}
-                            onChange={(e) =>
-                              updateField("message", e.target.value)}
-                            required
-                            placeholder="What are you building, and what do you need help with?"
-                            autoComplete="off"
-                            className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                          />
-                        </div>
-
-                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
-                            Prefer email?{" "}
-                            <Link
-                              href={`mailto:${LINKS.email}`}
-                              className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
-                            >
-                              {LINKS.email}
-                            </Link>
-                          </p>
-                          <button
-                            type="submit"
-                            disabled={isSubmitting || isSubmitted}
-                            className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
-                          >
-                            {isSubmitting
-                              ? "Sending..."
-                              : isSubmitted
-                              ? "Sent!"
-                              : "Send"}
-                          </button>
-                        </div>
-                      </form>
-                    )
-                    : <ContactFormSkeleton />}
+                    </form>
+                  ) : (
+                    <ContactFormSkeleton />
+                  )}
                 </div>
               </div>
 
