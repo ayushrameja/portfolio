@@ -1,8 +1,11 @@
 export const LINKS = {
-  email: 'ayushrameja@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/ayushrameja/',
-  github: 'https://github.com/ayushrameja',
-  quarks: 'https://www.qtsolv.com/',
+  email: "ayushrameja@gmail.com",
+  phone: "+919660853303",
+  phoneDisplay: "+91-9660853303",
+  website: "https://www.ayush.im",
+  linkedin: "https://www.linkedin.com/in/ayushrameja",
+  github: "https://github.com/ayushrameja",
+  quarks: "https://www.qtsolv.com/",
 } as const;
 
 export const RESUME = {
