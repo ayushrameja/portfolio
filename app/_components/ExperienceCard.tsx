@@ -34,7 +34,7 @@ export default function ExperienceCard({
       </div>
 
       <div className="relative flex flex-1 flex-col">
-        <ExperienceLogo theme={theme} className="mb-1" />
+        <ExperienceLogo theme={theme} variant="card" className="mb-1" />
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span
