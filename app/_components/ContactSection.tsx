@@ -74,7 +74,8 @@ export default function ContactSection() {
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-5">
-                      <div>
+                      {/* Browser extensions sometimes inject helper nodes/attrs into form fields before hydration. */}
+                      <div suppressHydrationWarning>
                         <label htmlFor="name" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
                           Name
                         </label>
@@ -86,11 +87,12 @@ export default function ContactSection() {
                           onChange={(e) => updateField("name", e.target.value)}
                           required
                           placeholder="Your name"
+                          suppressHydrationWarning
                           className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
                         />
                       </div>
 
-                      <div>
+                      <div suppressHydrationWarning>
                         <label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
                           Email
                         </label>
@@ -102,11 +104,12 @@ export default function ContactSection() {
                           onChange={(e) => updateField("email", e.target.value)}
                           required
                           placeholder="you@domain.com"
+                          suppressHydrationWarning
                           className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
                         />
                       </div>
 
-                      <div>
+                      <div suppressHydrationWarning>
                         <label htmlFor="message" className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
                           Message
                         </label>
@@ -117,6 +120,7 @@ export default function ContactSection() {
                           onChange={(e) => updateField("message", e.target.value)}
                           required
                           placeholder="What are you building, and what do you need help with?"
+                          suppressHydrationWarning
                           className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
                         />
                       </div>
