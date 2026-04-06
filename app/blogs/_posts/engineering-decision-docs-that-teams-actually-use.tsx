@@ -161,9 +161,5 @@ export const post: BlogPost = {
   publishedAt: "2026-03-20",
   tags: ["Engineering", "Communication", "Teams"],
   readingTime: "7 min",
-  coverImage: {
-    src: "/assets/blog/blog-decision-docs.svg",
-    alt: "Abstract cover art with branching lines and geometric forms representing engineering choices and structured decision-making.",
-  },
   Content,
 };

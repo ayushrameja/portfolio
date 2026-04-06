@@ -158,7 +158,11 @@ const Nav = () => {
         <MotionLink
           href={logoHref}
           className={`relative flex h-10 shrink-0 items-center overflow-hidden rounded-xl bg-zinc-50 ring-1 ring-inset ring-black/10 transition-all duration-300 dark:bg-zinc-900 dark:ring-zinc-700/60 ${
-            logoLabel ? "px-3" : "w-10 justify-center"
+            logoLabel
+              ? isExperienceRoute
+                ? "w-10 justify-center sm:w-auto sm:px-3"
+                : "px-3"
+              : "w-10 justify-center"
           }`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -171,7 +175,9 @@ const Nav = () => {
             <motion.div
               initial={{ opacity: 0, x: -5 }}
               animate={{ opacity: 1, x: 0 }}
-              className="ml-2 flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+              className={`ml-2 items-center gap-2 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100 ${
+                isExperienceRoute ? "hidden sm:flex" : "flex"
+              }`}
             >
               <span className="text-zinc-400">·</span>
               <span>{logoLabel}</span>
@@ -179,9 +185,9 @@ const Nav = () => {
           )}
         </MotionLink>
         <div className="flex items-center gap-0.5 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
-          <div className="flex items-center gap-0.5">
-            {currentRoute === "Home"
-              ? homeLinks.map((link, i) => (
+          {currentRoute === "Home" ? (
+            <div className="flex items-center gap-0.5">
+              {homeLinks.map((link, i) => (
                 <motion.button
                   key={link}
                   type="button"
@@ -199,21 +205,45 @@ const Nav = () => {
                 >
                   <StaggeredText text={link} />
                 </motion.button>
-              ))
-              : (navLinks ?? []).map((link, i) => (
-                <MotionLink
-                  key={link.label}
-                  custom={i}
-                  initial="hidden"
-                  animate="visible"
-                  variants={linkVariants}
-                  className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
-                  href={link.href}
-                >
-                  <StaggeredText text={link.label} />
-                </MotionLink>
               ))}
-          </div>
+            </div>
+          ) : (
+            <>
+              {isExperienceRoute && (
+                <div className="flex items-center gap-0.5 sm:hidden">
+                  <MotionLink
+                    custom={0}
+                    initial="hidden"
+                    animate="visible"
+                    variants={linkVariants}
+                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+                    href="/"
+                  >
+                    <StaggeredText text="Back to Portfolio" />
+                  </MotionLink>
+                </div>
+              )}
+              <div
+                className={`items-center gap-0.5 ${
+                  isExperienceRoute ? "hidden sm:flex" : "flex"
+                }`}
+              >
+                {(navLinks ?? []).map((link, i) => (
+                  <MotionLink
+                    key={link.label}
+                    custom={i}
+                    initial="hidden"
+                    animate="visible"
+                    variants={linkVariants}
+                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
+                    href={link.href}
+                  >
+                    <StaggeredText text={link.label} />
+                  </MotionLink>
+                ))}
+              </div>
+            </>
+          )}
         </div>
         <AnimatePresence initial={false}>
           {showExternal &&

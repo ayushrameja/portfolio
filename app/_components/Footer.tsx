@@ -10,7 +10,7 @@ export default function Footer() {
             {`© ${new Date().getFullYear()} Ayush Rameja. All rights reserved.`}
           </FooterReveal>
           <FooterReveal delay={0.08} className="text-zinc-500 dark:text-zinc-400">
-            Code licensed under Apache License 2.0.
+            Made with love, late nights, and unreasonable attention to detail.
           </FooterReveal>
         </div>
       </div>

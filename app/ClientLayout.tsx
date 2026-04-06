@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, Suspense } from "react";
+import { useEffect, useLayoutEffect, useRef, Suspense } from "react";
 
 import Nav from "@/components/Nav";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -19,6 +19,10 @@ export default function ClientLayout({
   const hasMounted = useRef(false);
   const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
   const setShowExternal = useAppStore((state) => state.setShowExternal);
+
+  useEffect(() => {
+    console.log("Made with love by Ayush Rameja & Codex");
+  }, []);
 
   useLayoutEffect(() => {
     let route = "Home";

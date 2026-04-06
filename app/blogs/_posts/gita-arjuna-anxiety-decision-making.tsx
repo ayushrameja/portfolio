@@ -58,9 +58,5 @@ export const post: BlogPost = {
   publishedAt: "2026-02-02",
   tags: ["Bhagavad Gita","Dharma","Anxiety","Decision Making"],
   readingTime: "12 min",
-  coverImage: {
-    src: "/assets/blog/gita-arjuna.svg",
-    alt: "Abstract cover art with a split horizon and converging paths, symbolizing difficult choices.",
-  },
   Content,
 };

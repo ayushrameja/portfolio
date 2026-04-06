@@ -11,8 +11,10 @@ import { post as howIScopeFrontendWorkWhenEverythingIsUrgent } from './how-i-sco
 import { post as howDevelopersShouldWritePortfolioCaseStudies } from './how-developers-should-write-portfolio-case-studies';
 import { post as engineeringDecisionDocsThatTeamsActuallyUse } from './engineering-decision-docs-that-teams-actually-use';
 import { post as gitaDharmaVsPeoplePleasing } from './gita-dharma-vs-people-pleasing';
+import { post as howToReviewAgentWrittenPrs } from './how-to-review-agent-written-prs';
 
 export const allPosts: BlogPost[] = [
+  howToReviewAgentWrittenPrs,
   engineeringDecisionDocsThatTeamsActuallyUse,
   gitaDharmaVsPeoplePleasing,
   codeReviewCommentsThatActuallyHelp,

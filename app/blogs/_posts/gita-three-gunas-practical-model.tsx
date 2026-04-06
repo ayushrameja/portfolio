@@ -77,9 +77,5 @@ export const post: BlogPost = {
   publishedAt: "2026-02-04",
   tags: ["Bhagavad Gita","Gunas","Habits","Mental Models"],
   readingTime: "11 min",
-  coverImage: {
-    src: "/assets/blog/gita-gunas.svg",
-    alt: "Abstract cover art with three overlapping gradients representing clarity, agitation, and inertia.",
-  },
   Content,
 };

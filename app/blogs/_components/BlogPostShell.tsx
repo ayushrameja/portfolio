@@ -1,7 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { BlogPost } from "@/types/blog";
-import profile from "@/public/assets/image/profile.png";
 import BlogPostHeader from "./BlogPostHeader";
 
 export default function BlogPostShell({
@@ -37,28 +35,12 @@ export default function BlogPostShell({
             {post.description}
           </p>
 
-          <div className="mt-8 flex items-center gap-3 border-t border-zinc-100 pt-8 dark:border-zinc-900">
-            <div className="relative h-10 w-10 overflow-hidden rounded-full bg-zinc-100 ring-1 ring-inset ring-zinc-900/10 dark:bg-zinc-800 dark:ring-white/10">
-              <Image src={profile} alt="Ayush Rameja" fill className="object-cover" sizes="40px" priority />
-            </div>
+          <div className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-900">
             <div className="text-sm">
               <p className="font-bold text-zinc-900 dark:text-zinc-100">Ayush Rameja</p>
               <p className="text-zinc-500">Software Engineer</p>
             </div>
           </div>
-
-          {post.coverImage && (
-            <div className="relative mt-10 aspect-[1200/630] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <Image
-                src={post.coverImage.src}
-                alt={post.coverImage.alt}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 720px, 100vw"
-                priority
-              />
-            </div>
-          )}
         </header>
 
         <div

@@ -60,10 +60,14 @@
   --storm-scale: 1.015;
   --storm-rise: 14px;
   --storm-duration: 1000ms;
+  --selection-bg: rgba(245, 158, 11, 0.32);
+  --selection-fg: #18181b;
 }
 
 html.dark {
   color-scheme: dark;
+  --selection-bg: rgba(251, 191, 36, 0.55);
+  --selection-fg: #09090b;
 }
 
 * {
@@ -72,6 +76,18 @@ html.dark {
 
 .dark * {
   scrollbar-color: rgba(63, 63, 70, 0.6) transparent;
+}
+
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-fg);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-fg);
+  text-shadow: none;
 }
 
 html[data-storming="theme"] #app-shell {
