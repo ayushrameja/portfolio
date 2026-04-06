@@ -68,9 +68,5 @@ export const post: BlogPost = {
   publishedAt: "2026-02-05",
   tags: ["Bhagavad Gita","Karma Yoga","Work","Mindset"],
   readingTime: "10 min",
-  coverImage: {
-    src: "/assets/blog/gita-karma-yoga.svg",
-    alt: "Abstract cover art with a luminous gradient and wheel-like geometry symbolizing action and discipline.",
-  },
   Content,
 };

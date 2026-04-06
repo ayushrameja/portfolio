@@ -60,9 +60,5 @@ export const post: BlogPost = {
   publishedAt: "2026-02-03",
   tags: ["Bhagavad Gita","Equanimity","Emotions","Mindset"],
   readingTime: "9 min",
-  coverImage: {
-    src: "/assets/blog/gita-detachment.svg",
-    alt: "Abstract cover art with calm waves and a centered light, symbolizing steadiness amid change.",
-  },
   Content,
 };

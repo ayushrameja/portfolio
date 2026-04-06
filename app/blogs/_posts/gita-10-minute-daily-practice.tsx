@@ -52,9 +52,5 @@ export const post: BlogPost = {
   publishedAt: "2026-02-01",
   tags: ["Bhagavad Gita","Practice","Meditation","Habits"],
   readingTime: "8 min",
-  coverImage: {
-    src: "/assets/blog/gita-practice.svg",
-    alt: "Abstract cover art with a circular clock-like motif and soft gradients, symbolizing daily practice.",
-  },
   Content,
 };

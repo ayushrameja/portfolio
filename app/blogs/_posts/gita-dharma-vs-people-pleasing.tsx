@@ -150,9 +150,5 @@ export const post: BlogPost = {
   publishedAt: "2026-03-21",
   tags: ["Bhagavad Gita", "Dharma", "Boundaries", "Mindset"],
   readingTime: "9 min",
-  coverImage: {
-    src: "/assets/blog/gita-dharma.svg",
-    alt: "Abstract cover art with luminous paths and centered geometry symbolizing dharma, clarity, and grounded boundaries.",
-  },
   Content,
 };
