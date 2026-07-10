@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 
 export type BlogPost = {
+  desk: "engineering" | "life";
   slug: string;
   title: string;
   description: string;

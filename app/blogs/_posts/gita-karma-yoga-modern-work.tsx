@@ -62,6 +62,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-karma-yoga-modern-work",
   title: "Karma Yoga for Modern Work (Without Becoming a Doormat)",
   description: "A pragmatic take on “action without attachment”: own the work, not the outcomes—or other people’s chaos.",

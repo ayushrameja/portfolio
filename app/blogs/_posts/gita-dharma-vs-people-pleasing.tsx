@@ -143,6 +143,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-dharma-vs-people-pleasing",
   title: "Dharma vs People-Pleasing in Modern Life",
   description:

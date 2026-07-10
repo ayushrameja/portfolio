@@ -52,6 +52,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-arjuna-anxiety-decision-making",
   title: "Arjuna’s Anxiety: Decision-Making When Every Option Feels Wrong",
   description: "A grounded framework for tough choices: values, roles, consequences, and the smallest next action.",

@@ -121,6 +121,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "how-to-review-agent-written-prs",
   title: "How to Review Agent-Written PRs Without Lowering the Bar",
   description:

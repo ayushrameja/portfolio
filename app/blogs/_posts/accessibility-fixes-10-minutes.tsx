@@ -79,6 +79,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "accessibility-fixes-10-minutes",
   title: "Accessibility Fixes I Made That Took 10 Minutes and Helped Real People",
   description: "High-impact accessibility tweaks you can ship fast: focus states, labels, semantics, contrast, and motion.",

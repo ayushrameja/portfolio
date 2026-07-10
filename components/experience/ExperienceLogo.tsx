@@ -1,58 +1,39 @@
 import Image from "next/image";
 
-import type { ExperienceTheme } from "@/lib/experienceThemes";
+import type { EmployerSlug } from "@/types/project";
+
+const LOGOS: Record<EmployerSlug, { src: string; alt: string }> = {
+  autodesk: { src: "/assets/experience/autodesk.svg", alt: "Autodesk" },
+  siemens: { src: "/assets/experience/siemens.svg", alt: "Siemens" },
+  accenture: { src: "/assets/experience/accenture.svg", alt: "Accenture" },
+};
 
 type ExperienceLogoProps = {
-  theme: ExperienceTheme;
+  slug: EmployerSlug;
   className?: string;
   priority?: boolean;
-  variant?: "hero" | "card";
+  variant?: "hero" | "index";
 };
 
 export default function ExperienceLogo({
-  theme,
+  slug,
   className = "",
   priority = false,
   variant = "hero",
 }: ExperienceLogoProps) {
-  const isSiemensWordmark = theme.slug === "siemens";
-  const isCardVariant = variant === "card";
-
-  const logoSizing = isSiemensWordmark
-    ? isCardVariant
-      ? {
-          wrapperClassName:
-            "min-h-[2.5rem] max-w-[min(100%,240px)] sm:min-h-[2.75rem]",
-          width: 320,
-          height: 68,
-          imageClassName:
-            "h-8 w-auto max-h-8 object-contain object-left sm:h-9 sm:max-h-9 dark:brightness-0 dark:invert",
-        }
-      : {
-          wrapperClassName:
-            "min-h-[3rem] max-w-[min(100%,340px)] sm:min-h-[3.5rem]",
-          width: 360,
-          height: 76,
-          imageClassName:
-            "h-11 w-auto max-h-11 object-contain object-left sm:h-12 sm:max-h-12 dark:brightness-0 dark:invert",
-        }
-    : {
-        wrapperClassName: "h-11 max-w-[220px]",
-        width: 220,
-        height: 56,
-        imageClassName:
-          "h-10 w-auto max-h-10 object-contain object-left dark:brightness-0 dark:invert",
-      };
+  const logo = LOGOS[slug];
+  const isWordmark = slug === "siemens";
+  const heightClass = variant === "hero" ? "h-12 sm:h-16" : "h-8 sm:h-10";
 
   return (
-    <div className={`relative w-full ${logoSizing.wrapperClassName} ${className}`}>
+    <div className={`${heightClass} ${isWordmark ? "w-48 sm:w-60" : "w-28 sm:w-36"} ${className}`}>
       <Image
-        src={theme.logoSrc}
-        alt={theme.logoAlt}
-        width={logoSizing.width}
-        height={logoSizing.height}
+        src={logo.src}
+        alt={logo.alt}
+        width={isWordmark ? 360 : 220}
+        height={isWordmark ? 76 : 56}
         priority={priority}
-        className={logoSizing.imageClassName}
+        className="h-full w-full object-contain object-left brightness-0 dark:invert"
       />
     </div>
   );

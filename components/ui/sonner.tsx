@@ -24,16 +24,15 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "rounded-xl border border-zinc-200/70 bg-white text-zinc-900 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-800 dark:text-zinc-100 dark:shadow-[0_20px_60px_-40px_rgba(0,0,0,0.8)]",
+            "rounded-[4px] border border-[var(--rule-strong)] bg-[var(--paper-raised)] text-[var(--ink)] shadow-[0_18px_40px_rgba(0,0,0,0.16)]",
           title: "text-sm font-semibold",
-          description: "text-sm text-zinc-600 dark:text-zinc-300",
+          description: "text-sm text-[var(--muted)]",
           actionButton:
-            "rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900",
+            "rounded-[3px] bg-[var(--ink)] px-3 py-1.5 text-sm font-semibold text-[var(--paper)]",
           cancelButton:
-            "rounded-lg bg-zinc-100 px-3 py-1.5 text-sm font-semibold text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50",
+            "rounded-[3px] border border-[var(--rule)] bg-[var(--paper)] px-3 py-1.5 text-sm font-semibold text-[var(--ink)]",
         },
       }}
     />
   );
 }
-

@@ -112,6 +112,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "code-review-comments-that-actually-help",
   title: "Code Review Comments That Actually Improve the PR",
   description: "A practical rubric for reviewing code without drowning teams in noise, nitpicks, and fake rigor.",

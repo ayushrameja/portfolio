@@ -71,6 +71,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-three-gunas-practical-model",
   title: "The Three Gunas: A Practical Model for Your Mood, Energy, and Choices",
   description: "Sattva, rajas, tamas—clarity, agitation, inertia. A no-nonsense way to diagnose your state and choose the right intervention.",

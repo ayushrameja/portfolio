@@ -101,6 +101,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "seo-for-developers-nextjs-checklist",
   title: "SEO for Developers: Practical Checklist for Next.js",
   description: "A pragmatic SEO checklist for Next.js App Router: metadata, sitemaps, structured data, and performance.",

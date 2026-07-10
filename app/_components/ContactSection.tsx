@@ -1,34 +1,25 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { CheckCircle2 } from 'lucide-react';
-import { startTransition, useEffect, useState } from 'react';
+import { motion } from "framer-motion";
+import { ArrowUpRight, CheckCircle2, Send } from "lucide-react";
+import Link from "next/link";
+import { startTransition, useEffect, useState } from "react";
 
-import { LINKS } from '@/constants/links';
-import { useContactForm } from '@/hooks';
-import { scrollFadeUp } from '@/lib/animations';
-import TextReveal from '@/components/TextReveal';
+import { LINKS } from "@/constants/links";
+import { useContactForm } from "@/hooks";
 
-function ContactFormSkeleton() {
+const contactLinks = [
+  { label: "Email", value: LINKS.email, href: `mailto:${LINKS.email}` },
+  { label: "LinkedIn", value: "ayushrameja", href: LINKS.linkedin },
+  { label: "GitHub", value: "ayushrameja", href: LINKS.github },
+] as const;
+
+function FormSkeleton() {
   return (
-    <div className="space-y-5" aria-hidden>
-      <div>
-        <div className="h-4 w-14 rounded bg-zinc-200/80 dark:bg-zinc-700/50" />
-        <div className="mt-2 h-[52px] w-full rounded-2xl bg-zinc-200/50 dark:bg-zinc-800/45" />
-      </div>
-      <div>
-        <div className="h-4 w-12 rounded bg-zinc-200/80 dark:bg-zinc-700/50" />
-        <div className="mt-2 h-[52px] w-full rounded-2xl bg-zinc-200/50 dark:bg-zinc-800/45" />
-      </div>
-      <div>
-        <div className="h-4 w-16 rounded bg-zinc-200/80 dark:bg-zinc-700/50" />
-        <div className="mt-2 h-36 w-full rounded-2xl bg-zinc-200/50 dark:bg-zinc-800/45" />
-      </div>
-      <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
-        <div className="h-4 w-48 max-w-full rounded bg-zinc-200/50 dark:bg-zinc-800/45" />
-        <div className="h-11 w-full rounded-2xl bg-zinc-200/50 sm:w-24 dark:bg-zinc-800/45" />
-      </div>
+    <div className="space-y-8" aria-hidden>
+      <div className="h-12 animate-pulse border-b journal-rule" />
+      <div className="h-12 animate-pulse border-b journal-rule" />
+      <div className="h-32 animate-pulse border-b journal-rule" />
     </div>
   );
 }
@@ -46,264 +37,138 @@ export default function ContactSection() {
   const [formMounted, setFormMounted] = useState(false);
 
   useEffect(() => {
-    startTransition(() => {
-      setFormMounted(true);
-    });
+    startTransition(() => setFormMounted(true));
   }, []);
 
   return (
-    <section id="contact" className="px-6 py-20">
-      <div className="mx-auto w-full max-w-7xl">
-        <motion.div
-          className="relative overflow-hidden rounded-3xl border border-zinc-200/70 bg-cover bg-center shadow-[0_28px_90px_-70px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:shadow-[0_28px_90px_-70px_rgba(0,0,0,0.9)]"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          variants={scrollFadeUp}
-        >
-          <div className="absolute inset-0 bg-linear-to-tr from-white/92 via-white/70 to-white/40 dark:from-zinc-950/90 dark:via-zinc-950/60 dark:to-zinc-950/25" />
-          <div className="pointer-events-none absolute inset-0 opacity-70 dark:opacity-70">
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-500/16 blur-3xl dark:bg-fuchsia-400/12" />
-            <div className="absolute -bottom-28 -left-20 h-72 w-72 rounded-full bg-violet-500/14 blur-3xl dark:bg-violet-400/10" />
+    <section id="correspondence" className="relative px-4 py-16 sm:px-8 sm:py-24">
+      <motion.div
+        className="mx-auto w-full max-w-[88rem]"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.12 }}
+        transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="grid gap-7 border-b journal-rule pb-9 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-4">
+            <p className="journal-kicker">04 / Correspondence</p>
           </div>
+          <div className="lg:col-span-8">
+            <h2 className="max-w-[16ch] font-serif text-5xl leading-none sm:text-6xl lg:text-7xl">
+              Have a difficult system to make simpler? <span className="text-[var(--vermilion)]">Write to me.</span>
+            </h2>
+          </div>
+        </div>
 
-          <div className="relative p-8 md:p-10">
-            <div className="max-w-2xl">
-              <TextReveal
-                as="p"
-                className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-300/80"
-              >
-                CONTACT
-              </TextReveal>
-              <TextReveal
-                as="h2"
-                delay={0.08}
-                className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50"
-              >
-                Ping me let&apos;s build something
-              </TextReveal>
-              <TextReveal
-                as="p"
-                delay={0.15}
-                className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-200/85"
-              >
-                Short message is perfect. I usually reply fast (assuming Slack
-                isn&apos;t on fire).
-              </TextReveal>
+        <div className="grid gap-12 py-10 lg:grid-cols-12 lg:gap-0 lg:py-14">
+          <aside className="lg:col-span-4 lg:border-r lg:pr-10 journal-rule">
+            <p className="max-w-sm text-base leading-7 text-[var(--muted)]">
+              A short note is perfect. Tell me what you are building, what is currently stubborn, and where you think I can help.
+            </p>
+
+            <div className="mt-9 border-t journal-rule">
+              {contactLinks.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  className="group flex items-center justify-between gap-5 border-b journal-rule py-4"
+                >
+                  <div>
+                    <p className="font-mono text-[10px] uppercase text-[var(--faint)]">{item.label}</p>
+                    <p className="mt-1 text-sm font-semibold group-hover:text-[var(--cobalt)]">{item.value}</p>
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-[var(--muted)] transition group-hover:text-[var(--cobalt)]" />
+                </Link>
+              ))}
             </div>
 
-            <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-stretch">
-              <div className="lg:col-span-7">
-                <div className="h-full rounded-3xl border border-zinc-200/70 bg-white/65 p-8 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.18)] backdrop-blur dark:border-white/10 dark:bg-zinc-950/35 dark:shadow-[0_24px_70px_-55px_rgba(0,0,0,0.85)]">
-                  {isSubmitted ? (
-                    <div className="flex h-full flex-col items-center justify-center text-center">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 shadow-[0_18px_50px_-38px_rgba(0,0,0,0.25)] dark:border-zinc-700/60 dark:bg-zinc-950/45 dark:shadow-[0_18px_50px_-38px_rgba(0,0,0,0.85)]">
-                        <CheckCircle2 className="h-7 w-7 text-fuchsia-600 dark:text-fuchsia-300" />
-                      </div>
-                      <h3 className="mt-5 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-                        Message sent
-                      </h3>
-                      <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-200/85">
-                        {submittedName ? `Thanks, ${submittedName}. ` : null}I
-                        got your note and I&apos;ll reply soon.
-                      </p>
-                      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                        <button
-                          type="button"
-                          onClick={reset}
-                          className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
-                        >
-                          Send another
-                        </button>
-                        <Link
-                          href={`mailto:${LINKS.email}`}
-                          className="inline-flex items-center justify-center rounded-2xl border border-zinc-200/70 bg-white/70 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-white dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:hover:bg-zinc-950/55"
-                        >
-                          Email instead
-                        </Link>
-                      </div>
-                    </div>
-                  ) : formMounted ? (
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div>
-                        <label
-                          htmlFor="name"
-                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                        >
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formState.name}
-                          onChange={(e) => updateField('name', e.target.value)}
-                          required
-                          placeholder="Your name"
-                          autoComplete="name"
-                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
+            <p className="mt-8 font-serif text-2xl leading-snug">
+              No Jira ticket required. A surprisingly humane workflow.
+            </p>
+          </aside>
 
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formState.email}
-                          onChange={(e) => updateField('email', e.target.value)}
-                          required
-                          placeholder="you@domain.com"
-                          autoComplete="email"
-                          className="mt-2 w-full rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="message"
-                          className="text-sm font-medium text-zinc-700 dark:text-zinc-200"
-                        >
-                          Message
-                        </label>
-                        <textarea
-                          name="message"
-                          id="message"
-                          value={formState.message}
-                          onChange={(e) =>
-                            updateField('message', e.target.value)
-                          }
-                          required
-                          placeholder="What are you building, and what do you need help with?"
-                          autoComplete="off"
-                          className="mt-2 h-36 w-full resize-none rounded-2xl border border-zinc-200/70 bg-white/70 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-fuchsia-500/60 focus:ring-2 focus:ring-fuchsia-500/15 dark:border-zinc-700/60 dark:bg-zinc-950/35 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-fuchsia-400/60 dark:focus:ring-fuchsia-400/20"
-                        />
-                      </div>
-
-                      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-sm text-zinc-600 dark:text-zinc-300/80">
-                          Prefer email?{' '}
-                          <Link
-                            href={`mailto:${LINKS.email}`}
-                            className="font-semibold text-zinc-950 underline decoration-zinc-900/15 underline-offset-4 transition hover:decoration-zinc-900/35 dark:text-zinc-50 dark:decoration-white/20 dark:hover:decoration-white/50"
-                          >
-                            {LINKS.email}
-                          </Link>
-                        </p>
-                        <button
-                          type="submit"
-                          disabled={isSubmitting || isSubmitted}
-                          className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_55px_-38px_rgba(0,0,0,0.45)] transition enabled:cursor-pointer enabled:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/30 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-[0_18px_55px_-38px_rgba(0,0,0,0.8)] dark:enabled:hover:bg-white dark:focus-visible:ring-fuchsia-400/30"
-                        >
-                          {isSubmitting
-                            ? 'Sending...'
-                            : isSubmitted
-                              ? 'Sent!'
-                              : 'Send'}
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <ContactFormSkeleton />
-                  )}
-                </div>
+          <div className="lg:col-span-8 lg:pl-12">
+            {isSubmitted ? (
+              <div className="flex min-h-[28rem] flex-col justify-center border-y journal-rule py-12">
+                <CheckCircle2 className="h-9 w-9 text-[var(--cobalt)]" />
+                <h3 className="mt-6 font-serif text-4xl sm:text-5xl">Message received.</h3>
+                <p className="mt-4 max-w-lg text-base leading-7 text-[var(--muted)]">
+                  {submittedName ? `Thank you, ${submittedName}. ` : "Thank you. "}
+                  Your note made it through and I will reply soon.
+                </p>
+                <button type="button" onClick={reset} className="journal-button-secondary mt-8 w-fit cursor-pointer">
+                  Send another note
+                </button>
               </div>
+            ) : formMounted ? (
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid gap-8 sm:grid-cols-2">
+                  <label className="block font-mono text-[10px] uppercase text-[var(--muted)]" htmlFor="name">
+                    01 / Your name
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      autoComplete="name"
+                      value={formState.name}
+                      onChange={(event) => updateField("name", event.target.value)}
+                      placeholder="Name"
+                      className="journal-input mt-2 font-sans text-base normal-case"
+                    />
+                  </label>
+                  <label className="block font-mono text-[10px] uppercase text-[var(--muted)]" htmlFor="email">
+                    02 / Your email
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={formState.email}
+                      onChange={(event) => updateField("email", event.target.value)}
+                      placeholder="you@domain.com"
+                      className="journal-input mt-2 font-sans text-base normal-case"
+                    />
+                  </label>
+                </div>
 
-              <div className="grid gap-8 lg:col-span-5">
-                <div className="rounded-3xl border border-zinc-200/70 bg-white/65 p-8 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.16)] backdrop-blur dark:border-white/10 dark:bg-zinc-950/35 dark:shadow-[0_24px_70px_-55px_rgba(0,0,0,0.8)]">
-                  <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
-                    Links
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300/85">
-                    Stalk professionally. Please do not open a Jira ticket about
-                    my personality.
+                <label className="block font-mono text-[10px] uppercase text-[var(--muted)]" htmlFor="message">
+                  03 / The note
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    autoComplete="off"
+                    value={formState.message}
+                    onChange={(event) => updateField("message", event.target.value)}
+                    placeholder="What are you building, and where do you need help?"
+                    className="journal-input mt-2 h-36 resize-none font-sans text-base normal-case"
+                  />
+                </label>
+
+                <div className="flex flex-col gap-5 border-t journal-rule pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="font-mono text-[10px] leading-5 text-[var(--muted)]">
+                    Prefer direct email? {LINKS.email}
                   </p>
-
-                  <div className="mt-5 grid gap-3">
-                    <Link
-                      href={`mailto:${LINKS.email}`}
-                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
-                    >
-                      <span>Mail</span>
-                      <span
-                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
-                        aria-hidden
-                      >
-                        ↗
-                      </span>
-                    </Link>
-                    <Link
-                      href={`tel:${LINKS.phone}`}
-                      aria-label={`Call ${LINKS.phoneDisplay}`}
-                      title={LINKS.phoneDisplay}
-                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
-                    >
-                      <span>Phone</span>
-                      <span
-                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
-                        aria-hidden
-                      >
-                        ↗
-                      </span>
-                    </Link>
-                    <Link
-                      href={LINKS.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
-                    >
-                      <span>LinkedIn</span>
-                      <span
-                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
-                        aria-hidden
-                      >
-                        ↗
-                      </span>
-                    </Link>
-                    <Link
-                      href={LINKS.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center justify-between rounded-2xl border border-zinc-200/70 bg-zinc-950/5 px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-950/8 dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
-                    >
-                      <span>GitHub</span>
-                      <span
-                        className="text-zinc-500 transition group-hover:text-zinc-800 dark:text-zinc-400 dark:group-hover:text-zinc-200"
-                        aria-hidden
-                      >
-                        ↗
-                      </span>
-                    </Link>
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="journal-button w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-55 sm:w-auto"
+                  >
+                    {isSubmitting ? "Sending note..." : "Send correspondence"}
+                    <Send className="h-4 w-4" />
+                  </button>
                 </div>
-
-                <div className="rounded-3xl border border-zinc-200/70 bg-white/65 p-8 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.16)] backdrop-blur dark:border-white/10 dark:bg-zinc-950/35 dark:shadow-[0_24px_70px_-55px_rgba(0,0,0,0.8)]">
-                  <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
-                    What I&apos;m Great At
-                  </h3>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-fuchsia-500/25 bg-fuchsia-500/10 px-3 py-1 text-xs font-semibold text-fuchsia-800 dark:border-fuchsia-400/25 dark:bg-fuchsia-400/10 dark:text-fuchsia-100">
-                      Performance optimization
-                    </span>
-                    <span className="rounded-full border border-zinc-200/70 bg-white/40 px-3 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-200">
-                      System design
-                    </span>
-                    <span className="rounded-full border border-zinc-200/70 bg-white/40 px-3 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-700/60 dark:bg-zinc-950/25 dark:text-zinc-200">
-                      Full-stack platforms
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </form>
+            ) : (
+              <FormSkeleton />
+            )}
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

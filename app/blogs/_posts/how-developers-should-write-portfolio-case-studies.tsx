@@ -127,6 +127,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "how-developers-should-write-portfolio-case-studies",
   title: "How Developers Should Write Portfolio Case Studies",
   description: "A sharper way to write case studies that show judgment, constraints, trade-offs, and outcomes people can trust.",
