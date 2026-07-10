@@ -1,15 +1,19 @@
-export type StormCause = "load" | "route" | "theme";
+export type JournalCause = "load" | "route" | "theme";
 export type ThemeMode = "light" | "dark";
 
-export type StormTriggerDetail = {
-  cause?: StormCause;
+export type JournalTriggerDetail = {
+  cause?: JournalCause;
   theme?: ThemeMode;
+  number?: string;
+  label?: string;
 };
 
-export const STORM_TRIGGER_EVENT = "storm:trigger";
+export const JOURNAL_TRIGGER_EVENT = "journal:transition";
 export const THEME_CHANGE_EVENT = "theme-change";
 
-export const triggerStorm = (detail: StormTriggerDetail = {}) => {
+export const triggerJournalTransition = (detail: JournalTriggerDetail = {}) => {
   if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent<StormTriggerDetail>(STORM_TRIGGER_EVENT, { detail }));
+  window.dispatchEvent(
+    new CustomEvent<JournalTriggerDetail>(JOURNAL_TRIGGER_EVENT, { detail }),
+  );
 };

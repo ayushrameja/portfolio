@@ -2,32 +2,16 @@
 
 import { useEffect } from "react";
 
-export default function ErrorPage({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
+export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => console.error(error), [error]);
 
   return (
-    <main className="flex min-h-dvh items-center justify-center px-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
-          Something went wrong
-        </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-          An unexpected error occurred.
-        </p>
-        <button
-          onClick={reset}
-          className="mt-6 inline-flex items-center justify-center rounded-xl bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-zinc-50 transition hover:bg-black dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-        >
-          Try again
-        </button>
+    <main className="journal-shell flex min-h-dvh items-center justify-center px-4">
+      <div className="w-full max-w-2xl border-y journal-rule py-10">
+        <p className="journal-kicker">ERR / Binding problem</p>
+        <h1 className="mt-5 font-serif text-6xl leading-none">This page lost the plot.</h1>
+        <p className="mt-5 max-w-lg text-base leading-7 text-[var(--muted)]">An unexpected error interrupted the journal. The prose denies everything.</p>
+        <button onClick={reset} className="journal-button mt-8 cursor-pointer">Try this chapter again</button>
       </div>
     </main>
   );

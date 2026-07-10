@@ -122,6 +122,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "how-i-scope-frontend-work-when-everything-is-urgent",
   title: "How I Scope Frontend Work When Everything Is Somehow Urgent",
   description: "A practical way to cut scope, protect quality, and ship real user value without turning delivery into myth.",

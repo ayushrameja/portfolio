@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
-type Section = "about" | "experience" | "contact";
+type Section = "cover" | "work" | "notes" | "correspondence";
 
 export function useActiveSection(enabled: boolean): Section {
-  const [activeSection, setActiveSection] = useState<Section>("about");
+  const [activeSection, setActiveSection] = useState<Section>("cover");
 
   useEffect(() => {
     if (!enabled) return;
 
-    const sections = (["about", "experience", "contact"] as const)
+    const sections = (["cover", "work", "notes", "correspondence"] as const)
       .map((id) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
 
@@ -30,5 +30,5 @@ export function useActiveSection(enabled: boolean): Section {
     return () => observer.disconnect();
   }, [enabled]);
 
-  return enabled ? activeSection : "about";
+  return enabled ? activeSection : "cover";
 }

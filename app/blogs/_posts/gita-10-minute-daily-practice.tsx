@@ -46,6 +46,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-10-minute-daily-practice",
   title: "A 10-Minute Daily Gita Practice (That You’ll Actually Do)",
   description: "A tiny routine: attention, intention, action. Built for consistency, not spiritual cosplay.",

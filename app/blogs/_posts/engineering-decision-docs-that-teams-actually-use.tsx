@@ -154,6 +154,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "engineering",
   slug: "engineering-decision-docs-that-teams-actually-use",
   title: "Engineering Decision Docs That Teams Will Actually Read",
   description:

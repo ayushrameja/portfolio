@@ -54,6 +54,7 @@ function Content() {
 }
 
 export const post: BlogPost = {
+  desk: "life",
   slug: "gita-detachment-vs-apathy",
   title: "Detachment Isn’t Apathy: How to Care Without Spiraling",
   description: "A modern reading of “equanimity”: feel fully, act cleanly, stop letting outcomes decide your self-worth.",

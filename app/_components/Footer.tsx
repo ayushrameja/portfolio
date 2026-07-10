@@ -1,18 +1,13 @@
-import FooterReveal from "./FooterReveal";
+import { LINKS } from "@/constants/links";
 
 export default function Footer() {
   return (
-    <footer className="px-6 pb-10">
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="h-px w-full bg-linear-to-r from-transparent via-zinc-300/60 to-transparent dark:via-zinc-700/60" />
-        <div className="mt-6 flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-300 sm:flex-row sm:items-center sm:justify-between">
-          <FooterReveal>
-            {`© ${new Date().getFullYear()} Ayush Rameja. All rights reserved.`}
-          </FooterReveal>
-          <FooterReveal delay={0.08} className="text-zinc-500 dark:text-zinc-400">
-            Made with love, late nights, and unreasonable attention to detail.
-          </FooterReveal>
-        </div>
+    <footer className="relative px-4 pb-28 sm:px-8">
+      <div className="mx-auto flex w-full max-w-[88rem] flex-col gap-4 border-y journal-rule py-5 font-mono text-[10px] uppercase text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} Ayush Rameja / Bangalore, India</p>
+        <p>
+          Built with Next.js / Typeset with Newsreader / <a className="hover:text-[var(--cobalt)]" href={LINKS.github}>Source nearby</a>
+        </p>
       </div>
     </footer>
   );

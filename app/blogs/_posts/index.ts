@@ -32,3 +32,20 @@ export const allPosts: BlogPost[] = [
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return allPosts.find((p) => p.slug === slug);
 }
+
+export function getPostsByDesk(desk: BlogPost['desk']): BlogPost[] {
+  return allPosts.filter((post) => post.desk === desk);
+}
+
+export function getAdjacentPosts(slug: string) {
+  const current = getPostBySlug(slug);
+  if (!current) return { previous: undefined, next: undefined };
+
+  const deskPosts = getPostsByDesk(current.desk);
+  const index = deskPosts.findIndex((post) => post.slug === slug);
+
+  return {
+    previous: index < deskPosts.length - 1 ? deskPosts[index + 1] : undefined,
+    next: index > 0 ? deskPosts[index - 1] : undefined,
+  };
+}

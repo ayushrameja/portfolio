@@ -5,10 +5,20 @@ import { useEffect, useLayoutEffect, useRef, Suspense } from "react";
 
 import Nav from "@/components/Nav";
 import SmoothScroll from "@/components/SmoothScroll";
-import { useAppStore } from "@/store/store";
-import { triggerStorm } from "@/utils/storm";
+import { triggerJournalTransition } from "@/utils/storm";
 import { Toaster } from "@/components/ui/sonner";
-import StormTransition from "@/components/StormTransition";
+import JournalBackground from "@/components/JournalBackground";
+import JournalTransition from "@/components/JournalTransition";
+
+function getRouteChapter(pathname: string) {
+  if (pathname.startsWith("/experience/autodesk")) return { number: "01.1", label: "Autodesk" };
+  if (pathname.startsWith("/experience/siemens")) return { number: "01.2", label: "Siemens" };
+  if (pathname.startsWith("/experience/accenture")) return { number: "01.3", label: "Accenture" };
+  if (pathname.startsWith("/blogs/")) return { number: "02", label: "Field Note" };
+  if (pathname === "/blogs") return { number: "02", label: "Field Notes" };
+  if (pathname === "/resume") return { number: "03", label: "Resume" };
+  return { number: "00", label: "Cover" };
+}
 
 export default function ClientLayout({
   children,
@@ -17,43 +27,31 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
   const hasMounted = useRef(false);
-  const setCurrentRoute = useAppStore((state) => state.setCurrentRoute);
-  const setShowExternal = useAppStore((state) => state.setShowExternal);
 
   useEffect(() => {
     console.log("Made with love by Ayush Rameja & Codex");
   }, []);
 
   useLayoutEffect(() => {
-    let route = "Home";
-    if (pathname.includes("/blogs")) {
-      route = "Blogs";
-    } else if (pathname.includes("/resume")) {
-      route = "Resume";
-    } else if (pathname.includes("/experience")) {
-      route = "Experience";
-    }
-
-    setCurrentRoute(route);
-    setShowExternal(false);
     if (!hasMounted.current) {
       hasMounted.current = true;
     } else {
-      triggerStorm({ cause: "route" });
+      triggerJournalTransition({ cause: "route", ...getRouteChapter(pathname) });
     }
-  }, [pathname, setCurrentRoute, setShowExternal]);
+  }, [pathname]);
 
   return (
     <SmoothScroll>
-      <div className="relative">
-        <div className="relative" id="app-shell">
+      <div className="relative min-h-dvh">
+        <JournalBackground />
+        <div className="relative z-10" id="app-shell">
           <Suspense fallback={<LoadingSpinner />}>
-            <div id="page-shell">{children}</div>
+            <div id="page-shell" className="relative">{children}</div>
           </Suspense>
         </div>
         <Nav />
         <Toaster />
-        <StormTransition />
+        <JournalTransition />
       </div>
     </SmoothScroll>
   );
@@ -61,8 +59,8 @@ export default function ClientLayout({
 
 function LoadingSpinner() {
   return (
-    <div className="flex min-h-dvh items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
+    <div className="flex min-h-dvh items-center justify-center bg-[var(--paper)]">
+      <p className="font-mono text-xs uppercase text-[var(--muted)]">Opening journal...</p>
     </div>
   );
 }

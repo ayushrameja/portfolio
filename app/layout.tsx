@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "Ayush Rameja | Portfolio",
+  title: "Ayush Rameja | Engineer's Field Journal",
   description:
     "Full-stack engineer building scalable web platforms with React, Next.js, Node.js, and AWS. Based in Bangalore, India.",
 };
@@ -36,7 +36,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@100..900&family=Lora:wght@400..700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
           rel="stylesheet"
         />
         <link
@@ -61,7 +61,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-dvh overflow-x-hidden bg-zinc-200 font-sans text-zinc-950 antialiased dark:bg-zinc-900 dark:text-zinc-100">
+      <body className="min-h-dvh overflow-x-hidden font-sans antialiased">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

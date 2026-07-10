@@ -10,6 +10,9 @@ export const EXPERIENCE_SLUGS: EmployerSlug[] = [
 
 export type ExperienceEntry = {
   slug: EmployerSlug;
+  chapterNumber: string;
+  chapterTitle: string;
+  thesis: string;
   companyName: string;
   roleLine: string;
   viaLabel?: string;
@@ -17,12 +20,24 @@ export type ExperienceEntry = {
   location: string;
   dateRange: string;
   summaryBullets: string[];
+  focus: string[];
+  impactMetrics: { value: string; label: string }[];
+  caseStudy: {
+    context: string;
+    contribution: string;
+    decisions: string[];
+    impact: string[];
+  };
   externalLinks: { label: string; href: string }[];
 };
 
 export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
   autodesk: {
     slug: "autodesk",
+    chapterNumber: "01.1",
+    chapterTitle: "Platforms at scale",
+    thesis:
+      "Shipping and evolving content and learning platforms used at meaningful scale.",
     companyName: "Autodesk",
     roleLine: "Senior Software Engineer",
     viaLabel: "Quarks Technosoft",
@@ -34,6 +49,26 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
       "Reviewed 300+ PRs, led development of key student-facing services, and collaborated closely with product and UX teams.",
       "Served as rotating Scrum Master and contributed to system design, architecture evolution, and performance improvements.",
     ],
+    focus: ["Next.js platforms", "Learning systems", "AWS services"],
+    impactMetrics: [
+      { value: "100+", label: "pages migrated" },
+      { value: "5M+", label: "monthly page views" },
+      { value: "300+", label: "PRs reviewed" },
+    ],
+    caseStudy: {
+      context:
+        "The work spans Autodesk web platforms and learning systems inside a 15-member cross-functional team, with product, UX, backend, and delivery concerns moving in parallel.",
+      contribution:
+        "Led full-stack delivery, developed key student-facing services, reviewed 300+ pull requests, collaborated with product and UX, and served as rotating Scrum Master.",
+      decisions: [
+        "Moved 100+ pages toward a Contentful-driven architecture using Next.js, SSR, React Server Components, code splitting, and CloudFront delivery.",
+        "Built learning workflows with schema and API changes, WebSockets, authentication-aware flows, Redis caching, queues, and scheduled work.",
+      ],
+      impact: [
+        "Improved page performance by 15–30% and raised Lighthouse performance scores from the 60–70 range to 80–90.",
+        "Supported SEO growth from 1M to 5M+ monthly page views and increased initial learning-platform engagement by 50%.",
+      ],
+    },
     externalLinks: [
       { label: "Autodesk", href: "https://www.autodesk.com/" },
       { label: "Quarks Technosoft", href: LINKS.quarks },
@@ -41,6 +76,10 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
   },
   siemens: {
     slug: "siemens",
+    chapterNumber: "01.2",
+    chapterTitle: "Systems on the factory floor",
+    thesis:
+      "Turning real-time industrial data into dependable operator workflows.",
     companyName: "Siemens Technology",
     roleLine: "Software Engineer",
     location: "Bangalore, India",
@@ -49,12 +88,36 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
       "Built scalable systems for industrial monitoring and predictive maintenance.",
       "Worked across frontend, backend, and Docker-based deployments with a focus on performance and reliability.",
     ],
+    focus: ["Industrial dashboards", "Microservices", "Docker delivery"],
+    impactMetrics: [
+      { value: "40%", label: "less monitoring time" },
+      { value: "2", label: "industrial platforms" },
+      { value: "Real-time", label: "machine feedback" },
+    ],
+    caseStudy: {
+      context:
+        "Industrial monitoring and predictive-maintenance products needed responsive operator interfaces, reliable machine feedback, and deployment paths that worked beyond a developer laptop.",
+      contribution:
+        "Worked across frontend, backend, state management, integrations, performance, user testing, and packaged production delivery from early proof of concept onward.",
+      decisions: [
+        "Used microservices, MQTT, WebSockets, and OPCUA or FOCUS integrations to keep machine and application data synchronized in real time.",
+        "Delivered React and Zustand interfaces with Docker and Nexe packaging for repeatable shop-floor releases.",
+      ],
+      impact: [
+        "Reduced monitoring time by 40% while improving API performance, data handling, and real-time operator visibility.",
+        "Streamlined setup, reporting, and production delivery across two industrial platforms.",
+      ],
+    },
     externalLinks: [
       { label: "Siemens", href: "https://www.siemens.com/" },
     ],
   },
   accenture: {
     slug: "accenture",
+    chapterNumber: "01.3",
+    chapterTitle: "Building the foundation",
+    thesis:
+      "Learning to own enterprise product work across interface, API, and cloud boundaries.",
     companyName: "Accenture AI",
     roleLine: "Analyst",
     location: "Bangalore, India",
@@ -63,6 +126,26 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
       "Developed frontend applications and API integrations using Angular, React, and Node.js.",
       "Supported deployments on Azure and Google Cloud.",
     ],
+    focus: ["API platforms", "Cloud deployments", "Enterprise UX"],
+    impactMetrics: [
+      { value: "50%", label: "performance boost" },
+      { value: "40%", label: "reliability gain" },
+      { value: "2", label: "cloud providers" },
+    ],
+    caseStudy: {
+      context:
+        "Enterprise projects for Google and Chubb required frontend applications, backend APIs, data workflows, and cloud deployments to move as one system.",
+      contribution:
+        "Built APIs, responsive Angular and React interfaces, role-management workflows, database integrations, and production delivery across GCP and Azure.",
+      decisions: [
+        "Helped move one application from a monolith toward microservices and optimized PostgreSQL queries for scalability and reliability.",
+        "Used Docker-based delivery and cloud services to make production transitions faster and more repeatable.",
+      ],
+      impact: [
+        "Improved application performance by up to 50% and reliability by 40% on the Google customer-experience work.",
+        "Reduced deployment time by 35%, operational cost by 20%, and improved interface usability on the Chubb platform.",
+      ],
+    },
     externalLinks: [
       { label: "Accenture", href: "https://www.accenture.com/in-en" },
     ],

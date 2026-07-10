@@ -5,7 +5,7 @@ import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef } from "react";
 
-function ExperienceRouteScrollReset() {
+function RouteScrollReset() {
   const pathname = usePathname();
   const lenis = useLenis();
   const previousPathname = useRef<string | null>(null);
@@ -18,10 +18,8 @@ function ExperienceRouteScrollReset() {
       return;
     }
 
-    if (pathname.startsWith("/experience/")) {
-      lenis.scrollTo(0, { immediate: true, force: true });
-      window.scrollTo(0, 0);
-    }
+    lenis.scrollTo(0, { immediate: true, force: true });
+    window.scrollTo(0, 0);
 
     previousPathname.current = pathname;
   }, [lenis, pathname]);
@@ -42,7 +40,7 @@ export default function SmoothScroll({
         smoothWheel: true,
       }}
     >
-      <ExperienceRouteScrollReset />
+      <RouteScrollReset />
       {children}
     </ReactLenis>
   );

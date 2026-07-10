@@ -1,280 +1,171 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  BookOpen,
+  BriefcaseBusiness,
+  FileText,
+  Home,
+  Mail,
+  PenLine,
+} from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 
-import { useAppStore } from "@/store/store";
 import ThemeToggle from "@/components/ThemeToggle";
-import { STORM_TRIGGER_EVENT } from "@/utils/storm";
-import StaggeredText from "@/components/StaggerText";
 import { useActiveSection } from "@/hooks";
-
-import logo from "../public/assets/image/logo.svg";
 import { scrollToTarget } from "@/utils/scroll";
 
-const MotionLink = motion.create(Link);
+const HOME_LINKS = [
+  { id: "cover", label: "Cover", number: "00", Icon: Home },
+  { id: "work", label: "Work", number: "01", Icon: BriefcaseBusiness },
+  { id: "notes", label: "Notes", number: "02", Icon: PenLine },
+  { id: "correspondence", label: "Write", number: "04", Icon: Mail },
+] as const;
 
-const Nav = () => {
+function routeLabel(pathname: string) {
+  if (pathname.startsWith("/experience/")) return "Work chapter";
+  if (pathname.startsWith("/blogs/")) return "Field note";
+  if (pathname === "/blogs") return "Field notes";
+  if (pathname === "/resume") return "Resume";
+  return "Portfolio";
+}
+
+export default function Nav() {
   const pathname = usePathname();
   const lenis = useLenis();
-  const [enterDelay, setEnterDelay] = useState(0.9);
-
-  const isHomeRoute = pathname === "/";
-  const activeHomeSection = useActiveSection(isHomeRoute);
-  const isBlogsRoute = pathname === "/blogs" || pathname.startsWith("/blogs/");
-  const isResumeRoute = pathname === "/resume";
-  const isExperienceRoute = pathname.startsWith("/experience");
-
-  const showExternal = useAppStore((state) => state.showExternal);
-  const currentRoute = useAppStore((state) => state.currentRoute);
-  const setShowExternal = useAppStore((state) => state.setShowExternal);
+  const isHome = pathname === "/";
+  const activeSection = useActiveSection(isHome);
+  const [showExternal, setShowExternal] = useState(false);
 
   useEffect(() => {
-    const handleStorm = (event: Event) => {
-      const detail = (event as CustomEvent<{ cause?: string }>).detail ?? {};
-      if (detail.cause === "load") {
-        setEnterDelay(0.9);
-      } else {
-        setEnterDelay(0.08);
-      }
+    if (!isHome) return;
+
+    const handleScroll = () => setShowExternal(window.scrollY > window.innerHeight * 0.48);
+    const frame = window.requestAnimationFrame(handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handleScroll);
     };
-    window.addEventListener(STORM_TRIGGER_EVENT, handleStorm as EventListener);
+  }, [isHome]);
 
-    return () =>
-      window.removeEventListener(
-        STORM_TRIGGER_EVENT,
-        handleStorm as EventListener,
-      );
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isBlogsRoute || isResumeRoute || isExperienceRoute) {
-        setShowExternal(false);
-        return;
-      }
-
-      if (window.scrollY > window.innerHeight * 0.5) {
-        setShowExternal(true);
-      } else {
-        setShowExternal(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isBlogsRoute, isResumeRoute, isExperienceRoute, setShowExternal]);
-
-  useEffect(() => {
-    if (isHomeRoute || isBlogsRoute || isResumeRoute || isExperienceRoute) {
-      setShowExternal(false);
-    }
-  }, [isHomeRoute, isBlogsRoute, isResumeRoute, isExperienceRoute, setShowExternal]);
-
-  const linkVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: enterDelay + i * 0.06,
-        duration: 0.22,
-        ease: "easeOut",
-      },
-    }),
-  };
-
-  const containerMotion = useMemo(
-    () => ({
-      initial: { opacity: 0, y: 10 },
-      animate: {
-        opacity: 1,
-        y: 0,
-        transition: { delay: enterDelay, duration: 0.32, ease: "easeOut" },
-      },
-    }),
-    [enterDelay],
-  );
-
-  const homeLinks = useMemo(
-    () => ["About", "Experience", "Contact"] as const,
-    [],
-  );
-
-  const navLinks = useMemo(() => {
-    if (currentRoute === "Home") return null;
-
-    if (isBlogsRoute) {
+  const innerLinks = useMemo(() => {
+    if (pathname === "/blogs" || pathname.startsWith("/blogs/")) {
       return [
-        { label: "Portfolio", href: "/" },
-        { label: "Resume", href: "/resume" },
+        { href: "/", label: "Portfolio", Icon: Home },
+        { href: "/resume", label: "Resume", Icon: FileText },
       ];
     }
 
-    if (isResumeRoute) {
+    if (pathname === "/resume") {
       return [
-        { label: "Portfolio", href: "/" },
-        { label: "Blogs", href: "/blogs" },
+        { href: "/", label: "Portfolio", Icon: Home },
+        { href: "/blogs", label: "Field notes", Icon: BookOpen },
       ];
     }
 
     return [
-      { label: "Portfolio", href: "/" },
-      { label: "Blogs", href: "/blogs" },
-      { label: "Resume", href: "/resume" },
+      { href: "/", label: "Portfolio", Icon: Home },
+      { href: "/blogs", label: "Field notes", Icon: BookOpen },
+      { href: "/resume", label: "Resume", Icon: FileText },
     ];
-  }, [currentRoute, isBlogsRoute, isResumeRoute]);
-
-  const logoHref = useMemo(() => {
-    if (isBlogsRoute) return "/blogs";
-    if (isResumeRoute) return "/resume";
-    if (isExperienceRoute) return "/";
-    return "/";
-  }, [isBlogsRoute, isResumeRoute, isExperienceRoute]);
-
-  const logoLabel = useMemo(() => {
-    if (isBlogsRoute) return "Blogs";
-    if (isResumeRoute) return "Resume";
-    if (isExperienceRoute) return "Experience";
-    return null;
-  }, [isBlogsRoute, isResumeRoute, isExperienceRoute]);
-
-  if (isResumeRoute) {
-    return null;
-  }
+  }, [pathname]);
 
   return (
-    <motion.nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] pt-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-zinc-100/95 to-transparent dark:from-zinc-900/95" />
-      <motion.div
-        className="pointer-events-auto mx-auto flex w-fit max-w-[min(52rem,calc(100vw-2rem))] items-center gap-1.5 rounded-2xl border border-zinc-200/70 bg-white/70 p-1.5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-800/60 dark:shadow-[0_10px_40px_-20px_rgba(0,0,0,0.8)]"
-        initial={containerMotion.initial}
-        animate={containerMotion.animate}
-      >
-        <MotionLink
-          href={logoHref}
-          className={`relative flex h-10 shrink-0 items-center overflow-hidden rounded-xl bg-zinc-50 ring-1 ring-inset ring-black/10 transition-all duration-300 dark:bg-zinc-900 dark:ring-zinc-700/60 ${
-            logoLabel
-              ? isExperienceRoute
-                ? "w-10 justify-center sm:w-auto sm:px-3"
-                : "px-3"
-              : "w-10 justify-center"
-          }`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: enterDelay, duration: 0.2, ease: "easeOut" }}
+    <motion.nav
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-2 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.55, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      aria-label="Portfolio chapters"
+    >
+      <div className="pointer-events-auto mx-auto flex w-fit max-w-[calc(100vw-1rem)] items-center gap-1 rounded-[6px] border border-[var(--rule-strong)] bg-[var(--paper-raised)] p-1.5 shadow-[0_12px_35px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.38)]">
+        <Link
+          href="/"
+          className="flex h-9 min-w-9 items-center justify-center rounded-[3px] bg-[var(--ink)] px-2 font-mono text-xs font-semibold text-[var(--paper)] transition hover:bg-[var(--cobalt)]"
+          aria-label="Ayush Rameja portfolio"
         >
-          <div className="relative h-6 w-6 shrink-0">
-            <Image src={logo} alt="Ayush Rameja" fill className="object-contain" />
-          </div>
-          {logoLabel && (
-            <motion.div
-              initial={{ opacity: 0, x: -5 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={`ml-2 items-center gap-2 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100 ${
-                isExperienceRoute ? "hidden sm:flex" : "flex"
-              }`}
-            >
-              <span className="text-zinc-400">·</span>
-              <span>{logoLabel}</span>
-            </motion.div>
-          )}
-        </MotionLink>
-        <div className="flex items-center gap-0.5 rounded-xl bg-zinc-950/5 p-1 ring-1 ring-inset ring-zinc-950/10 dark:bg-zinc-950/35 dark:ring-zinc-700/50">
-          {currentRoute === "Home" ? (
-            <div className="flex items-center gap-0.5">
-              {homeLinks.map((link, i) => (
-                <motion.button
-                  key={link}
-                  type="button"
-                  custom={i}
-                  onClick={() => scrollToTarget(link.toLowerCase(), lenis as any)}
-                  initial="hidden"
-                  animate="visible"
-                  variants={linkVariants}
-                  className={[
-                    "group relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm transition",
-                    activeHomeSection === link.toLowerCase()
-                      ? "bg-black/10 text-zinc-950 dark:bg-white/10 dark:text-zinc-50"
-                      : "text-zinc-700 hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50",
-                  ].join(" ")}
-                >
-                  <StaggeredText text={link} />
-                </motion.button>
-              ))}
-            </div>
-          ) : (
-            <>
-              {isExperienceRoute && (
-                <div className="flex items-center gap-0.5 sm:hidden">
-                  <MotionLink
-                    custom={0}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
-                    href="/"
+          AR
+        </Link>
+
+        <span className="hidden max-w-28 truncate border-l border-[var(--rule)] px-2 font-mono text-[10px] uppercase text-[var(--muted)] lg:block">
+          {routeLabel(pathname)}
+        </span>
+
+        <div className="flex items-center gap-0.5 border-l border-[var(--rule)] pl-1">
+          {isHome
+            ? HOME_LINKS.map(({ id, label, number, Icon }) => {
+                const isActive = activeSection === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => scrollToTarget(id, lenis as never)}
+                    className={`group flex h-9 items-center justify-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold transition sm:px-3 ${
+                      isActive
+                        ? "bg-[var(--cobalt)] text-white dark:text-[#10110f]"
+                        : "text-[var(--muted)] hover:bg-[var(--paper)] hover:text-[var(--ink)]"
+                    }`}
+                    aria-label={label}
+                    aria-current={isActive ? "location" : undefined}
                   >
-                    <StaggeredText text="Back to Portfolio" />
-                  </MotionLink>
-                </div>
-              )}
-              <div
-                className={`items-center gap-0.5 ${
-                  isExperienceRoute ? "hidden sm:flex" : "flex"
-                }`}
-              >
-                {(navLinks ?? []).map((link, i) => (
-                  <MotionLink
-                    key={link.label}
-                    custom={i}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                    className="group relative flex items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm text-zinc-700 transition hover:bg-black/5 hover:text-zinc-950 dark:text-zinc-200 dark:hover:bg-white/5 dark:hover:text-zinc-50"
-                    href={link.href}
-                  >
-                    <StaggeredText text={link.label} />
-                  </MotionLink>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-        <AnimatePresence initial={false}>
-          {showExternal &&
-            !isBlogsRoute &&
-            !isResumeRoute &&
-            !isExperienceRoute &&
-            ["Blogs", "Resume"].map((externalLink: string, i: number) => (
-              <motion.div
-                key={externalLink}
-                custom={i}
-                className="hidden sm:block"
-                initial={{ opacity: 0, scale: 0.92, width: 0 }}
-                animate={{ opacity: 1, scale: 1, width: "auto" }}
-                exit={{ opacity: 0, scale: 0.92, width: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.2, ease: "easeOut" }}
-              >
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    <span className="hidden sm:inline">{label}</span>
+                    <span className={`hidden font-mono text-[9px] lg:inline ${isActive ? "opacity-75" : "text-[var(--faint)]"}`}>
+                      {number}
+                    </span>
+                  </button>
+                );
+              })
+            : innerLinks.map(({ href, label, Icon }) => (
                 <Link
-                  className="inline-flex items-center justify-center rounded-lg bg-black px-3 py-2 text-sm text-zinc-50 ring-1 ring-inset ring-black/10 transition hover:bg-zinc-950 dark:bg-black dark:text-zinc-200 dark:ring-zinc-700/60 dark:hover:bg-zinc-950/90 dark:hover:text-zinc-50"
-                  href={externalLink === "Blogs" ? "/blogs" : "/resume"}
+                  key={href}
+                  href={href}
+                  className="flex h-9 items-center justify-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:bg-[var(--paper)] hover:text-[var(--cobalt)] sm:px-3"
+                  aria-label={label}
                 >
-                  {externalLink}
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span className="hidden sm:inline">{label}</span>
                 </Link>
-              </motion.div>
-            ))}
+              ))}
+        </div>
+
+        <AnimatePresence initial={false}>
+          {isHome && showExternal ? (
+            <motion.div
+              className="flex items-center gap-0.5 border-l border-[var(--rule)] pl-1"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: "auto" }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.22 }}
+            >
+              <Link
+                href="/blogs"
+                className="flex h-9 items-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--cobalt)]"
+                aria-label="Field notes"
+              >
+                <BookOpen className="h-3.5 w-3.5" />
+                <span className="hidden md:inline">Notes</span>
+              </Link>
+              <Link
+                href="/resume"
+                className="flex h-9 items-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--cobalt)]"
+                aria-label="Resume"
+              >
+                <FileText className="h-3.5 w-3.5" />
+                <span className="hidden md:inline">Resume</span>
+              </Link>
+            </motion.div>
+          ) : null}
         </AnimatePresence>
-        <div className="ml-1 flex items-center">
+
+        <div className="border-l border-[var(--rule)] pl-1">
           <ThemeToggle />
         </div>
-      </motion.div>
+      </div>
     </motion.nav>
   );
-};
-
-export default Nav;
+}
