@@ -205,6 +205,32 @@ html.dark {
   border-color: var(--cobalt);
 }
 
+.bakbak-download-aside {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    radial-gradient(circle at 15% 10%, rgba(143, 134, 255, 0.24), transparent 42%);
+  background-color: #12111a;
+  background-size: 44px 44px, 44px 44px, auto;
+}
+
+.bakbak-preview-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.bakbak-preview-frame::before {
+  position: absolute;
+  inset: -18%;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(118, 107, 229, 0.24), transparent 66%);
+  filter: blur(28px);
+}
+
 .journal-background {
   position: fixed;
   inset: 0;
