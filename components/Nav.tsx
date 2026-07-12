@@ -7,6 +7,7 @@ import {
   FileText,
   Home,
   Mail,
+  MessageCircleMore,
   PenLine,
 } from "lucide-react";
 import Link from "next/link";
@@ -20,12 +21,14 @@ import { scrollToTarget } from "@/utils/scroll";
 
 const HOME_LINKS = [
   { id: "cover", label: "Cover", number: "00", Icon: Home },
+  { id: "bakbak", label: "Bakbak", number: "P1", Icon: MessageCircleMore },
   { id: "work", label: "Work", number: "01", Icon: BriefcaseBusiness },
   { id: "notes", label: "Notes", number: "02", Icon: PenLine },
   { id: "correspondence", label: "Write", number: "04", Icon: Mail },
 ] as const;
 
 function routeLabel(pathname: string) {
+  if (pathname === "/bakbak") return "Product / Bakbak";
   if (pathname.startsWith("/experience/")) return "Work chapter";
   if (pathname.startsWith("/blogs/")) return "Field note";
   if (pathname === "/blogs") return "Field notes";

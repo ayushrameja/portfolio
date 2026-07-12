@@ -11,6 +11,7 @@ import JournalBackground from "@/components/JournalBackground";
 import JournalTransition from "@/components/JournalTransition";
 
 function getRouteChapter(pathname: string) {
+  if (pathname === "/bakbak") return { number: "P1", label: "Bakbak" };
   if (pathname.startsWith("/experience/autodesk")) return { number: "01.1", label: "Autodesk" };
   if (pathname.startsWith("/experience/siemens")) return { number: "01.2", label: "Siemens" };
   if (pathname.startsWith("/experience/accenture")) return { number: "01.3", label: "Accenture" };
