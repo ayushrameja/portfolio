@@ -1,21 +1,10 @@
 export const LINKS = {
   email: "ayushrameja@gmail.com",
-  phone: "+919660853303",
-  phoneDisplay: "+91-9660853303",
-  website: "https://www.ayush.im",
   linkedin: "https://www.linkedin.com/in/ayushrameja",
   github: "https://github.com/ayushrameja",
   quarks: "https://www.qtsolv.com/",
 } as const;
 
-export const RESUME = {
-  driveId: '1KH4dnH50ocYFxv0Cut7gqMltRDHgC088',
-  get previewUrl() {
-    return `https://drive.google.com/file/d/${this.driveId}/preview`;
-  },
-  get downloadUrl() {
-    return `https://drive.google.com/uc?export=download&id=${this.driveId}`;
-  },
-} as const;
+export const RESUME_PATH = "/files/ayush-rameja-resume.pdf";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ayush.im';
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ayush.im";

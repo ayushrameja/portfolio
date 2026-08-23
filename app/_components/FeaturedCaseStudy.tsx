@@ -1,111 +1,129 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
-import ExperienceLogo from "@/components/experience/ExperienceLogo";
-import { experienceBySlug, getProjectsForEmployer } from "@/utils/experienceData";
-
-const exp = experienceBySlug.autodesk;
-const projects = getProjectsForEmployer("autodesk");
-
-const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] } },
-};
+import { experienceBySlug, experiencePath } from "@/utils/experienceData";
+import { featuredProjects } from "@/utils/projectData";
 
 export default function FeaturedCaseStudy() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const [desktop, setDesktop] = useState(false);
+  const [distance, setDistance] = useState(0);
+  const [measured, setMeasured] = useState(false);
+  const [canMeasure, setCanMeasure] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
+
+  useEffect(() => {
+    const media = window.matchMedia(
+      "(min-width: 1024px) and (hover: hover) and (pointer: fine)",
+    );
+    const updateMedia = () => setDesktop(media.matches);
+    updateMedia();
+    media.addEventListener("change", updateMedia);
+    return () => media.removeEventListener("change", updateMedia);
+  }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setCanMeasure(typeof ResizeObserver !== "undefined");
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const track = trackRef.current;
+    if (!canMeasure || !viewport || !track) return;
+
+    const measure = () => {
+      setDistance(Math.max(0, track.scrollWidth - viewport.clientWidth));
+      setMeasured(true);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    observer.observe(track);
+    measure();
+    return () => observer.disconnect();
+  }, [canMeasure, desktop, reducedMotion]);
+
+  const enhanceable = canMeasure && desktop && !reducedMotion;
+  const pinned = enhanceable && measured && distance > 0;
+  const sectionHeight = pinned ? `calc(100svh + ${distance}px)` : undefined;
+
+  const revealFocusedCard = (index: number) => {
+    if (!pinned || !sectionRef.current || featuredProjects.length < 2) return;
+    const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
+    const target = sectionTop + (index / (featuredProjects.length - 1)) * distance;
+    window.scrollTo({ top: target, behavior: "smooth" });
+  };
+
   return (
-    <section id="work" className="relative border-y journal-rule bg-[var(--paper-raised)] px-4 py-16 sm:px-8 sm:py-24">
-      <motion.div
-        className="mx-auto w-full max-w-[88rem]"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-      >
-        <div className="grid gap-8 lg:grid-cols-12">
-          <motion.div variants={reveal} className="lg:col-span-4">
-            <p className="journal-kicker">{exp.chapterNumber} / Featured case study</p>
-            <ExperienceLogo slug="autodesk" variant="hero" className="mt-6" />
-            <p className="mt-6 font-mono text-xs text-[var(--muted)]">
-              {exp.dateRange}<br />{exp.location}
-            </p>
-          </motion.div>
-
-          <motion.div variants={reveal} className="lg:col-span-8">
-            <h2 className="max-w-[15ch] font-serif text-5xl font-medium leading-[0.98] sm:text-6xl lg:text-7xl">
-              {exp.chapterTitle}: <span className="text-[var(--cobalt)]">products that hold up under real use.</span>
-            </h2>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-              {exp.thesis} The work crosses content platforms, learning systems, APIs, caching, queues, and the team practices required to ship them well.
-            </p>
-          </motion.div>
-        </div>
-
-        <motion.div variants={reveal} className="mt-12 grid border-y journal-rule sm:grid-cols-3">
-          {exp.impactMetrics.map((metric, index) => (
-            <div
-              key={metric.label}
-              className={`py-6 sm:px-6 sm:py-8 ${index > 0 ? "border-t journal-rule sm:border-l sm:border-t-0" : ""}`}
-            >
-              <p className="font-serif text-5xl leading-none text-[var(--vermilion)] sm:text-6xl">{metric.value}</p>
-              <p className="mt-3 max-w-[18ch] font-mono text-xs leading-5 text-[var(--muted)]">{metric.label}</p>
-            </div>
-          ))}
-        </motion.div>
-
-        <div className="mt-12 grid border-b journal-rule lg:grid-cols-2">
-          {[
-            { number: "A", title: "Context", body: exp.caseStudy.context },
-            { number: "B", title: "Contribution", body: exp.caseStudy.contribution },
-          ].map((item, index) => (
-            <motion.article
-              key={item.title}
-              variants={reveal}
-              className={`border-t journal-rule py-8 lg:pr-10 ${index === 1 ? "lg:border-l lg:pl-10 lg:pr-0" : ""}`}
-            >
-              <p className="font-mono text-xs text-[var(--cobalt)]">{item.number} / {item.title}</p>
-              <p className="mt-5 max-w-2xl font-serif text-2xl leading-snug sm:text-3xl">{item.body}</p>
-            </motion.article>
-          ))}
-        </div>
-
-        <motion.div variants={reveal} className="mt-10 grid gap-8 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+    <section
+      ref={sectionRef}
+      className={`selected-work-section${pinned ? " is-pinned" : ""}`}
+      data-palette="ink"
+      style={{ height: sectionHeight }}
+      aria-labelledby="selected-work-title"
+    >
+      <div ref={viewportRef} className="selected-work-viewport">
+        <div className="selected-work-header site-container">
           <div>
-            <p className="journal-kicker">Selected systems</p>
-            <div className="mt-4 space-y-3">
-              {projects.map((project, index) => (
-                <div key={project.id} className="flex items-baseline gap-3">
-                  <span className="font-mono text-xs text-[var(--vermilion)]">0{index + 1}</span>
-                  <span className="font-serif text-2xl">{project.name}</span>
+            <p className="eyebrow">Selected professional work</p>
+            <h2 id="selected-work-title">Three projects. Three kinds of scale.</h2>
+          </div>
+          <p>Scroll to follow the work · every project stacks normally on smaller screens.</p>
+        </div>
+
+        <motion.div
+          ref={trackRef}
+          className={`selected-work-track${enhanceable ? " is-horizontal-measure" : ""}`}
+          style={pinned ? { x } : undefined}
+        >
+          {featuredProjects.map((project, index) => {
+            const employer = experienceBySlug[project.employerKey];
+            return (
+              <article
+                key={project.slug}
+                className="selected-project-card"
+                onFocusCapture={() => revealFocusedCard(index)}
+              >
+                <div className="selected-project-card__topline">
+                  <span>0{index + 1} / 0{featuredProjects.length}</span>
+                  <span>{employer.companyName}</span>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="journal-kicker">Working range</p>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-[var(--muted)]">{exp.focus.join(" / ")}</p>
-          </div>
-          <Link href="/experience/autodesk" className="journal-button w-full lg:w-auto">
-            Read chapter
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+                <div className="selected-project-card__body">
+                  <p className="selected-project-card__role">{project.role}</p>
+                  <h3>{project.title}</h3>
+                  <p className="selected-project-card__summary">{project.summary}</p>
+                  <ul className="selected-project-card__outcomes">
+                    {project.outcomes.slice(0, 2).map((outcome) => (
+                      <li key={outcome}>{outcome}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="selected-project-card__footer">
+                  <ul className="tag-list" aria-label="Technologies">
+                    {project.skills.slice(0, 4).map((skill) => <li key={skill}>{skill}</li>)}
+                  </ul>
+                  <Link className="text-link text-link--light" href={experiencePath(project.employerKey)}>
+                    View case study <span aria-hidden>↗</span>
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
         </motion.div>
-
-        <motion.div variants={reveal} className="mt-8 flex justify-end">
-          <a
-            href={exp.externalLinks[0].href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="journal-link"
-          >
-            Visit Autodesk
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

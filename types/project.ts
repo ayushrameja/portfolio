@@ -1,13 +1,12 @@
 export type EmployerSlug = "autodesk" | "siemens" | "accenture";
 
-export type Project = {
-  id: number;
-  name: string;
-  role: string;
-  client: string;
+export type PortfolioProject = {
+  slug: string;
   employerKey: EmployerSlug;
-  skills: string[];
-  points: string[];
-  link: string;
-  timeline?: string;
+  title: string;
+  role: string;
+  summary: string;
+  skills: readonly string[];
+  outcomes: readonly string[];
+  featured: boolean;
 };

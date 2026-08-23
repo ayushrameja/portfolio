@@ -5,14 +5,16 @@ import ContactSection from "./_components/ContactSection";
 import ExperienceSection from "./_components/ExperienceSection";
 import FeaturedCaseStudy from "./_components/FeaturedCaseStudy";
 import FieldNotesSection from "./_components/FieldNotesSection";
+import AsciiTransition from "./_components/AsciiTransition";
 
 export default function Home() {
   return (
-    <main className="journal-shell">
+    <main className="site-shell">
       <HeroSection />
-      <BakbakShowcase />
-      <FeaturedCaseStudy />
       <ExperienceSection />
+      <AsciiTransition />
+      <FeaturedCaseStudy />
+      <BakbakShowcase />
       <FieldNotesSection />
       <ContactSection />
       <Footer />

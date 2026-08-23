@@ -1,174 +1,225 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  BookOpen,
-  BriefcaseBusiness,
-  FileText,
-  Home,
-  Mail,
-  MessageCircleMore,
-  PenLine,
-} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { useLenis } from "lenis/react";
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import ThemeToggle from "@/components/ThemeToggle";
-import { useActiveSection } from "@/hooks";
-import { scrollToTarget } from "@/utils/scroll";
-
-const HOME_LINKS = [
-  { id: "cover", label: "Cover", number: "00", Icon: Home },
-  { id: "bakbak", label: "Bakbak", number: "P1", Icon: MessageCircleMore },
-  { id: "work", label: "Work", number: "01", Icon: BriefcaseBusiness },
-  { id: "notes", label: "Notes", number: "02", Icon: PenLine },
-  { id: "correspondence", label: "Write", number: "04", Icon: Mail },
+const links = [
+  { href: "/#work", label: "Work", route: "#work" },
+  { href: "/blogs", label: "Writing", route: "/blogs" },
+  { href: "/resume", label: "Résumé", route: "/resume" },
+  { href: "/#contact", label: "Contact", route: "#contact" },
 ] as const;
 
-function routeLabel(pathname: string) {
-  if (pathname === "/bakbak") return "Product / Bakbak";
-  if (pathname.startsWith("/experience/")) return "Work chapter";
-  if (pathname.startsWith("/blogs/")) return "Field note";
-  if (pathname === "/blogs") return "Field notes";
-  if (pathname === "/resume") return "Resume";
-  return "Portfolio";
+const PENDING_ANCHOR_KEY = "portfolio-pending-anchor";
+const homepageAnchors = new Set(["work", "contact"]);
+
+function scrollToHomepageSection(id: string) {
+  const target = document.getElementById(id);
+  if (!target) return false;
+  const top = window.scrollY + target.getBoundingClientRect().top - 84;
+  window.scrollTo({ top, behavior: "auto" });
+  return true;
 }
 
 export default function Nav() {
   const pathname = usePathname();
-  const lenis = useLenis();
-  const isHome = pathname === "/";
-  const activeSection = useActiveSection(isHome);
-  const [showExternal, setShowExternal] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isHome) return;
-
-    const handleScroll = () => setShowExternal(window.scrollY > window.innerHeight * 0.48);
-    const frame = window.requestAnimationFrame(handleScroll);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isHome]);
-
-  const innerLinks = useMemo(() => {
-    if (pathname === "/blogs" || pathname.startsWith("/blogs/")) {
-      return [
-        { href: "/", label: "Portfolio", Icon: Home },
-        { href: "/resume", label: "Resume", Icon: FileText },
-      ];
-    }
-
-    if (pathname === "/resume") {
-      return [
-        { href: "/", label: "Portfolio", Icon: Home },
-        { href: "/blogs", label: "Field notes", Icon: BookOpen },
-      ];
-    }
-
-    return [
-      { href: "/", label: "Portfolio", Icon: Home },
-      { href: "/blogs", label: "Field notes", Icon: BookOpen },
-      { href: "/resume", label: "Resume", Icon: FileText },
-    ];
+    dialogRef.current?.close();
+    document.documentElement.classList.remove("menu-open");
   }, [pathname]);
 
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const pending = window.sessionStorage.getItem(PENDING_ANCHOR_KEY);
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    const targetId = pending || hash;
+    if (!homepageAnchors.has(targetId)) return;
+
+    const alignTarget = () => {
+      if (scrollToHomepageSection(targetId)) {
+        window.sessionStorage.removeItem(PENDING_ANCHOR_KEY);
+      }
+    };
+
+    const frame = window.requestAnimationFrame(alignTarget);
+    const firstRetry = window.setTimeout(alignTarget, 180);
+    const finalRetry = window.setTimeout(alignTarget, 500);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(firstRetry);
+      window.clearTimeout(finalRetry);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sections = ["work", "contact"]
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    if (!sections.length) return;
+
+    const updateCurrentSection = () => {
+      const marker = window.innerHeight * 0.4;
+      const current = sections.find((section) => {
+        const bounds = section.getBoundingClientRect();
+        return bounds.top <= marker && bounds.bottom >= marker;
+      });
+      setActiveSection(current?.id ?? null);
+    };
+
+    updateCurrentSection();
+    window.addEventListener("scroll", updateCurrentSection, { passive: true });
+    window.addEventListener("resize", updateCurrentSection);
+    return () => {
+      window.removeEventListener("scroll", updateCurrentSection);
+      window.removeEventListener("resize", updateCurrentSection);
+    };
+  }, [pathname]);
+
+  const openMenu = () => {
+    dialogRef.current?.showModal();
+    document.documentElement.classList.add("menu-open");
+    setMenuOpen(true);
+  };
+
+  const closeMenu = () => {
+    dialogRef.current?.close();
+    document.documentElement.classList.remove("menu-open");
+    setMenuOpen(false);
+    triggerRef.current?.focus();
+  };
+
+  const trapMenuFocus = (event: KeyboardEvent<HTMLDialogElement>) => {
+    if (event.key !== "Tab" || !dialogRef.current) return;
+    const focusable = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (!first || !last) return;
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  const isCurrent = (route: string) => {
+    if (route === "#work") {
+      return pathname.startsWith("/experience") || (pathname === "/" && activeSection === "work");
+    }
+    if (route === "#contact") return pathname === "/" && activeSection === "contact";
+    return pathname === route || pathname.startsWith(`${route}/`);
+  };
+
+  const handleHomepageAnchor = (
+    event: MouseEvent<HTMLAnchorElement>,
+    route: string,
+  ) => {
+    if (!route.startsWith("#")) return;
+    const targetId = route.slice(1);
+    if (pathname !== "/") {
+      window.sessionStorage.setItem(PENDING_ANCHOR_KEY, targetId);
+      return;
+    }
+
+    event.preventDefault();
+    window.history.pushState(null, "", `/#${targetId}`);
+    scrollToHomepageSection(targetId);
+  };
+
   return (
-    <motion.nav
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-2 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.55, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-      aria-label="Portfolio chapters"
-    >
-      <div className="pointer-events-auto mx-auto flex w-fit max-w-[calc(100vw-1rem)] items-center gap-1 rounded-[6px] border border-[var(--rule-strong)] bg-[var(--paper-raised)] p-1.5 shadow-[0_12px_35px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.38)]">
-        <Link
-          href="/"
-          className="flex h-9 min-w-9 items-center justify-center rounded-[3px] bg-[var(--ink)] px-2 font-mono text-xs font-semibold text-[var(--paper)] transition hover:bg-[var(--cobalt)]"
-          aria-label="Ayush Rameja portfolio"
-        >
-          AR
+    <header className="site-header">
+      <div className="site-header__inner">
+        <Link href="/" className="site-wordmark" aria-label="Ayush Rameja home">
+          Ayush Rameja
         </Link>
 
-        <span className="hidden max-w-28 truncate border-l border-[var(--rule)] px-2 font-mono text-[10px] uppercase text-[var(--muted)] lg:block">
-          {routeLabel(pathname)}
-        </span>
-
-        <div className="flex items-center gap-0.5 border-l border-[var(--rule)] pl-1">
-          {isHome
-            ? HOME_LINKS.map(({ id, label, number, Icon }) => {
-                const isActive = activeSection === id;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => scrollToTarget(id, lenis as never)}
-                    className={`group flex h-9 items-center justify-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold transition sm:px-3 ${
-                      isActive
-                        ? "bg-[var(--cobalt)] text-white dark:text-[#10110f]"
-                        : "text-[var(--muted)] hover:bg-[var(--paper)] hover:text-[var(--ink)]"
-                    }`}
-                    aria-label={label}
-                    aria-current={isActive ? "location" : undefined}
-                  >
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
-                    <span className="hidden sm:inline">{label}</span>
-                    <span className={`hidden font-mono text-[9px] lg:inline ${isActive ? "opacity-75" : "text-[var(--faint)]"}`}>
-                      {number}
-                    </span>
-                  </button>
-                );
-              })
-            : innerLinks.map(({ href, label, Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex h-9 items-center justify-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:bg-[var(--paper)] hover:text-[var(--cobalt)] sm:px-3"
-                  aria-label={label}
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  <span className="hidden sm:inline">{label}</span>
-                </Link>
-              ))}
-        </div>
-
-        <AnimatePresence initial={false}>
-          {isHome && showExternal ? (
-            <motion.div
-              className="flex items-center gap-0.5 border-l border-[var(--rule)] pl-1"
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.22 }}
+        <nav className="site-nav site-nav--desktop" aria-label="Primary navigation">
+          {links.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="site-nav__link"
+              onClick={(event) => handleHomepageAnchor(event, link.route)}
+              aria-current={isCurrent(link.route) ? "page" : undefined}
             >
-              <Link
-                href="/blogs"
-                className="flex h-9 items-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--cobalt)]"
-                aria-label="Field notes"
-              >
-                <BookOpen className="h-3.5 w-3.5" />
-                <span className="hidden md:inline">Notes</span>
-              </Link>
-              <Link
-                href="/resume"
-                className="flex h-9 items-center gap-1.5 rounded-[3px] px-2 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--cobalt)]"
-                aria-label="Resume"
-              >
-                <FileText className="h-3.5 w-3.5" />
-                <span className="hidden md:inline">Resume</span>
-              </Link>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-        <div className="border-l border-[var(--rule)] pl-1">
-          <ThemeToggle />
-        </div>
+        <button
+          ref={triggerRef}
+          type="button"
+          className="site-menu-trigger"
+          onClick={openMenu}
+          aria-haspopup="dialog"
+          aria-controls="mobile-navigation"
+          aria-expanded={menuOpen}
+        >
+          Menu
+        </button>
+
+        <dialog
+          ref={dialogRef}
+          id="mobile-navigation"
+          className="site-menu"
+          aria-label="Mobile navigation"
+          onKeyDown={trapMenuFocus}
+          onClose={() => {
+            document.documentElement.classList.remove("menu-open");
+            setMenuOpen(false);
+          }}
+          onCancel={(event) => {
+            event.preventDefault();
+            closeMenu();
+          }}
+        >
+          <div className="site-menu__bar">
+            <span className="site-wordmark">Ayush Rameja</span>
+            <button type="button" className="site-menu-trigger" onClick={closeMenu}>
+              Close
+            </button>
+          </div>
+          <nav className="site-menu__links" aria-label="Mobile primary navigation">
+            {links.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="site-menu__link"
+                onClick={(event) => {
+                  handleHomepageAnchor(event, link.route);
+                  closeMenu();
+                }}
+                aria-current={isCurrent(link.route) ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <p className="site-menu__note">Senior full-stack engineer · Bangalore, India</p>
+        </dialog>
       </div>
-    </motion.nav>
+    </header>
   );
 }

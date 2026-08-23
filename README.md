@@ -8,7 +8,8 @@ Live site: https://www.ayush.im
 - React 19
 - Tailwind CSS 4
 - Framer Motion
-- Sonner (toasts)
+- Lenis (fine-pointer desktop scrolling only)
+- Playwright and Axe
 
 ## Local setup
 
@@ -19,7 +20,7 @@ pnpm dev
 
 ## Environment
 
-Copy `.env.example` → `.env.local` and fill in SMTP settings for the contact form.
+`NEXT_PUBLIC_SITE_URL` is optional locally and controls canonical links in production.
 
 ## Scripts
 
@@ -27,5 +28,6 @@ Copy `.env.example` → `.env.local` and fill in SMTP settings for the contact f
 - `pnpm build` — production build
 - `pnpm start` — start production server
 - `pnpm lint` — lint
+- `pnpm test:e2e` — browser and accessibility checks
 
 © 2026 Ayush Rameja
