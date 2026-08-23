@@ -33,7 +33,7 @@ export default function ExperienceLogo({
         width={isWordmark ? 360 : 220}
         height={isWordmark ? 76 : 56}
         priority={priority}
-        className="h-full w-full object-contain object-left brightness-0 dark:invert"
+        className="h-full w-full object-contain object-left brightness-0"
       />
     </div>
   );

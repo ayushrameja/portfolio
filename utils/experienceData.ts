@@ -10,8 +10,7 @@ export const EXPERIENCE_SLUGS: EmployerSlug[] = [
 
 export type ExperienceEntry = {
   slug: EmployerSlug;
-  chapterNumber: string;
-  chapterTitle: string;
+  headline: string;
   thesis: string;
   companyName: string;
   roleLine: string;
@@ -34,8 +33,7 @@ export type ExperienceEntry = {
 export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
   autodesk: {
     slug: "autodesk",
-    chapterNumber: "01.1",
-    chapterTitle: "Platforms at scale",
+    headline: "Platforms at scale",
     thesis:
       "Shipping and evolving content and learning platforms used at meaningful scale.",
     companyName: "Autodesk",
@@ -76,8 +74,7 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
   },
   siemens: {
     slug: "siemens",
-    chapterNumber: "01.2",
-    chapterTitle: "Systems on the factory floor",
+    headline: "Systems on the factory floor",
     thesis:
       "Turning real-time industrial data into dependable operator workflows.",
     companyName: "Siemens Technology",
@@ -114,8 +111,7 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
   },
   accenture: {
     slug: "accenture",
-    chapterNumber: "01.3",
-    chapterTitle: "Building the foundation",
+    headline: "Building the foundation",
     thesis:
       "Learning to own enterprise product work across interface, API, and cloud boundaries.",
     companyName: "Accenture AI",
@@ -134,7 +130,7 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
     ],
     caseStudy: {
       context:
-        "Enterprise projects for Google and Chubb required frontend applications, backend APIs, data workflows, and cloud deployments to move as one system.",
+        "Enterprise customer-experience and transaction-workflow projects required frontend applications, backend APIs, data workflows, and cloud deployments to move as one system.",
       contribution:
         "Built APIs, responsive Angular and React interfaces, role-management workflows, database integrations, and production delivery across GCP and Azure.",
       decisions: [
@@ -142,8 +138,8 @@ export const experienceBySlug: Record<EmployerSlug, ExperienceEntry> = {
         "Used Docker-based delivery and cloud services to make production transitions faster and more repeatable.",
       ],
       impact: [
-        "Improved application performance by up to 50% and reliability by 40% on the Google customer-experience work.",
-        "Reduced deployment time by 35%, operational cost by 20%, and improved interface usability on the Chubb platform.",
+        "Improved application performance by up to 50% and reliability by 40% on an enterprise customer-experience platform.",
+        "Reduced deployment time by 35%, operational cost by 20%, and improved usability on an enterprise workflow platform.",
       ],
     },
     externalLinks: [

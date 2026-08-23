@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { createPageMetadata } from "@/utils/metadata";
 import { allPosts, getPostBySlug } from "../_posts";
 import BlogPostShell from "../_components/BlogPostShell";
 
@@ -21,24 +22,12 @@ export async function generateMetadata({
 
   const title = `${post.title} | Ayush Rameja`;
   const description = post.description;
-  const canonical = `/blogs/${post.slug}`;
-
-  return {
+  return createPageMetadata({
     title,
     description,
-    alternates: { canonical },
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      url: canonical,
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
-  };
+    path: `/blogs/${post.slug}`,
+    type: "article",
+  });
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

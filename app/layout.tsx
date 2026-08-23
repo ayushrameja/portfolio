@@ -1,20 +1,69 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 import { BASE_URL } from "@/constants/links";
 
+const manrope = localFont({
+  src: "../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2",
+  variable: "--font-manrope",
+  display: "optional",
+  weight: "200 800",
+});
+
+const ibmPlexMono = localFont({
+  src: [
+    {
+      path: "../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2",
+      weight: "400",
+    },
+    {
+      path: "../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2",
+      weight: "500",
+    },
+    {
+      path: "../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2",
+      weight: "600",
+    },
+  ],
+  variable: "--font-ibm-plex-mono",
+  display: "optional",
+  preload: false,
+});
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "Ayush Rameja | Engineer's Field Journal",
+  title: "Ayush Rameja | Senior Full-Stack Engineer",
   description:
-    "Full-stack engineer building scalable web platforms with React, Next.js, Node.js, and AWS. Based in Bangalore, India.",
+    "Senior full-stack engineer building reliable product platforms across interfaces, backend services, cloud delivery, and performance.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Ayush Rameja | Senior Full-Stack Engineer",
+    description:
+      "Reliable product platforms from interface to infrastructure.",
+    type: "website",
+    url: BASE_URL,
+    images: [
+      {
+        url: `${BASE_URL}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: "Ayush Rameja — Senior full-stack engineer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ayush Rameja | Senior Full-Stack Engineer",
+    description: "Reliable product platforms from interface to infrastructure.",
+    images: [`${BASE_URL}/og.png`],
+  },
 };
 
 export default function RootLayout({
@@ -23,22 +72,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className="overflow-x-hidden"
-      suppressHydrationWarning
-    >
+    <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
-          rel="stylesheet"
-        />
         <link
           rel="icon"
           type="image/png"
@@ -54,14 +89,8 @@ export default function RootLayout({
         />
         <meta name="apple-mobile-web-app-title" content="Ayush Rameja" />
         <link rel="manifest" href="/site.webmanifest" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(() => { try { const t = localStorage.getItem('theme'); const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; const next = t === 'dark' ? 'dark' : t === 'light' ? 'light' : prefersDark ? 'dark' : 'light'; if (next === 'dark') { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } else { document.documentElement.classList.remove('dark'); document.documentElement.style.colorScheme = 'light'; } } catch (e) {} })();",
-          }}
-        />
       </head>
-      <body className="min-h-dvh overflow-x-hidden font-sans antialiased">
+      <body className={`${manrope.variable} ${ibmPlexMono.variable} min-h-dvh font-sans antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
