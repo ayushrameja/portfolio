@@ -4,7 +4,7 @@
   "main": "worker.mjs",
   "compatibility_date": "2026-10-03",
   "workers_dev": true,
-  "preview_urls": false,
+  "preview_urls": true,
   "routes": [
     {
       "pattern": "www.ayush.im/*",
@@ -39,5 +39,6 @@
       "custom_domain": true,
       "zone_name": "ayushrameja.com"
     }
-  ]
+  ],
+  "previews": {}
 }

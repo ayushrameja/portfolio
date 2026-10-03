@@ -39,9 +39,27 @@ pnpm run preview:cloudflare
 NEXT_PUBLIC_SITE_URL=https://ayush.im pnpm run deploy:cloudflare
 ```
 
-`preview:cloudflare` builds the app and starts a local Workers preview. GitHub
-production builds and branch preview deployments require a separate Workers
-Builds connection after this migration is merged.
+`preview:cloudflare` starts a local Workers preview. `deploy:preview` publishes
+a branch Preview URL without changing the production deployment.
+
+Configure the existing Worker in Settings > Builds:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `/` |
+| Build command | `pnpm run build:cloudflare` |
+| Deploy command | `pnpm exec opennextjs-cloudflare deploy` |
+| Preview command | `pnpm exec wrangler preview` |
+| Enable Preview builds | Enabled |
+| Build variable `PNPM_VERSION` | `11.3.0` |
+| Build variable `NODE_VERSION` | `24` |
+| Build variable `NEXT_PUBLIC_SITE_URL` | `https://ayush.im` |
+
+Worker Previews use the `previews` configuration and do not inherit production
+secrets. The Preview contact form has no Gmail credentials; use production for
+email delivery testing. Builds require the Git connection and deployment token
+to be configured in the Cloudflare dashboard.
 
 The contact form uses `SMTP_EMAIL`, `SMTP_PASSWORD`, and `CONTACT_EMAIL` as
 encrypted Worker secrets. `NEXT_PUBLIC_SITE_URL` must be available when building
@@ -60,7 +78,22 @@ strings.
 pnpm run deploy:redirects
 ```
 
-The redirect Worker deploys independently of the Next.js app. Keep the associated
-Cloudflare DNS records proxied while using its Worker Routes.
+The redirect Worker deploys independently of the Next.js app. Connect the same
+GitHub repository to `portfolio-domain-redirects` with these settings:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `/infra/domain-redirects` |
+| Build command | Leave empty |
+| Deploy command | `npx --yes wrangler@4.146.0 deploy` |
+| Preview command | `npx --yes wrangler@4.146.0 preview` |
+| Enable Preview builds | Enabled |
+| Build variable `NODE_VERSION` | `24` |
+| Included build watch path | `infra/domain-redirects/*` |
+
+The pinned Wrangler command also works from the redirect directory, which does
+not have its own package manifest. Keep the associated Cloudflare DNS records
+proxied while using its Worker Routes.
 
 © 2026 Ayush Rameja

@@ -12,11 +12,12 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "preview_urls": false,
+  "preview_urls": true,
   "routes": [
     {
       "pattern": "ayush.im/*",
       "zone_name": "ayush.im"
     }
-  ]
+  ],
+  "previews": {}
 }
