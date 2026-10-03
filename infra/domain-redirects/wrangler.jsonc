@@ -1,0 +1,43 @@
+{
+  "name": "portfolio-domain-redirects",
+  "account_id": "423419184139ad08e82cba83e7afb59c",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-03",
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "www.ayush.im/*",
+      "zone_name": "ayush.im"
+    },
+    {
+      "pattern": "www.2025.ayush.im/*",
+      "zone_name": "ayush.im"
+    },
+    {
+      "pattern": "www.qrmint.ayush.im/*",
+      "zone_name": "ayush.im"
+    },
+    {
+      "pattern": "ayushrameja.com/*",
+      "zone_name": "ayushrameja.com"
+    },
+    {
+      "pattern": "www.ayushrameja.com/*",
+      "zone_name": "ayushrameja.com"
+    },
+    {
+      "pattern": "*.ayushrameja.com/*",
+      "zone_name": "ayushrameja.com"
+    },
+    {
+      "pattern": "www.2025.ayushrameja.com/*",
+      "zone_name": "ayushrameja.com"
+    },
+    {
+      "pattern": "2025.ayushrameja.com",
+      "custom_domain": true,
+      "zone_name": "ayushrameja.com"
+    }
+  ]
+}
