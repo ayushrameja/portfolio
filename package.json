@@ -10,7 +10,8 @@
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "deploy:redirects": "wrangler deploy --config infra/domain-redirects/wrangler.jsonc"
+    "deploy:redirects": "wrangler deploy --config infra/domain-redirects/wrangler.jsonc",
+    "deploy:preview": "opennextjs-cloudflare build && wrangler preview"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
@@ -36,5 +37,6 @@
     "tailwindcss": "^4",
     "typescript": "^5.7.0",
     "wrangler": "^4.146.0"
-  }
+  },
+  "packageManager": "pnpm@11.3.0"
 }
