@@ -78,7 +78,22 @@ strings.
 pnpm run deploy:redirects
 ```
 
-The redirect Worker deploys independently of the Next.js app. Keep the associated
-Cloudflare DNS records proxied while using its Worker Routes.
+The redirect Worker deploys independently of the Next.js app. Connect the same
+GitHub repository to `portfolio-domain-redirects` with these settings:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `/infra/domain-redirects` |
+| Build command | Leave empty |
+| Deploy command | `npx --yes wrangler@4.146.0 deploy` |
+| Preview command | `npx --yes wrangler@4.146.0 preview` |
+| Enable Preview builds | Enabled |
+| Build variable `NODE_VERSION` | `24` |
+| Included build watch path | `infra/domain-redirects/*` |
+
+The pinned Wrangler command also works from the redirect directory, which does
+not have its own package manifest. Keep the associated Cloudflare DNS records
+proxied while using its Worker Routes.
 
 © 2026 Ayush Rameja
