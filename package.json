@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint . --max-warnings=0"
+    "lint": "eslint . --max-warnings=0",
+    "build:cloudflare": "opennextjs-cloudflare build",
+    "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:redirects": "wrangler deploy --config infra/domain-redirects/wrangler.jsonc"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
@@ -21,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
+    "@opennextjs/cloudflare": "^1.20.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/nodemailer": "^7.0.9",
@@ -29,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "^16",
     "tailwindcss": "^4",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "wrangler": "^4.146.0"
   }
 }

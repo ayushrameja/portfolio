@@ -1,8 +1,8 @@
 export const LINKS = {
-  email: "ayushrameja@gmail.com",
+  email: "wave@ayush.im",
   phone: "+919660853303",
   phoneDisplay: "+91-9660853303",
-  website: "https://www.ayush.im",
+  website: "https://ayush.im",
   linkedin: "https://www.linkedin.com/in/ayushrameja",
   github: "https://github.com/ayushrameja",
   quarks: "https://www.qtsolv.com/",
@@ -18,4 +18,4 @@ export const RESUME = {
   },
 } as const;
 
-export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ayush.im';
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || LINKS.website;
