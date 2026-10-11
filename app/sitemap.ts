@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { allPosts } from "./blogs/_posts";
+import { selectedWork } from "@/utils/selectedWork";
 import { BASE_URL } from "@/constants/links";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -53,6 +54,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.65,
     },
+    ...[
+      "/work",
+      "/about",
+      "/playground",
+      ...selectedWork.map((project) => `/work/${project.slug}`),
+    ].map((path) => ({
+      url: `${BASE_URL}${path}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...blogPosts,
   ];
 }

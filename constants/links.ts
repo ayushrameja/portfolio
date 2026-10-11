@@ -9,13 +9,8 @@ export const LINKS = {
 } as const;
 
 export const RESUME = {
-  driveId: '1KH4dnH50ocYFxv0Cut7gqMltRDHgC088',
-  get previewUrl() {
-    return `https://drive.google.com/file/d/${this.driveId}/preview`;
-  },
-  get downloadUrl() {
-    return `https://drive.google.com/uc?export=download&id=${this.driveId}`;
-  },
+  previewUrl: "/files/ayush-rameja-resume.pdf",
+  downloadUrl: "/files/ayush-rameja-resume.pdf",
 } as const;
 
 export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || LINKS.website;

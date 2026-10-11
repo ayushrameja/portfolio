@@ -1,13 +1,22 @@
-import { LINKS } from "@/constants/links";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="relative px-4 pb-28 sm:px-8">
-      <div className="mx-auto flex w-full max-w-[88rem] flex-col gap-4 border-y journal-rule py-5 font-mono text-[10px] uppercase text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} Ayush Rameja / Bangalore, India</p>
-        <p>
-          Built with Next.js / Typeset with Newsreader / <a className="hover:text-[var(--cobalt)]" href={LINKS.github}>Source nearby</a>
-        </p>
+    <footer id="contact" className="site-footer portfolio-container">
+      <div>
+        <p className="eyebrow">Have something in mind?</p>
+        <a
+          className="contact-link"
+          href="mailto:wave@ayush.im"
+          data-cursor="HI!"
+        >
+          Let&apos;s make it happen <ArrowUpRight aria-hidden="true" />
+        </a>
+      </div>
+      <div className="footer-meta">
+        <Link href="/about">More about me</Link>
+        <span>© {new Date().getFullYear()} Ayush Rameja</span>
       </div>
     </footer>
   );

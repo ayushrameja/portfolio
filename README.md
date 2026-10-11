@@ -8,7 +8,8 @@ Live site: https://ayush.im
 - React 19
 - Tailwind CSS 4
 - Framer Motion
-- Sonner (toasts)
+- Self-hosted Bricolage Grotesque and Manrope
+- One cream/cobalt palette, native scrolling, accessible loading states
 
 ## Local setup
 
@@ -19,7 +20,7 @@ pnpm dev
 
 ## Environment
 
-Copy `.env.example` → `.env.local` and fill in SMTP settings for the contact form.
+No environment variables are needed for the public portfolio preview. The homepage Contact link opens `wave@ayush.im`. The retained contact API still uses the existing SMTP settings; no provider or email configuration is changed.
 
 ## Scripts
 
@@ -27,6 +28,20 @@ Copy `.env.example` → `.env.local` and fill in SMTP settings for the contact f
 - `pnpm build` — production build
 - `pnpm start` — start production server
 - `pnpm lint` — lint
+- `pnpm test` — Bakbak release parsing and fallback regression checks (Node 24)
+
+## Portfolio content
+
+- `/`: concise introduction, current engineering role, portrait, two selected projects, and links to explore.
+- `/work`: five featured projects; `/work/[slug]` records role, scope, current status, and live/source links.
+- `/about`: engineering experience and Low HP Studio.
+- `/playground`: small tools, prototypes, and a clearly labelled TypeRush archive.
+- `/blogs`, `/resume`, `/bakbak`, and `/experience/[slug]`: existing URLs retained.
+- Résumé downloads use `public/files/ayush-rameja-resume.pdf`, copied from the existing local portfolio work.
+
+Edit `utils/selectedWork.ts` for the featured collection. Project images are local WebP captures; provenance is recorded in `docs/portfolio-refresh.md`. Keep private projects out of public content unless explicitly approved.
+
+The ASCII loader runs only during actual image/route loading. There is no minimum loading delay. It pauses when hidden or offscreen, and uses one static face for reduced motion. The decorative cursor only appears over links on fine-pointer devices; keyboard, touch, and reduced-motion navigation remain native.
 
 ## Cloudflare deployment
 

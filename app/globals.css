@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope", system-ui, sans-serif;
-  --font-serif: "Newsreader", georgia, serif;
+  --font-sans: "Manrope Variable", "Manrope", system-ui, sans-serif;
+  --font-serif: "Bricolage Grotesque Variable", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --font-editorial: "Newsreader", georgia, serif;
+  --font-editorial: "Bricolage Grotesque Variable", sans-serif;
 }
 
 @variant dark (&:where(.dark, .dark *));
@@ -26,22 +26,7 @@
   --selection-fg: #fbfbf6;
 }
 
-html.dark {
-  color-scheme: dark;
-  --paper: #10110f;
-  --paper-raised: #171815;
-  --ink: #f2f2eb;
-  --muted: #b4b6ae;
-  --faint: #7f817a;
-  --rule: #353730;
-  --rule-strong: #62645c;
-  --cobalt: #7ea2ff;
-  --cobalt-ink: #a8beff;
-  --vermilion: #ff765f;
-  --vermilion-ink: #ff9b8b;
-  --selection-bg: #7ea2ff;
-  --selection-fg: #10110f;
-}
+
 
 @layer base {
   html {

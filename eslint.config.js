@@ -2,6 +2,7 @@ import next from "eslint-config-next/core-web-vitals";
 
 const config = [
   ...next,
+  { ignores: [".open-next/**", ".wrangler/**"] },
   {
     rules: {
       "@next/next/no-page-custom-font": "off",
