@@ -1,0 +1,44 @@
+---
+import { getNotes } from "../../lib/content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const notes = await getNotes();
+const desks = [
+  { id: "engineering", label: "Engineering" },
+  { id: "life", label: "Life" },
+] as const;
+---
+
+<BaseLayout
+  title="Notes · Ayush Rameja"
+  description="Archived engineering and life essays by Ayush Rameja."
+>
+  <h1 class="text-4xl font-semibold tracking-tight">Notes</h1>
+  <p class="mt-4 max-w-xl text-[var(--muted)]">
+    {notes.length} archived essays, retained as written.
+  </p>
+  {
+    desks.map((desk) => {
+      const entries = notes.filter((note) => note.data.desk === desk.id);
+      return (
+        <section class="mt-10" aria-labelledby={`${desk.id}-heading`}>
+          <h2 id={`${desk.id}-heading`} class="text-xl font-semibold tracking-tight">
+            {desk.label}
+          </h2>
+          <ul class="mt-4 divide-y divide-[var(--line)] border-y border-[var(--line)]">
+            {entries.map((note) => (
+              <li>
+                <a class="block py-4 no-underline hover:underline" href={`/notes/${note.id}/`}>
+                  <span class="block font-medium text-[var(--ink)]">{note.data.title}</span>
+                  <span class="mt-1 block text-sm text-[var(--muted)]">
+                    {note.data.publishedAt} · {note.data.readingTime}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+</BaseLayout>

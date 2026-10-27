@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ayush-portfolio",
+  // Assets-only Worker. No `main` script: pages are pre-rendered.
+  // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
+  // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/
+  "compatibility_date": "2026-10-27",
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01
+    }
+  },
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

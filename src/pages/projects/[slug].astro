@@ -1,0 +1,91 @@
+---
+import { render } from "astro:content";
+import { getProjects } from "../../lib/content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const facts = [
+  ["Role", project.data.role],
+  ["Status", project.data.status],
+  ["Client", project.data.client],
+  ["Timeline", project.data.timeline],
+].filter((entry): entry is [string, string] => Boolean(entry[1]));
+---
+
+<BaseLayout title={`${project.data.title} · Ayush Rameja`} description={project.data.summary}>
+  <p class="text-sm text-[var(--muted)]">
+    <a href="/projects/">Projects</a>
+    <span aria-hidden="true"> · </span>
+    {project.data.kind === "employer" ? "Employer work" : "Independent"}
+  </p>
+  <h1 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">{project.data.title}</h1>
+  <p class="mt-4 text-lg leading-relaxed">{project.data.summary}</p>
+  {
+    facts.length > 0 && (
+      <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+        {facts.map(([label, value]) => (
+          <div>
+            <dt class="text-sm text-[var(--muted)]">{label}</dt>
+            <dd class="mt-1">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+  {
+    project.data.skills && project.data.skills.length > 0 && (
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Skills">
+        {project.data.skills.map((skill) => (
+          <li class="border border-[var(--line)] px-2 py-1 text-sm">{skill}</li>
+        ))}
+      </ul>
+    )
+  }
+  <article class="content mt-8 max-w-[65ch]">
+    <Content />
+  </article>
+  <ul class="mt-8 flex flex-col gap-2">
+    {
+      project.data.href && (
+        <li>
+          <a class="inline-flex min-h-11 items-center underline" href={project.data.href} target="_blank" rel="noopener noreferrer">
+            Visit site<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )
+    }
+    {
+      project.data.source && (
+        <li>
+          <a class="inline-flex min-h-11 items-center underline" href={project.data.source} target="_blank" rel="noopener noreferrer">
+            Source<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )
+    }
+  </ul>
+  <p class="mt-8 text-sm text-[var(--muted)]">Source text is from the archived project records.</p>
+</BaseLayout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

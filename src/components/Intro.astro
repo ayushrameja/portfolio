@@ -1,0 +1,188 @@
+---
+import { loadingPath, markPath, markViewBox } from "../brand/geometry";
+---
+
+<div id="intro" class="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-title">
+  <h2 id="intro-title" class="sr-only">Site introduction</h2>
+  <div class="intro-loading" aria-hidden="true">
+    <svg viewBox="-5 -5 256 48">
+      <path d={loadingPath}></path>
+    </svg>
+  </div>
+  <div class="intro-detail" aria-hidden="true"></div>
+  <div class="intro-scene">
+    <svg class="intro-echo intro-echo-1" viewBox={markViewBox} aria-hidden="true">
+      <use href="#ar-mark"></use>
+    </svg>
+    <svg class="intro-echo intro-echo-2" viewBox={markViewBox} aria-hidden="true">
+      <use href="#ar-mark"></use>
+    </svg>
+    <svg class="intro-echo intro-echo-3" viewBox={markViewBox} aria-hidden="true">
+      <use href="#ar-mark"></use>
+    </svg>
+    <svg class="intro-cage" viewBox="0 0 288 244" aria-hidden="true">
+      <path d="M22 25L246 25L246 219L22 219Z M44 10L268 10L268 204L44 204Z M22 25L44 10 M246 25L268 10 M246 219L268 204 M22 219L44 204"></path>
+      <g class="intro-nodes">
+        <rect x="19" y="22" width="6" height="6"></rect>
+        <rect x="243" y="22" width="6" height="6"></rect>
+        <rect x="243" y="216" width="6" height="6"></rect>
+        <rect x="19" y="216" width="6" height="6"></rect>
+        <rect x="41" y="7" width="6" height="6"></rect>
+        <rect x="265" y="7" width="6" height="6"></rect>
+        <rect x="265" y="201" width="6" height="6"></rect>
+        <rect x="41" y="201" width="6" height="6"></rect>
+      </g>
+    </svg>
+    <svg class="intro-logo" viewBox={markViewBox} role="img" aria-label="AR logo">
+      <defs>
+        <path id="ar-mark" fill-rule="evenodd" d={markPath}></path>
+        <linearGradient id="ar-gloss" x1="0" y1="0" x2=".8" y2="1">
+          <stop stop-color="#f1ffff"></stop>
+          <stop offset=".18" stop-color="#b6f8ed"></stop>
+          <stop offset=".4" stop-color="#66cde6"></stop>
+          <stop offset=".65" stop-color="#44316f"></stop>
+          <stop offset=".85" stop-color="#ab92e8"></stop>
+          <stop offset="1" stop-color="#e7e5ff"></stop>
+        </linearGradient>
+      </defs>
+      <use href="#ar-mark" fill="#201e42" transform="translate(0 7)"></use>
+      <use href="#ar-mark" fill="url(#ar-gloss)" stroke="#d5fffa" stroke-width="1.3"></use>
+      <use class="intro-white" href="#ar-mark" fill="#ffffff"></use>
+    </svg>
+  </div>
+  <button id="intro-skip" class="intro-skip" type="button">Skip intro</button>
+</div>
+
+<script>
+  import { scheduleIntro, startIntro } from "../scripts/intro";
+
+  scheduleIntro(new URLSearchParams(window.location.search).get("introDelay"), startIntro);
+</script>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse, #101724, #050506 68%);
+    color: #f7f3ef;
+    perspective: 900px;
+  }
+
+  .intro-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    background: #030304;
+  }
+
+  .intro-loading svg {
+    width: min(220px, 65vw);
+    overflow: visible;
+    fill: none;
+    stroke: #9ce6da;
+    stroke-width: 1.15;
+    filter: drop-shadow(0 0 4px #91f5e530);
+  }
+
+  .intro-scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transform-style: preserve-3d;
+    opacity: 0;
+  }
+
+  .intro-echo,
+  .intro-logo,
+  .intro-cage {
+    position: absolute;
+    overflow: visible;
+  }
+
+  .intro-echo,
+  .intro-logo {
+    width: min(190px, 46vw);
+    height: auto;
+  }
+
+  .intro-echo {
+    fill: none;
+    stroke: #b3a4ec;
+    stroke-width: 1;
+    opacity: 0.5;
+  }
+
+  .intro-logo {
+    filter: drop-shadow(0 0 22px #79cce64d);
+  }
+
+  .intro-white {
+    opacity: 0;
+  }
+
+  .intro-cage {
+    width: min(288px, 78vw);
+    height: auto;
+    fill: none;
+    stroke: #ecebf1;
+    stroke-width: 1.1;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px #fff4);
+  }
+
+  .intro-nodes {
+    fill: #f6f4f9;
+    stroke: none;
+  }
+
+  .intro-detail {
+    position: absolute;
+    left: 12%;
+    top: 20%;
+    width: 60px;
+    height: 58%;
+    background: repeating-linear-gradient(90deg, transparent 0 7px, #d8fdfb 7px 8px);
+    opacity: 0;
+    transform: skewY(-25deg);
+  }
+
+  .intro-skip {
+    position: absolute;
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+    z-index: 5;
+    min-height: 2.75rem;
+    border: 1px solid rgb(255 255 255 / 32%);
+    border-radius: 999px;
+    background: rgb(12 12 14 / 88%);
+    color: #fff;
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .intro-skip:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+</style>
