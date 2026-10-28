@@ -8,7 +8,7 @@ Static Astro site for Cloudflare Workers Static Assets. The previous Next.js app
 - Approved logo: `design/logo/circular-ar/ar-circular.svg` and `design/logo/circular-ar/ar-circular-white.svg`
 - Approved intro study: `design/intro/README.md` and `design/intro/hero-preview.html`
 
-The homepage contains only a minimal name/subtitle hero placeholder. Its final layout and entrance animation are deferred.
+The homepage implements the approved portrait hero in `src/components/Hero.astro`: responsive Inter Tight typography, the approved portrait optimized by Astro, continuous gradient text, a live Bengaluru clock, Resume link, and a native popover menu. “Built from curiosity.” is consistent across screen sizes. The existing loading animation remains in place. Work and Notes use the existing Astro routes; Resume opens the supplied Google Drive preview. Motion can be paused from the menu and respects reduced-motion preferences.
 
 ## Stack
 
@@ -76,11 +76,11 @@ These archived routes have no single replacement and are not redirected to the h
 
 ## Intro
 
-The homepage and inner pages play the approved sequence once per browser tab: 0.3s Loading, diagonal close-up, wireframe box, rotated logo reveal, then the overlay disappears instantly at 3.2 seconds. The hero has no entrance animation. Playback starts at the first frame when the intro module is ready. A slow script does not skip ahead. The mark is the selected circular AR with a single lower R cutout. The metallic finish uses ice-blue, mint, and violet; the final logo resolves to white.
+Every full page load plays the complete 3.2-second sequence: Loading, diagonal close-up, wireframe, rotation and white-logo hold. Dismissal requires both the completed storyboard and page readiness (document load, fonts settled, eager images decoded). Cached/fast loads never shorten the sequence; slow loads hold the final logo with “Loading page…”. Lazy images are excluded from the decode gate. This behavior is shared by development and production, with no session-storage bypass.
 
-The session flag is `sessionStorage["ar-intro-seen"]`, set when playback starts. A reload in the same tab does not play it again. A new tab does. `prefers-reduced-motion: reduce` skips playback and does not set the flag. Skip and Escape dismiss it immediately and move focus to the page, including while the module is still waiting. If JavaScript does not run, the intro stays hidden and the page content is in the HTML. Tailwind’s reset gives `[hidden]` `display: none !important` inside a cascade layer, so the end-of-body script removes that attribute while the intro is pending.
+Reduced-motion preference skips playback. Skip and Escape still dismiss intentionally and move focus to content. Without JavaScript, the intro remains hidden and the rendered HTML is available. The hero has no entrance animation.
 
-If playback has not started after 6 seconds, the inline head script removes the overlay. That timeout is independent of the 3.2 second storyboard. A separate 4 second timer, measured from the moment playback starts, dismisses the overlay if the animation clock stalls. `?introDelay=1500` waits that many milliseconds before starting, up to 4500. `?introDelay=hold` never starts playback, so the 6 second timeout can be checked. Both are verification hooks.
+Failure recovery remains bounded: a module that never starts is bypassed after 6 seconds; the animation watchdog only releases a visibly stalled clock, not healthy playback or a hidden tab. Asset readiness has a 15-second fallback, which still waits for the animation to finish. Broken images/fonts settle instead of trapping visitors. `?introDelay=1500` and `?introDelay=hold` are development-only test hooks and are removed from the production path.
 
 ## Contact form
 

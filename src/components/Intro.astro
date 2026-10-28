@@ -50,13 +50,15 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
       <use class="intro-white" href="#ar-mark" fill="#ffffff"></use>
     </svg>
   </div>
+  <p class="intro-status" role="status" aria-live="polite">Loading page…</p>
   <button id="intro-skip" class="intro-skip" type="button">Skip intro</button>
 </div>
 
 <script>
   import { scheduleIntro, startIntro } from "../scripts/intro";
 
-  scheduleIntro(new URLSearchParams(window.location.search).get("introDelay"), startIntro);
+  // Delay controls belong to local testing only, never production loading.
+  scheduleIntro(import.meta.env.DEV ? new URLSearchParams(window.location.search).get("introDelay") : null, startIntro);
 </script>
 
 <style>
@@ -81,7 +83,6 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
     overflow: hidden;
     background: radial-gradient(ellipse, #101724, #050506 68%);
     color: #f7f3ef;
-    perspective: 900px;
   }
 
   .intro-loading {
@@ -107,7 +108,6 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
     inset: 0;
     display: grid;
     place-items: center;
-    transform-style: preserve-3d;
     opacity: 0;
   }
 
@@ -131,8 +131,10 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
     opacity: 0.5;
   }
 
+  /* Keep enlarged SVG edges out of filtered/3D raster layers.
+     The backdrop supplies the ambient glow. */
   .intro-logo {
-    filter: drop-shadow(0 0 22px #79cce64d);
+    shape-rendering: geometricPrecision;
   }
 
   .intro-white {
@@ -146,7 +148,6 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
     stroke: #ecebf1;
     stroke-width: 1.1;
     opacity: 0;
-    filter: drop-shadow(0 0 4px #fff4);
   }
 
   .intro-nodes {
@@ -164,6 +165,16 @@ import { loadingPath, markPath, markViewBox } from "../brand/geometry";
     opacity: 0;
     transform: skewY(-25deg);
   }
+
+  .intro-status {
+    position: absolute;
+    bottom: 48px;
+    color: #adb9c8;
+    font-size: 14px;
+    opacity: 0;
+  }
+
+  .intro[data-waiting] .intro-status { opacity: 1; }
 
   .intro-skip {
     position: absolute;

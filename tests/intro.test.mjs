@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { mock, test } from "node:test";
 import {
   INTRO_INIT_FAILURE_MS,
+  PAGE_READY_FAILURE_MS,
+  waitForPageReady,
   INTRO_PLAYBACK_FAILURE_MS,
   MAX_INTRO_START_DELAY_MS,
   scheduleIntro,
@@ -113,6 +115,10 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
   const storage = new Map();
   const document = {
     documentElement: root,
+    readyState: "complete",
+    images: [],
+    fonts: { ready: Promise.resolve() },
+    hidden: false,
     activeElementId: null,
     getElementById(id) {
       if (landing && id === "hero-copy") return heroCopy;
@@ -191,7 +197,7 @@ test("delayed playback starts at frame zero", () => {
       assert.equal(loading.keyframes[2].offset, 300 / 3200);
       const scene = harness.animations[1];
       assert.equal(scene.keyframes[0].offset, 0);
-      assert.match(String(scene.keyframes[0].transform), /translate\(390px, 180px\) rotate\(28deg\) rotateY\(0deg\) scale\(10\.5\)/);
+      assert.match(String(scene.keyframes[0].transform), /translate\(390px, 180px\) rotate\(28deg\) scale\(10\.5\)/);
       harness.dispatch("click");
     }
   } finally {
@@ -203,7 +209,7 @@ test("normal start, skip, escape, reduced motion, and stalled playback", () => {
   const normal = installDocument({ requestedAt: performance.now() - 5000 });
   scheduleIntro(null, startIntro);
   assert.equal(normal.animations.every((animation) => animation.currentTime === 0 && animation.played), true);
-  assert.equal(normal.storage.get("ar-intro-seen"), "1");
+  assert.equal(normal.storage.has("ar-intro-seen"), false);
   normal.dispatch("keydown", { key: "Tab" });
   assert.equal(globalThis.document.activeElementId, "skip");
   normal.dispatch("keydown", { key: "Escape" });
@@ -257,11 +263,12 @@ test("hold does not start playback", () => {
 });
 
 
-test("intro cuts away without fading the overlay or animating hero content", () => {
+test("intro cuts away only after the full storyboard and page readiness", async () => {
   const harness = installDocument({ landing: true });
   let nextFrame;
   globalThis.requestAnimationFrame = (callback) => { nextFrame = callback; return 1; };
-  startIntro();
+  startIntro(Promise.resolve());
+  await Promise.resolve();
   assert.equal(harness.animations.some(animation => ["intro", "hero-copy"].includes(animation.target)), false);
   harness.animations[0].currentTime = 3199;
   nextFrame();
@@ -271,4 +278,94 @@ test("intro cuts away without fading the overlay or animating hero content", () 
   assert.equal(harness.intro.hidden, true);
   assert.equal(harness.shell.attributes.inert, undefined);
   assert.equal(harness.animations.every(animation => animation.cancelled), true);
+});
+
+function deferred() {
+  let resolve;
+  const promise = new Promise(done => { resolve = done; });
+  return { promise, resolve };
+}
+
+test("slow assets hold the finished logo beyond the old playback timeout", async () => {
+  mock.timers.enable({ apis: ["setTimeout"] });
+  try {
+    const page = deferred();
+    const harness = installDocument();
+    let nextFrame;
+    globalThis.requestAnimationFrame = callback => { nextFrame = callback; return 1; };
+    startIntro(page.promise);
+    harness.animations.forEach(animation => { animation.currentTime = 3200; });
+    nextFrame();
+    mock.timers.tick(INTRO_PLAYBACK_FAILURE_MS + 1000);
+    assert.equal(harness.intro.hidden, false);
+    assert.equal(harness.intro.attributes["data-waiting"], "");
+    assert.equal(harness.animations.some(animation => animation.cancelled), false);
+    page.resolve();
+    await Promise.resolve();
+    assert.equal(harness.intro.hidden, true);
+  } finally { mock.timers.reset(); }
+});
+
+test("readiness timeout cannot cut a healthy unfinished storyboard", async () => {
+  mock.timers.enable({ apis: ["setTimeout"] });
+  try {
+    const harness = installDocument();
+    document.hidden = true;
+    let nextFrame;
+    globalThis.requestAnimationFrame = callback => { nextFrame = callback; return 1; };
+    startIntro(new Promise(() => {}));
+    harness.animations[0].currentTime = 1500;
+    mock.timers.tick(PAGE_READY_FAILURE_MS);
+    assert.equal(harness.intro.hidden, false);
+    harness.animations[0].currentTime = 3200;
+    nextFrame();
+    assert.equal(harness.intro.hidden, true);
+  } finally { mock.timers.reset(); }
+});
+
+test("late readiness does not reopen a manually skipped loader", async () => {
+  const page = deferred();
+  const harness = installDocument();
+  startIntro(page.promise);
+  harness.dispatch("click");
+  page.resolve();
+  await Promise.resolve();
+  assert.equal(harness.intro.hidden, true);
+  assert.equal(harness.root.classList.contains("intro-pending"), false);
+});
+
+test("page readiness waits for load, fonts and eager decode, but not lazy images", async () => {
+  installDocument();
+  const fonts = deferred(), image = deferred();
+  let onLoad;
+  let decoded = false;
+  document.readyState = "loading";
+  document.fonts.ready = fonts.promise;
+  document.images = [
+    { loading: "eager", decode: () => { decoded = true; return image.promise; } },
+    { loading: "lazy", decode: () => { throw new Error("must not decode lazy image"); } },
+    { loading: "", decode: () => Promise.reject(new Error("broken image")) },
+  ];
+  window.addEventListener = (type, callback) => { if (type === "load") onLoad = callback; };
+  window.removeEventListener = () => {};
+  let ready = false;
+  const promise = waitForPageReady(new AbortController().signal).then(() => { ready = true; });
+  assert.equal(decoded, false);
+  onLoad();
+  await Promise.resolve();
+  assert.equal(decoded, true);
+  assert.equal(ready, false);
+  fonts.resolve();
+  await Promise.resolve();
+  assert.equal(ready, false);
+  image.resolve();
+  await promise;
+  assert.equal(ready, true);
+});
+
+test("production loader is not disabled by session storage or debug delay", () => {
+  const layout = readFileSync(new URL("../src/layouts/BaseLayout.astro", import.meta.url), "utf8");
+  const component = readFileSync(new URL("../src/components/Intro.astro", import.meta.url), "utf8");
+  assert.equal(layout.includes("ar-intro-seen"), false);
+  assert.match(component, /import\.meta\.env\.DEV \?/);
 });

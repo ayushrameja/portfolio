@@ -1,5 +1,6 @@
 const DURATION = 3200;
-const STORAGE_KEY = "ar-intro-seen";
+// Failed or indefinitely pending resources must not trap visitors.
+export const PAGE_READY_FAILURE_MS = 15000;
 
 // Independent of the 3.2s storyboard. If the module never starts playback,
 // the inline head timeout uses this same value to drop the overlay.
@@ -20,6 +21,28 @@ export function scheduleIntro(rawDelay: string | null, start: () => void) {
   start();
 }
 
+// Wait for the document, fonts, and decoded eager images. Lazy images below
+// the fold are deliberately excluded: scrolling is needed to request them.
+export async function waitForPageReady(signal: AbortSignal) {
+  const loaded = new Promise<void>((resolve) => {
+    if (document.readyState === "complete" || signal.aborted) return resolve();
+    const done = () => {
+      window.removeEventListener("load", done);
+      signal.removeEventListener("abort", done);
+      resolve();
+    };
+    window.addEventListener("load", done, { once: true });
+    signal.addEventListener("abort", done, { once: true });
+  });
+  await loaded;
+  if (signal.aborted) return;
+  const images = Array.from(document.images)
+    .filter((image) => image.loading !== "lazy")
+    .map((image) => image.decode().catch(() => {}));
+  // A broken image/font is settled, not an endless loading state.
+  await Promise.allSettled([document.fonts.ready, ...images]);
+}
+
 type Frame = [number, Record<string, string | number>];
 
 function track(element: Element, frames: Frame[]) {
@@ -38,7 +61,7 @@ function revealPage() {
   document.getElementById("site-shell")?.removeAttribute("inert");
 }
 
-export function startIntro() {
+export function startIntro(readiness?: Promise<void>) {
   const root = document.documentElement;
   const intro = document.getElementById("intro");
   if (!intro || !root.classList.contains("intro-pending")) return;
@@ -68,13 +91,13 @@ export function startIntro() {
       [3200, { opacity: 0, visibility: "hidden" }],
     ]),
     track(scene, [
-      [0, { transform: "translate(390px, 180px) rotate(28deg) rotateY(0deg) scale(10.5)", opacity: 0 }],
-      [300, { transform: "translate(390px, 180px) rotate(28deg) rotateY(0deg) scale(10.5)", opacity: 1 }],
-      [750, { transform: "translate(330px, 145px) rotate(24deg) rotateY(0deg) scale(9)", opacity: 1, easing: "cubic-bezier(.65,0,.25,1)" }],
-      [1550, { transform: "translate(0,0) rotate(-8deg) rotateY(-28deg) scale(1)", opacity: 1 }],
-      [1850, { transform: "translate(0,0) rotate(-8deg) rotateY(-28deg) scale(1)", easing: "cubic-bezier(.4,0,.2,1)" }],
-      [2450, { transform: "translate(0,0) rotate(0deg) rotateY(0deg) scale(1.08)" }],
-      [3200, { transform: "translate(0,0) rotate(0deg) rotateY(0deg) scale(1.08)" }],
+      [0, { transform: "translate(390px, 180px) rotate(28deg) scale(10.5)", opacity: 0 }],
+      [300, { transform: "translate(390px, 180px) rotate(28deg) scale(10.5)", opacity: 1 }],
+      [750, { transform: "translate(330px, 145px) rotate(24deg) scale(9)", opacity: 1, easing: "cubic-bezier(.65,0,.25,1)" }],
+      [1550, { transform: "translate(0,0) rotate(-8deg) scaleX(0.8829475929) scale(1)", opacity: 1 }],
+      [1850, { transform: "translate(0,0) rotate(-8deg) scaleX(0.8829475929) scale(1)", easing: "cubic-bezier(.4,0,.2,1)" }],
+      [2450, { transform: "translate(0,0) rotate(0deg) scale(1.08)" }],
+      [3200, { transform: "translate(0,0) rotate(0deg) scale(1.08)" }],
     ]),
     track(cage, [
       [0, { opacity: 0, strokeDasharray: 1400, strokeDashoffset: 1400 }],
@@ -120,18 +143,19 @@ export function startIntro() {
   let frame = 0;
   let closed = false;
   let stallTimer = 0;
+  let readyTimer = 0;
+  let pageReady = false;
+  let animationFinished = false;
+  const loadingController = new AbortController();
 
   const complete = () => {
     if (closed) return;
     closed = true;
     window.clearTimeout(stallTimer);
+    window.clearTimeout(readyTimer);
+    loadingController.abort();
     cancelAnimationFrame(frame);
     for (const animation of animations) animation.cancel();
-    try {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      // Session storage can be unavailable. Dismissal still has to work.
-    }
     reduced.removeEventListener("change", onReduce);
     intro.removeEventListener("keydown", onKeydown);
     skip.removeEventListener("click", complete);
@@ -157,11 +181,6 @@ export function startIntro() {
 
   intro.hidden = false;
   root.classList.add("intro-playing");
-  try {
-    sessionStorage.setItem(STORAGE_KEY, "1");
-  } catch {
-    // Playback can continue without persisting the session flag.
-  }
 
   // Start at frame zero when playback is ready. Time spent waiting for this
   // module is not part of the storyboard and must not skip Loading.
@@ -169,12 +188,49 @@ export function startIntro() {
     animation.currentTime = 0;
     animation.play();
   }
-  stallTimer = window.setTimeout(complete, INTRO_PLAYBACK_FAILURE_MS);
+  const revealWhenReady = () => {
+    if (closed) return;
+    if (animationFinished && pageReady) complete();
+    else if (animationFinished) intro.setAttribute("data-waiting", "");
+  };
+  const markReady = () => {
+    if (closed) return;
+    pageReady = true;
+    window.clearTimeout(readyTimer);
+    revealWhenReady();
+  };
+  readyTimer = window.setTimeout(() => {
+    loadingController.abort();
+    markReady();
+  }, PAGE_READY_FAILURE_MS);
+  (readiness ?? waitForPageReady(loadingController.signal)).then(markReady, markReady);
+
+  // Only recover a genuinely stalled animation. Background-tab throttling or
+  // slow assets must never turn this watchdog into a storyboard cutoff.
+  let lastTime = 0;
+  const checkPlayback = () => {
+    if (closed || animationFinished) return;
+    const time = Number(animations[0]?.currentTime ?? 0);
+    if (time >= DURATION) {
+      animationFinished = true;
+      revealWhenReady();
+      return;
+    }
+    if (!document.hidden && time <= lastTime) {
+      complete(); // Animation API failed to advance; keep the page usable.
+      return;
+    }
+    lastTime = time;
+    stallTimer = window.setTimeout(checkPlayback, INTRO_PLAYBACK_FAILURE_MS);
+  };
+  stallTimer = window.setTimeout(checkPlayback, INTRO_PLAYBACK_FAILURE_MS);
 
   const watch = () => {
     const time = Number(animations[0]?.currentTime ?? DURATION);
     if (time >= DURATION) {
-      complete();
+      animationFinished = true;
+      window.clearTimeout(stallTimer);
+      revealWhenReady();
       return;
     }
     frame = requestAnimationFrame(watch);

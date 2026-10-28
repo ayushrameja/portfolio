@@ -29,7 +29,6 @@ const year = 2026;
       (function () {
         try {
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-          if (sessionStorage.getItem("ar-intro-seen") === "1") return;
           var root = document.documentElement;
           root.classList.add("intro-pending");
           window.setTimeout(function () {
@@ -75,9 +74,6 @@ const year = 2026;
           root.classList.remove("intro-pending", "intro-playing");
           if (intro) intro.hidden = true;
           if (shell) shell.removeAttribute("inert");
-          try {
-            sessionStorage.setItem("ar-intro-seen", "1");
-          } catch (error) {}
           var content = document.getElementById("content");
           if (content) content.focus();
         };

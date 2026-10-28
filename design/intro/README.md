@@ -37,3 +37,11 @@ Checked: Astro type check, seven regression tests including hero reveal cleanup,
 ## Current finish and ending
 
 The active intro uses an ice-blue, mint and violet metallic gradient instead of red. At 3.2 seconds the overlay is hidden instantly; the hero has no fade or movement. The existing loading, close-up, wireframe, rotation and white-logo hold are retained. Hero entrance design is deferred. This supersedes earlier fade-out descriptions above.
+
+## High-DPI rendering
+
+Zen showed rough edges when the small SVG was enlarged inside a filtered CSS 3D layer. The active Astro intro now uses flat transforms, with horizontal scaling to suggest the angled pose, and no SVG drop-shadow filter. The backdrop provides the glow. The approved circular SVG geometry, colors, timing and instant ending are unchanged. Verified the enlarged close-up in Zen at device pixel ratio 2; Astro check, seven tests and the static build passed.
+
+## Real page loading integration
+
+The Astro implementation now supersedes the earlier once-per-tab and fixed-dismissal behavior. Every full document load plays the full 3.2-second storyboard and reveals content only after the document, fonts and eager-image decoding settle. Slow resources hold the final logo; fast resources cannot cut playback short. Reduced motion and intentional Skip/Escape still bypass it. The production path excludes development delay hooks. Failure fallbacks and readiness/animation timing regressions are covered in `tests/intro.test.mjs`. No deployment was performed.

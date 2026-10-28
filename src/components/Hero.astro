@@ -1,0 +1,156 @@
+---
+import { Image } from "astro:assets";
+import portrait from "../assets/portrait-approved.png";
+const resume = "https://drive.google.com/file/d/1KH4dnH50ocYFxv0Cut7gqMltRDHgC088/preview";
+const links = [
+  { label: "Work", href: "/projects/" },
+  { label: "Notes", href: "/notes/" },
+  { label: "Resume", href: resume },
+  { label: "Contact", href: "mailto:ayushrameja@gmail.com" },
+];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <header class="hero-header">
+    <time id="hero-clock" class="hero-clock" aria-label="Local time in Bengaluru"><span class="clock-day" id="clock-day"></span><span id="clock-time">India · IST</span></time>
+    <a class="hero-logo" href="/" aria-label="Ayush Rameja, home"><img src="/brand/hero-logo.svg" alt="" width="105" height="50" /></a>
+    <p class="hero-location">Bengaluru, <span class="country-full">India</span><span class="country-short">IN</span></p>
+  </header>
+  <div class="hero-center" id="hero-copy">
+    <div class="hero-visual">
+      <div class="marquee-window" aria-hidden="true"><div class="marquee-track"><span>Built from curiosity. Built from curiosity.&nbsp;</span><span>Built from curiosity. Built from curiosity.&nbsp;</span></div></div>
+      <Image class="hero-portrait" src={portrait} alt="Portrait of Ayush Rameja" widths={[208, 320, 416, 640, 960]} sizes="(max-width: 600px) 208px, 320px" width={320} height={400} format="webp" quality={90} loading="eager" fetchpriority="high" />
+    </div>
+    <div class="hero-description"><p>I turn ideas into useful things.</p><p class="supporting">And follow the ideas <br class="mobile-break" />that won’t sit still.</p></div>
+    <a class="work-link" href="/projects/">Explore my work <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14 14 2M2 2h12v12" /></svg></a>
+  </div>
+  <footer class="hero-footer">
+    <div class="hero-identity"><h1 id="hero-title">Ayush Rameja</h1><p>Built from curiosity.</p></div>
+    <nav class="hero-actions" aria-label="Quick navigation">
+      <a class="resume-link" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)">Resume <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14 14 2M2 2h12v12" /></svg></a>
+      <button class="menu-toggle" type="button" popovertarget="hero-menu" aria-controls="hero-menu" aria-expanded="false" aria-label="Open navigation menu">
+        <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h20M2 12h20M2 18h14" /></svg>
+        <svg class="close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M5 19 19 5" /></svg>
+      </button>
+    </nav>
+  </footer>
+  <nav id="hero-menu" class="hero-menu" popover aria-label="Main navigation">
+    <p class="menu-heading">Explore</p>
+    {links.map((link, index) => <a href={link.href} target={link.label === "Resume" ? "_blank" : undefined} rel={link.label === "Resume" ? "noopener noreferrer" : undefined} aria-label={link.label === "Resume" ? "Resume (opens in a new tab)" : undefined}><span class="menu-number">0{index + 1}</span><span>{link.label}</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14 14 2M2 2h12v12" /></svg></a>)}
+    <button type="button" id="hero-motion" aria-pressed="false">Pause background motion</button>
+  </nav>
+</section>
+<script>
+  const clock = document.querySelector<HTMLTimeElement>("#hero-clock");
+  const day = document.querySelector("#clock-day");
+  const time = document.querySelector("#clock-time");
+  const clockFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true });
+  const dayFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", weekday: "short" });
+  function updateClock() {
+    const now = new Date();
+    if (clock) clock.dateTime = now.toISOString();
+    if (day) day.textContent = `${dayFormat.format(now)} · `;
+    if (time) time.textContent = clockFormat.format(now);
+  }
+  updateClock();
+  window.setInterval(updateClock, 30_000);
+  const menu = document.querySelector<HTMLElement>("#hero-menu");
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  menu?.addEventListener("toggle", () => {
+    const open = menu.matches(":popover-open");
+    toggle?.setAttribute("aria-expanded", String(open));
+    toggle?.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+    if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
+  });
+  const hero = document.querySelector<HTMLElement>(".hero");
+  const motion = document.querySelector<HTMLButtonElement>("#hero-motion");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function reflectMotion() {
+    if (!motion) return;
+    const paused = hero?.classList.contains("motion-paused") ?? false;
+    motion.disabled = reduced.matches;
+    motion.setAttribute("aria-pressed", String(paused || reduced.matches));
+    motion.textContent = reduced.matches ? "Reduced motion enabled" : paused ? "Play background motion" : "Pause background motion";
+  }
+  motion?.addEventListener("click", () => { hero?.classList.toggle("motion-paused"); reflectMotion(); });
+  reduced.addEventListener("change", reflectMotion);
+  reflectMotion();
+</script>
+<style>
+  @font-face { font-family: "Inter Tight"; src: url("/fonts/inter-tight-latin.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+  .hero { --hero-bg: #101724; --hero-fg: #f1ffff; --hero-muted: #adb9c8; --hero-violet: #ab92e8; --focus: #b6f8ed; position: relative; isolation: isolate; display: grid; grid-template-rows: 48px 1fr 56px; gap: 40px; min-height: max(800px, 100svh); padding: 32px 64px 48px; overflow: clip; color: var(--hero-fg); background: radial-gradient(ellipse at 50% 37%, #44316f47, transparent 60%), var(--hero-bg); font: 400 18px/1.4 "Inter Tight", sans-serif; }
+  .hero a { color: inherit; text-decoration: none; }
+  .hero-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+  .hero-clock, .hero-location { color: var(--hero-muted); font-size: 18px; white-space: nowrap; }
+  .hero-clock { font-variant-numeric: tabular-nums; }
+  .hero-logo { width: 96px; }
+  .hero-logo img { display: block; width: 100%; }
+  .hero-location { text-align: right; }
+  .country-short, .mobile-break { display: none; }
+  .hero-center { align-self: center; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 20px 0; }
+  .hero-visual { position: relative; display: grid; place-items: center; width: 100%; height: 380px; }
+  .hero-portrait { position: relative; z-index: 1; display: block; width: 320px; height: 380px; object-fit: cover; object-position: center top; }
+  .marquee-window { position: absolute; top: 43%; left: -64px; width: calc(100% + 128px); transform: translateY(-50%); overflow: hidden; pointer-events: none; }
+  .marquee-track { display: flex; width: max-content; margin-left: -110px; font-size: clamp(100px, 12.222vw, 200px); line-height: 1.1; letter-spacing: -.035em; white-space: nowrap; animation: drift 60s linear infinite; }
+  .marquee-track span { background: linear-gradient(90deg, #66cde6, #ab92e8 50%, #66cde6); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .motion-paused .marquee-track { animation-play-state: paused; }
+  @keyframes drift { to { transform: translateX(-50%); } }
+  .hero-description { margin-top: 42px; text-align: center; font-size: 22px; line-height: 1.45; }
+  .hero-description .supporting { color: var(--hero-muted); }
+  .work-link { display: flex; align-items: center; justify-content: center; gap: 28px; min-height: 52px; min-width: 248px; margin-top: 28px; padding: 14px 24px; background: var(--hero-violet); color: var(--hero-bg) !important; }
+  .hero svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .hero-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .hero-identity h1 { margin: 0; font-size: 24px; font-weight: 400; line-height: 1.3; letter-spacing: -.025em; }
+  .hero-identity p { margin-top: 3px; font-size: 14px; color: var(--hero-muted); }
+  .hero-actions { display: flex; gap: 12px; }
+  .resume-link { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-width: 156px; height: 56px; padding: 0 20px; border: 1px solid #35435b; color: #e7e5ff !important; }
+  .resume-link svg { color: var(--hero-violet); }
+  .menu-toggle { display: grid; place-items: center; width: 56px; height: 56px; background: var(--hero-violet); color: var(--hero-bg); cursor: pointer; }
+  .menu-toggle svg { width: 24px; height: 24px; stroke-width: 2; }
+  .menu-toggle .close-icon { display: none; }
+  .menu-toggle[aria-expanded="true"] .menu-icon { display: none; }
+  .menu-toggle[aria-expanded="true"] .close-icon { display: block; }
+  .hero-menu { position: fixed; inset: auto 64px 116px auto; width: 310px; max-width: calc(100vw - 48px); max-height: calc(100svh - 144px); overflow-y: auto; margin: 0; padding: 24px; border: 1px solid #35435b; background: var(--hero-bg); color: var(--hero-fg); box-shadow: 0 16px 48px #0005; }
+  .menu-heading { padding-bottom: 18px; border-bottom: 1px solid #35435b; color: var(--hero-muted); font-size: 12px; text-transform: uppercase; }
+  .hero-menu a { display: grid; grid-template-columns: 22px 1fr 16px; align-items: center; gap: 18px; min-height: 59px; font-size: 22px; }
+  .menu-number { color: var(--hero-muted); font-size: 12px; }
+  .hero-menu a svg { color: var(--hero-violet); }
+  #hero-motion { width: 100%; padding: 16px 0 0; border-top: 1px solid #35435b; text-align: left; font-size: 13px; color: var(--hero-muted); cursor: pointer; }
+  #hero-motion:disabled { cursor: default; }
+  @media (hover: hover) { .work-link:hover, .menu-toggle:hover { background: #c4aff4; } .resume-link:hover { border-color: var(--hero-violet); } .hero-menu a:hover { color: var(--hero-violet); } }
+  @media (max-width: 900px) { .hero { padding-inline: 32px; } .marquee-window { left: -32px; width: calc(100% + 64px); } .hero-menu { right: 32px; } }
+  @media (max-width: 600px) {
+    .hero { min-height: max(760px, 100svh); grid-template-rows: 40px 1fr 52px; padding: 16px 24px 24px; gap: 32px; font-size: 16px; }
+    .hero-header { gap: 8px; }
+    .hero-clock, .hero-location { font-size: 14px; }
+    .clock-day, .country-full { display: none; }
+    .country-short { display: inline; }
+    .hero-logo { width: 72px; }
+    .hero-visual { height: 280px; }
+    .hero-portrait { width: 208px; height: 280px; }
+    .marquee-window { left: -24px; width: calc(100% + 48px); top: 47%; }
+    .marquee-track { font-size: 92px; animation-duration: 50s; }
+    .hero-center { align-self: start; margin-top: 34px; padding: 8px 0; }
+    .hero-description { margin-top: 38px; font-size: 17px; line-height: 1.5; }
+    .mobile-break { display: block; }
+    .work-link { min-width: 216px; gap: 26px; margin-top: 28px; }
+    .hero-identity h1 { font-size: 20px; }
+    .hero-identity p { font-size: 13px; }
+    .hero-footer { gap: 12px; }
+    .resume-link { min-width: 106px; height: 52px; padding-inline: 15px; gap: 12px; }
+    .menu-toggle { width: 52px; height: 52px; }
+    .hero-menu { right: 24px; bottom: 92px; max-height: calc(100svh - 116px); }
+  }
+  @media (max-width: 359px) {
+    .hero { padding-inline: 16px; }
+    .hero-clock, .hero-location { font-size: 12px; }
+    .hero-logo { width: 60px; }
+    .hero-identity h1 { font-size: 18px; }
+    .hero-identity p { font-size: 12px; }
+    .hero-actions { gap: 8px; }
+    .resume-link { min-width: 88px; padding-inline: 10px; gap: 8px; font-size: 14px; }
+    .menu-toggle { width: 44px; }
+    .marquee-window { left: -16px; width: calc(100% + 32px); }
+    .hero-menu { right: 16px; max-width: calc(100vw - 32px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+</style>
