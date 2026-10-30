@@ -117,6 +117,7 @@
   list-style: decimal;
 }
 
+html.intro-pending,
 html.intro-playing {
   overflow: hidden;
 }
@@ -132,3 +133,5 @@ html.intro-playing {
   }
 }
 
+
+html.intro-pending .marquee-track { animation-play-state: paused; }

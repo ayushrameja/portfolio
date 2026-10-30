@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { mock, test } from "node:test";
 import {
+  INTRO_DURATION_MS,
+  INTRO_READY_HOLD_MS,
   INTRO_INIT_FAILURE_MS,
   PAGE_READY_FAILURE_MS,
   waitForPageReady,
@@ -46,14 +48,15 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
     hidden: false,
     attributes: {},
     dataset: {},
-    animate(keyframes) {
+    animate(keyframes, options) {
       const animation = {
         keyframes,
+        options,
         target: name,
         currentTime: null,
         played: false,
         cancelled: false,
-        pause() {},
+        pause() { this.played = false; },
         play() {
           this.played = true;
         },
@@ -86,17 +89,21 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
   intro.id = "intro";
   intro.hidden = true;
   const parts = {
+    ".intro-logo": make("logo"),
+    ".intro-backdrop": make("backdrop"),
     ".intro-scene": make("scene"),
     ".intro-loading": make("loading"),
     ".intro-cage": make("cage"),
     ".intro-white": make("white"),
     ".intro-detail": make("detail"),
-    "#intro-skip": make("skip"),
     ".intro-echo-1": make("echo-1"),
     ".intro-echo-2": make("echo-2"),
     ".intro-echo-3": make("echo-3"),
   };
   const heroCopy = make("hero-copy");
+  const hero = make("hero");
+  hero.querySelector = selector => make(selector);
+  intro.querySelectorAll = () => Array.from({length:8}, (_, i) => make(`tile-${i}`));
   intro.querySelector = (selector) => parts[selector] ?? null;
   intro.addEventListener = (type, fn) => remember("intro", type, fn);
   intro.removeEventListener = (type, fn) => forget("intro", type, fn);
@@ -120,6 +127,7 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
     fonts: { ready: Promise.resolve() },
     hidden: false,
     activeElementId: null,
+    querySelector: selector => selector === ".hero" ? hero : null,
     getElementById(id) {
       if (landing && id === "hero-copy") return heroCopy;
       if (id === "intro") return intro;
@@ -129,14 +137,15 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
     },
   };
 
+  const motion = {
+    matches: reduced,
+    addEventListener: (type, fn) => remember("motion", type, fn),
+    removeEventListener: (type, fn) => forget("motion", type, fn),
+  };
   globalThis.window = {
     innerWidth: 390,
     innerHeight: 700,
-    matchMedia: () => ({
-      matches: reduced,
-      addEventListener() {},
-      removeEventListener() {},
-    }),
+    matchMedia: () => motion,
     get setTimeout() {
       return globalThis.setTimeout;
     },
@@ -152,10 +161,9 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
   globalThis.requestAnimationFrame = () => 1;
   globalThis.cancelAnimationFrame = () => {};
 
-  return { animations, intro, content, shell, root, storage, parts, dispatch: (type, extra = {}) => {
+  return { animations, intro, content, shell, root, storage, parts, reduceMotion: () => { motion.matches = true; dispatch("motion", { type: "change" }); }, dispatch: (type, extra = {}) => {
     const event = { type, preventDefault() { event.defaultPrevented = true; }, defaultPrevented: false, ...extra };
-    if (type === "click") dispatch("skip", event);
-    else dispatch("intro", event);
+    dispatch("intro", event);
   } };
 }
 
@@ -164,10 +172,10 @@ test("failure timeout constant matches the inline head script", () => {
   assert.match(layout, new RegExp(`\\}, ${INTRO_INIT_FAILURE_MS}\\)`));
   assert.equal(layout.includes("introRequestedAt"), false);
   assert.match(layout, /if \(intro\) intro\.hidden = false/);
-  assert.match(layout, /getElementById\("intro-skip"\)/);
-  assert.match(layout, /event\.key === "Escape"/);
+  assert.equal(layout.includes("intro-skip"), false);
+  assert.equal(layout.includes("Escape"), false);
   assert.equal(INTRO_INIT_FAILURE_MS > MAX_INTRO_START_DELAY_MS, true);
-  assert.equal(INTRO_PLAYBACK_FAILURE_MS > 3200, true);
+  assert.equal(INTRO_PLAYBACK_FAILURE_MS > INTRO_DURATION_MS, true);
 });
 
 test("delayed playback starts at frame zero", () => {
@@ -190,39 +198,34 @@ test("delayed playback starts at frame zero", () => {
         assert.equal(animation.played, true);
         assert.equal(animation.cancelled, false);
       }
-      const loading = harness.animations[0];
-      assert.equal(loading.keyframes[0].offset, 0);
-      assert.equal(loading.keyframes[0].opacity, 1);
-      assert.equal(loading.keyframes[2].opacity, 0);
-      assert.equal(loading.keyframes[2].offset, 300 / 3200);
-      const scene = harness.animations[1];
-      assert.equal(scene.keyframes[0].offset, 0);
-      assert.match(String(scene.keyframes[0].transform), /translate\(390px, 180px\) rotate\(28deg\) scale\(10\.5\)/);
-      harness.dispatch("click");
+      assert.equal(harness.animations.length, 11);
+      const tile = harness.animations[0];
+      assert.equal(tile.keyframes[0].offset, 0);
+      assert.equal(tile.keyframes[0].opacity, 1);
+      assert.equal(tile.keyframes.at(-1).offset, 1);
+      assert.equal(tile.keyframes.at(-1).opacity, 0);
+      assert.equal(tile.options.duration, 4000);
+      harness.reduceMotion();
     }
   } finally {
     mock.timers.reset();
   }
 });
 
-test("normal start, skip, escape, reduced motion, and stalled playback", () => {
+test("Escape cannot skip playback; reduced motion and stall recovery still work", () => {
   const normal = installDocument({ requestedAt: performance.now() - 5000 });
   scheduleIntro(null, startIntro);
   assert.equal(normal.animations.every((animation) => animation.currentTime === 0 && animation.played), true);
   assert.equal(normal.storage.has("ar-intro-seen"), false);
   normal.dispatch("keydown", { key: "Tab" });
-  assert.equal(globalThis.document.activeElementId, "skip");
+  assert.equal(globalThis.document.activeElementId, "intro");
   normal.dispatch("keydown", { key: "Escape" });
+  assert.equal(normal.intro.hidden, false);
+  assert.equal(normal.animations.some(animation => animation.cancelled), false);
+  normal.reduceMotion();
   assert.equal(normal.intro.hidden, true);
   assert.equal(globalThis.document.activeElementId, "content");
   assert.equal(normal.root.classList.contains("intro-pending"), false);
-
-  const skip = installDocument();
-  startIntro();
-  skip.dispatch("click");
-  assert.equal(skip.intro.hidden, true);
-  assert.equal(globalThis.document.activeElementId, "content");
-  assert.equal(skip.shell.attributes.inert, undefined);
 
   const reduced = installDocument({ reduced: true });
   startIntro();
@@ -270,10 +273,10 @@ test("intro cuts away only after the full storyboard and page readiness", async 
   startIntro(Promise.resolve());
   await Promise.resolve();
   assert.equal(harness.animations.some(animation => ["intro", "hero-copy"].includes(animation.target)), false);
-  harness.animations[0].currentTime = 3199;
+  harness.animations[0].currentTime = INTRO_DURATION_MS - 1;
   nextFrame();
   assert.equal(harness.intro.hidden, false);
-  harness.animations[0].currentTime = 3200;
+  harness.animations[0].currentTime = INTRO_DURATION_MS;
   nextFrame();
   assert.equal(harness.intro.hidden, true);
   assert.equal(harness.shell.attributes.inert, undefined);
@@ -286,7 +289,7 @@ function deferred() {
   return { promise, resolve };
 }
 
-test("slow assets hold the finished logo beyond the old playback timeout", async () => {
+test("slow assets hold the visible logo before revealing the hero", async () => {
   mock.timers.enable({ apis: ["setTimeout"] });
   try {
     const page = deferred();
@@ -294,14 +297,19 @@ test("slow assets hold the finished logo beyond the old playback timeout", async
     let nextFrame;
     globalThis.requestAnimationFrame = callback => { nextFrame = callback; return 1; };
     startIntro(page.promise);
-    harness.animations.forEach(animation => { animation.currentTime = 3200; });
+    harness.animations.forEach(animation => { animation.currentTime = INTRO_DURATION_MS; });
     nextFrame();
     mock.timers.tick(INTRO_PLAYBACK_FAILURE_MS + 1000);
     assert.equal(harness.intro.hidden, false);
     assert.equal(harness.intro.attributes["data-waiting"], "");
     assert.equal(harness.animations.some(animation => animation.cancelled), false);
+    assert.equal(harness.animations.every(animation => animation.currentTime === INTRO_READY_HOLD_MS && !animation.played), true);
     page.resolve();
     await Promise.resolve();
+    assert.equal(harness.intro.hidden, false);
+    assert.equal(harness.animations.every(animation => animation.played), true);
+    harness.animations.forEach(animation => { animation.currentTime = INTRO_DURATION_MS; });
+    nextFrame();
     assert.equal(harness.intro.hidden, true);
   } finally { mock.timers.reset(); }
 });
@@ -317,17 +325,17 @@ test("readiness timeout cannot cut a healthy unfinished storyboard", async () =>
     harness.animations[0].currentTime = 1500;
     mock.timers.tick(PAGE_READY_FAILURE_MS);
     assert.equal(harness.intro.hidden, false);
-    harness.animations[0].currentTime = 3200;
+    harness.animations[0].currentTime = INTRO_DURATION_MS;
     nextFrame();
     assert.equal(harness.intro.hidden, true);
   } finally { mock.timers.reset(); }
 });
 
-test("late readiness does not reopen a manually skipped loader", async () => {
+test("late readiness does not reopen a loader dismissed by reduced motion", async () => {
   const page = deferred();
   const harness = installDocument();
   startIntro(page.promise);
-  harness.dispatch("click");
+  harness.reduceMotion();
   page.resolve();
   await Promise.resolve();
   assert.equal(harness.intro.hidden, true);
@@ -368,4 +376,20 @@ test("production loader is not disabled by session storage or debug delay", () =
   const component = readFileSync(new URL("../src/components/Intro.astro", import.meta.url), "utf8");
   assert.equal(layout.includes("ar-intro-seen"), false);
   assert.match(component, /import\.meta\.env\.DEV \?/);
+});
+
+
+test("hero expands on both axes and every track finishes within four seconds", () => {
+  const harness = installDocument();
+  startIntro(Promise.resolve());
+  const hero = harness.animations.find(animation => animation.target === "hero");
+  assert.equal(hero.keyframes[0].clipPath, "inset(50% 50% round 0px)");
+  assert.equal(hero.keyframes.at(-1).clipPath, "inset(0% 0% round var(--intro-radius))");
+  assert.equal(INTRO_DURATION_MS, 4000);
+  for (const animation of harness.animations) {
+    assert.equal(animation.options.duration, 4000);
+    assert.equal(animation.keyframes.at(-1).offset, 1);
+  }
+  harness.reduceMotion();
+  assert.equal(harness.animations.every(animation => animation.cancelled), true);
 });

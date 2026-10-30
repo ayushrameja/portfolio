@@ -1,0 +1,68 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Curve reveal prototype</title><style>
+/* COMPONENT_CSS */
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 var(--font-sans,system-ui);color:var(--foreground,#ddd)}p,h1{margin:0}button,select,input{font:inherit}button,select{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ring,#aaa);outline-offset:3px}
+.controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:16px}.controls label{display:grid;gap:5px;font-size:12px}.controls select,.controls button{padding:9px 12px;border:1px solid var(--border,#555);border-radius:8px;background:var(--secondary,#292929);color:var(--foreground,#eee)}.controls button.primary{background:var(--primary,#ddd);color:var(--primary-foreground,#171717)}.controls .check{display:flex;align-items:center;padding-bottom:10px}.phase{display:flex;gap:16px;margin:12px 0;font-size:12px;color:var(--muted-foreground,#888)}.phase span.active{color:var(--foreground,#eee)}
+.stage{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--radius,16px);background:#171a18}.hero-frame{padding:12px}.hero{min-height:620px;padding:24px 28px;gap:20px;border-radius:40px;grid-template-rows:40px 1fr 48px}.hero-visual{height:250px}.hero-portrait{height:250px;width:211px}.hero-center{padding:0;margin:0}.hero-description{font-size:18px;margin-top:12px}#hero-title{margin-top:16px}.work-link{margin-top:20px}.hero-footer .resume-link,.hero-footer .menu-toggle{height:48px}.hero-clock,.hero-location{font-size:14px}.hero-logo{width:76px}.marquee-track{font-size:110px}.hero-menu{display:none}.hero a,.hero button{pointer-events:none}.hero-frame{pointer-events:none}.intro{position:absolute;inset:0;padding:12px;z-index:3;pointer-events:none}.intro-surface{border-radius:40px}.intro-logo{max-width:75%;width:280px}.flash{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 35% 43%,#fffcef 0%,var(--flash-color,#f0ae8b) 55%,#c5b5e5 100%)}[hidden]{display:none!important}.marquee-track{animation-play-state:paused}.stage[data-phase="Hero"] .marquee-track{animation-play-state:running}
+@media(max-width:600px){.hero{min-height:650px;padding:24px 20px;grid-template-rows:40px 1fr 48px}.hero-center{margin-top:12px}.hero-description{font-size:17px}.hero-visual{height:250px}.hero-portrait{height:250px;width:208px}.marquee-track{font-size:92px}.controls{gap:8px}.intro-logo{width:235px}}
+@media(prefers-reduced-motion:reduce){.marquee-track{animation:none!important}}
+
+/* Quiet geometry-led reveal. The opening itself becomes the hero boundary. */
+.stage{background:#171a18}.hero-frame{background:transparent}.hero{--reveal-radius:40px}.white-veil{position:absolute;inset:0;z-index:5;background:#fafaf7;pointer-events:none;opacity:0}.reveal-mark{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;opacity:0}.reveal-mark svg{opacity:1;width:200px;max-width:60%;fill:#f5f5ef}.hero-portrait{will-change:transform,opacity}.timeline{display:flex;align-items:center;gap:12px;margin-top:14px}.timeline input{flex:1;min-width:0;accent-color:var(--primary,#c6d0a6)}.timeline output{font-variant-numeric:tabular-nums;min-width:78px;font-size:12px}.phase{min-height:18px;margin-top:8px}.stage[data-running] .marquee-track{animation-play-state:paused}.controls{align-items:end}.controls button:disabled{opacity:.5;cursor:default}
+@media(max-width:600px){.hero{--reveal-radius:36px;border-radius:36px}.reveal-mark svg{width:170px}}
+</style></head><body>
+<div class="controls"><button id="play" class="primary">Replay sequence</button><button id="pause">Pause</button><button id="skip">Skip to hero</button><label>Playback<select id="speed"><option value="1">Normal · 4.0 s</option><option value="0.5">Half speed</option></select></label></div>
+<div class="stage" id="stage" data-phase="Hero"><!-- HERO --><div class="reveal-mark" aria-hidden="true"><!-- LOGO --></div><div class="white-veil" aria-hidden="true"></div></div>
+<div class="timeline"><label for="timeline">Scrub</label><input id="timeline" type="range" min="0" max="4000" step="1" value="4000"><output id="time">4.0 / 4.0 s</output></div>
+<div class="phase"><span id="status" role="status">Ready to replay</span></div>
+<script>
+const $=s=>document.querySelector(s),stage=$('#stage'),status=$('#status'),slider=$('#timeline');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)'),DURATION=4000;
+const ease='cubic-bezier(.65,0,.25,1)';
+let animations=[],frame=0,time=DURATION,running=false,last=0,generation=0;
+function track(el,frames){
+ const animation=el.animate(frames.map(([ms,props])=>({offset:ms/DURATION,...props})),{duration:DURATION,fill:'both',easing:'linear'});
+ animation.pause();animations.push(animation);
+}
+function build(){
+ animations.forEach(a=>a.cancel());animations=[];
+ const radius=getComputedStyle($('.hero')).getPropertyValue('--reveal-radius').trim();
+ track($('.white-veil'),[[0,{opacity:1,easing:'ease-in-out'}],[857,{opacity:0}],[4000,{opacity:0}]]);
+ track($('.reveal-mark'),[[0,{opacity:0}],[619,{opacity:0,easing:'ease-in-out'}],[1190,{opacity:1}],[1571,{opacity:1,easing:'ease-in-out'}],[2048,{opacity:0}],[4000,{opacity:0}]]);
+ track($('.hero'),[[0,{clipPath:'inset(50% 50% round 0px)'}],[1762,{clipPath:'inset(50% 50% round 0px)',easing:ease}],[3381,{clipPath:`inset(0% 0% round ${radius})`}],[4000,{clipPath:`inset(0% 0% round ${radius})`}]]);
+ const entrances=[['.hero-portrait',2619,3381,8],['.marquee-window',2381,3286,0],['#hero-title',2667,3476,8],['.hero-description',2762,3571,8],['.work-link',2905,3714,8],['.hero-header',2810,3714,0],['.hero-footer',2905,3810,0]];
+ entrances.forEach(([selector,start,end,y])=>{
+  const el=$(selector),transform=getComputedStyle(el).transform;
+  // The marquee already has translateY(-50%); preserve its resting transform.
+  const rest=transform==='none'?'translateY(0px)':transform;
+  track(el,[[0,{opacity:0,transform:`${rest} translateY(${y}px)`}],[start,{opacity:0,transform:`${rest} translateY(${y}px)`,easing:'cubic-bezier(.22,1,.36,1)'}],[end,{opacity:1,transform:rest}],[4000,{opacity:1,transform:rest}]]);
+ });
+}
+function paint(){
+ animations.forEach(a=>{a.currentTime=time;});slider.value=String(Math.round(time));$('#time').textContent=`${(time/1000).toFixed(1)} / 4.0 s`;
+ const label=reduced.matches?'Reduced motion · hero':time<857?'White → charcoal':time<1762?'Logo · a quiet pause':time<2762?'Expanding outward in all directions':time<4000?'Portrait and text settle in':'Hero';
+ if(status.textContent!==label)status.textContent=label;
+ stage.dataset.phase=time===DURATION?'Hero':'Intro';
+ stage.toggleAttribute('data-running',running);
+ $('#pause').textContent=running?'Pause':'Resume';$('#pause').disabled=time===DURATION||reduced.matches;
+}
+function stop(){cancelAnimationFrame(frame);running=false;}
+function tick(now){if(!running)return;time=Math.min(DURATION,time+(now-last)*Number($('#speed').value));last=now;if(time===DURATION)running=false;paint();if(running)frame=requestAnimationFrame(tick);}
+function resume(){if(reduced.matches||time===DURATION)return;running=true;last=performance.now();paint();frame=requestAnimationFrame(tick);}
+function finish(){generation++;stop();time=DURATION;paint();}
+async function play(){
+ const gen=++generation;stop();
+ if(reduced.matches){time=DURATION;paint();return;}
+ status.textContent='Preparing';
+ await Promise.allSettled([document.fonts.ready,...Array.from(document.images).map(i=>i.decode())]);
+ if(gen!==generation)return;
+ build();time=0;paint();resume();
+}
+$('#play').onclick=play;$('#skip').onclick=finish;
+$('#pause').onclick=()=>{if(running){stop();paint();}else resume();};
+slider.oninput=()=>{generation++;stop();time=reduced.matches?DURATION:Number(slider.value);paint();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')finish();});
+reduced.addEventListener('change',()=>{finish();slider.disabled=reduced.matches;});
+// Pause when hidden so the reveal does not jump past its curves on return.
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();paint();}});
+build();slider.disabled=reduced.matches;paint();
+</script></body></html>

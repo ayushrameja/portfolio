@@ -1,3 +1,15 @@
+# Current Astro intro — Center-out curve reveal (2026-10-30)
+
+The homepage now uses the approved four-second sequence: warm white fades to charcoal, the whole ivory logo appears, then the hero opens from the center in both width and height. Rounded corners grow to the existing desktop/mobile hero radius; portrait, text, and navigation enter with overlapping fades and small vertical offsets. The former tile animation is replaced.
+
+Normal playback lasts 4000 ms. Slow document/font/eager-image readiness holds the visible logo at 1190 ms before continuing the remaining sequence. The 15-second readiness fallback, initialization/playback watchdogs, focus cleanup, and reduced-motion bypass remain. Both the Skip intro button and Escape skipping are removed. The intro runs on each full homepage load; internal pages open directly. The palette and marquee pause during the intro.
+
+Validation: `pnpm check` (zero errors/warnings/hints), all 14 tests, and the 32-page production build pass. Built homepage sampled with a controlled animation clock at the center-out reveal on desktop and final frame on mobile. No deployment performed.
+
+Older prototypes and notes below are historical; the current implementation supersedes their behavior.
+
+---
+
 # AR intro prototype 01
 
 Open `index.html` directly in a browser. Standalone HTML/SVG/CSS/JavaScript; no packages, build, network assets, or server required.

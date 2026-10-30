@@ -25,9 +25,10 @@ const year = 2026;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <script is:inline>
+    <script is:inline data-home={home ? "true" : "false"}>
       (function () {
         try {
+          if (document.currentScript?.getAttribute("data-home") !== "true") return;
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
           var root = document.documentElement;
           root.classList.add("intro-pending");
@@ -47,7 +48,7 @@ const year = 2026;
     </script>
   </head>
   <body>
-    <Intro />
+    {home && <Intro />}
     <div class="site-shell" id="site-shell">
       <a class="skip-link" href="#content">Skip to content</a>
       {!home && <header class="mx-auto flex w-full max-w-3xl items-center justify-between gap-6 border-b border-[var(--line)] px-4 py-6 sm:px-8">
@@ -64,27 +65,11 @@ const year = 2026;
     </div>
     <script is:inline>
       if (document.documentElement.classList.contains("intro-pending")) {
-        var root = document.documentElement;
         var shell = document.getElementById("site-shell");
         var intro = document.getElementById("intro");
         if (shell) shell.setAttribute("inert", "");
         // Tailwind's layered [hidden] rule beats a stylesheet override.
         if (intro) intro.hidden = false;
-        var dismiss = function () {
-          root.classList.remove("intro-pending", "intro-playing");
-          if (intro) intro.hidden = true;
-          if (shell) shell.removeAttribute("inert");
-          var content = document.getElementById("content");
-          if (content) content.focus();
-        };
-        var skip = document.getElementById("intro-skip");
-        if (skip) skip.addEventListener("click", dismiss);
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "Escape" && root.classList.contains("intro-pending")) {
-            event.preventDefault();
-            dismiss();
-          }
-        });
       }
     </script>
   </body>
