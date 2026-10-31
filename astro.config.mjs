@@ -6,7 +6,7 @@ import { defineConfig } from "astro/config";
 // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
 // https://docs.astro.build/en/guides/integrations-guide/cloudflare/
 export default defineConfig({
-  site: "https://www.ayush.im",
+  site: "https://ayush.im",
   trailingSlash: "always",
   build: {
     format: "directory",

@@ -15,7 +15,9 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "preview:cloudflare": "pnpm build && wrangler dev --port 8787",
     "deploy:cloudflare": "pnpm run deploy",
-    "deploy": "pnpm build && wrangler deploy"
+    "deploy": "pnpm build && wrangler deploy",
+    "deploy:preview": "pnpm build && wrangler preview",
+    "deploy:redirects": "wrangler deploy --config infra/domain-redirects/wrangler.jsonc"
   },
   "dependencies": {
     "@tailwindcss/vite": "4.3.3",

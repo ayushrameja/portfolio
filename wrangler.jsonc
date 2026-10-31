@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "portfolio",
+  "account_id": "423419184139ad08e82cba83e7afb59c",
+  "workers_dev": true,
+  "preview_urls": true,
+  "previews": {},
+  "routes": [{ "pattern": "ayush.im/*", "zone_name": "ayush.im" }],
   // Assets-only Worker. No `main` script: pages are pre-rendered.
   // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
   // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/

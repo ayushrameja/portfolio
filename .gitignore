@@ -55,3 +55,7 @@ yarn-error.log*
 
 # Misc
 .turbo
+
+.open-next/
+.cloudflare-dry-run/
+.dev.vars*

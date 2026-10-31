@@ -19,7 +19,7 @@ pnpm deploy               # Build and publish portfolio
 pnpm deploy:cloudflare    # Compatibility entry point used by Workers Builds
 ```
 
-The canonical URL is `https://www.ayush.im`. `wrangler.jsonc` serves `dist/` with trailing-slash handling and `404.html` for missing pages. Deployment is a separate action; confirm the target account and domain before publishing.
+The canonical URL is `https://ayush.im`. `wrangler.jsonc` serves `dist/` with trailing-slash handling and `404.html` for missing pages. Deployment is a separate action; confirm the target account and domain before publishing.
 
 Cloudflare Workers Builds targets the existing `portfolio` Worker. Its build command is `pnpm run build:cloudflare`, production deploy command is `pnpm run deploy:cloudflare`, and preview deploy command is `pnpm exec wrangler preview`. The compatibility scripts keep the dashboard commands valid across the previous Next.js branch and this Astro migration.
 
@@ -44,7 +44,7 @@ Each full homepage load plays the complete four-second logo and expanding-apertu
 
 Reduced-motion preferences bypass the intro and disable the continuous hero animations. Escape does not skip the storyboard. Without JavaScript, the intro stays hidden and the HTML remains available. Inner pages do not play the intro. Development-only `?introDelay=1500` and `?introDelay=hold` hooks support failure testing.
 
-Contact opens `mailto:ayushrameja@gmail.com`; Resume opens the configured Google Drive preview. No contact backend or email credentials are configured.
+Contact opens `mailto:wave@ayush.im`; Resume opens the configured Google Drive preview. No contact backend or email credentials are configured.
 
 ## Redirects
 
@@ -70,3 +70,9 @@ These archived routes have no single replacement and are not redirected to the h
 - `/about` — unpublished about page. Low HP Studio does not replace that page.
 - `/playground` — unpublished index included Receipt creator and TypeRush, which this site excludes.
 - `/work` — unpublished selected-work index. `/projects/` is a different collection.
+
+## Domain routing
+
+The `portfolio` Worker retains the production `ayush.im/*` route. Branch previews use the top-level `previews` block and do not change production routes. `pnpm run deploy:preview` builds and publishes a branch preview.
+
+`infra/domain-redirects/` is the independent `portfolio-domain-redirects` Worker from `main`; it preserves the existing `.com` and `www` redirects, including paths and query strings. Deploy it separately with `pnpm run deploy:redirects`. Its Workers Builds root is `/infra/domain-redirects`, with no build command, `npx --yes wrangler@4.146.0 deploy` for production and `npx --yes wrangler@4.146.0 preview` for previews; its build watch path is `infra/domain-redirects/*`.
