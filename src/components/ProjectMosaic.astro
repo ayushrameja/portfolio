@@ -1,0 +1,105 @@
+---
+import { brandMarks, mosaicProjects } from "../data/project-mosaic";
+import "../styles/project-mosaic.css";
+const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
+---
+<section class="project-showcase" id="selected-work" aria-labelledby="work-title">
+  <header class="work-heading">
+    <div class="work-heading-main">
+      <h2 id="work-title">Serious about building. <em>Curious about everything.</em></h2>
+    </div>
+    <a class="all-projects" href="/projects/">All projects <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M8 2l6 6-6 6" transform="rotate(-45 8 8)" /></svg></a>
+  </header>
+
+  <div class="bento">
+    {mosaicProjects.map((project, index) => {
+      const mark = brandMarks[project.brand];
+      return (
+        <a class:list={["card", `card--${project.id}`]} href={project.href} style={`--accent:${project.accent};--i:${index}`} data-card>
+          <article class="card-inner" aria-labelledby={`card-${project.id}-title`}>
+            <header class="card-top">
+              <span class="brand">
+                <span class:list={["brand-mark", `brand-mark--${project.brand}`]} aria-hidden="true">
+                  {"mask" in mark
+                    ? <span class="brand-mask" style={`--mask:url(${mark.mask})`}></span>
+                    : <svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg>}
+                </span>
+                <span class="brand-text"><span class="brand-name">{project.org}</span><span class="brand-kind">{project.kind}</span></span>
+              </span>
+              <span class="card-cta" aria-hidden="true"><span class="cta-label">View project</span><span class="cta-icon"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span></span>
+            </header>
+
+            <div class="card-art" aria-hidden="true">
+              {project.id === "comnext" && (
+                <div class="cms">
+                  <div class="cms-assembly">
+                    <div class="cms-window">
+                      <div class="cms-bar"><i></i><i></i><i></i><span></span></div>
+                      <div class="cms-hero"><span></span><span></span></div>
+                      <div class="cms-row"><span></span><span></span><span></span></div>
+                      <div class="cms-lines"><span></span><span></span><span></span></div>
+                    </div>
+                    <span class="cms-chip chip-a"><b></b>Hero</span>
+                    <span class="cms-chip chip-b"><b></b>Card × 3</span>
+                    <span class="cms-chip chip-c"><b></b>Article</span>
+                  </div>
+                </div>
+              )}
+              {project.id === "learn" && (
+                <div class="courses">
+                  <div class="course course-back">Roadmap</div>
+                  <div class="course course-mid">Live session</div>
+                  <div class="course course-front">
+                    <span class="course-title">Make progress</span>
+                    <span class="course-meter"><span></span></span>
+                    <span class="course-meta"><span>Module 3 of 5</span><span>60%</span></span>
+                  </div>
+                </div>
+              )}
+              {project.id === "studio" && (
+                <div class="shots">
+                  <figure class="shot shot-a"><img src="/projects/burnhop.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /><figcaption>Burnhop</figcaption></figure>
+                  <figure class="shot shot-b"><img src="/projects/greytrace.webp" alt="" width="1280" height="800" loading="lazy" decoding="async" /><figcaption>Greytrace</figcaption></figure>
+                </div>
+              )}
+              {project.id === "templio" && (
+                <div class="site">
+                  <div class="site-bar"><i></i><i></i><i></i></div>
+                  <div class="site-view"><img src="/projects/templio.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /></div>
+                </div>
+              )}
+              {project.id === "siemens" && (
+                <div class="pulse">
+                  <span class="pulse-live">Live</span>
+                  <div class="pulse-window"><div class="pulse-track">
+                    <svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0 48h30l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h18l12-26 14 40 14-30 10 16h40l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h2" /></svg>
+                    <svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0 48h30l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h18l12-26 14 40 14-30 10 16h40l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h2" /></svg>
+                  </div></div>
+                </div>
+              )}
+              {project.id === "google" && (
+                <div class="nodes">
+                  <span class="node">APIs</span>
+                  <span class="link"><i></i></span>
+                  <span class="node">Roles</span>
+                  <span class="link"><i></i></span>
+                  <span class="node">GCP</span>
+                </div>
+              )}
+            </div>
+
+            <div class="card-copy">
+              <h3 id={`card-${project.id}-title`}>{project.title}</h3>
+              <p>{project.summary}</p>
+            </div>
+          </article>
+        </a>
+      );
+    })}
+  </div>
+</section>
+<script>
+  import { setupProjectMosaic } from "../scripts/project-mosaic";
+  const section = document.querySelector<HTMLElement>("#selected-work");
+  if (section) setupProjectMosaic(section);
+</script>

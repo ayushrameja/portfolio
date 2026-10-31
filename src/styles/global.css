@@ -136,4 +136,18 @@ html.intro-playing {
 
 html.intro-pending .marquee-track { animation-play-state: paused; }
 
-html.home-page, .home-page body { background:#171a18; }
+/* Shared homepage surfaces keep the hero surround and work section continuous. */
+html.home-page {
+  --home-canvas: #ffffff;
+  --home-frame-top: #171a18;
+  --home-card: #faf8f3;
+  --home-card-feature: #f4eee8;
+  --home-paper: #fffdf9;
+  --home-content-inset: 64px;
+}
+html.home-page, .home-page body { background:var(--home-canvas); }
+
+/* Hero frame gutter + hero inner padding, shared by the project grid. */
+@media (max-width: 900px) { html.home-page { --home-content-inset: 48px; } }
+@media (max-width: 600px) { html.home-page { --home-content-inset: 30px; } }
+@media (max-width: 359px) { html.home-page { --home-content-inset: 26px; } }
