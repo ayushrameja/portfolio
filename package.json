@@ -9,10 +9,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/write-redirects.mjs && astro build",
+    "build:cloudflare": "pnpm run build",
     "preview": "astro preview",
     "check": "astro check",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "preview:cloudflare": "pnpm build && wrangler dev --port 8787",
+    "deploy:cloudflare": "pnpm run deploy",
     "deploy": "pnpm build && wrangler deploy"
   },
   "dependencies": {

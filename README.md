@@ -12,12 +12,16 @@ pnpm dev                  # Astro development server
 pnpm check                # Astro and TypeScript diagnostics
 pnpm test                 # Content, redirects, intro, and palette regressions
 pnpm build                # Regenerates redirects and builds dist/
+pnpm build:cloudflare     # Compatibility entry point used by Workers Builds
 pnpm preview              # Local static preview
 pnpm preview:cloudflare   # Build and preview with Wrangler on port 8787
-pnpm deploy               # Build and publish ayush-portfolio
+pnpm deploy               # Build and publish portfolio
+pnpm deploy:cloudflare    # Compatibility entry point used by Workers Builds
 ```
 
 The canonical URL is `https://www.ayush.im`. `wrangler.jsonc` serves `dist/` with trailing-slash handling and `404.html` for missing pages. Deployment is a separate action; confirm the target account and domain before publishing.
+
+Cloudflare Workers Builds targets the existing `portfolio` Worker. Its build command is `pnpm run build:cloudflare`, production deploy command is `pnpm run deploy:cloudflare`, and preview deploy command is `pnpm exec wrangler preview`. The compatibility scripts keep the dashboard commands valid across the previous Next.js branch and this Astro migration.
 
 ## Source map
 

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "ayush-portfolio",
+  "name": "portfolio",
   // Assets-only Worker. No `main` script: pages are pre-rendered.
   // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
   // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/
