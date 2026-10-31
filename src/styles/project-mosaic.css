@@ -39,7 +39,7 @@
   gap: 32px;
   padding: 0;
 }
-#work-title {
+.work-title {
   margin: 0;
   font-size: clamp(30px, 2.8vw, 46px);
   font-weight: 500;
@@ -47,7 +47,7 @@
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
-#work-title em {
+.work-title em {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.03em;
@@ -433,8 +433,9 @@
 }
 .site-bar { display: flex; align-items: center; gap: 4px; height: 18px; padding: 0 9px; background: var(--surface); }
 .site-bar i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-.site-view { position: absolute; inset: 18px 0 0; overflow: hidden; }
-.site-view img { display: block; width: 150%; max-width: none; height: auto; transform: translateY(-18%); transition: transform 2.4s var(--ease); }
+.site-view { position: absolute; inset: 18px 0 0; overflow: hidden; background: #fafafa; }
+/* Keep the full screenshot visible at every card aspect ratio. */
+.site-view img { display: block; width: 100%; height: 100%; object-fit: contain; }
 
 /* ==========================================================================
    Siemens — live waveform
@@ -537,7 +538,6 @@
   .card--studio:hover .shot-b { rotate: 6deg; translate: 16px 10px; }
 
   .card--templio:hover .site { rotate: 0deg; translate: 0 -4px; }
-  .card--templio:hover .site-view img { transform: translateY(-34%); }
 
   .card--google:hover .node { background: var(--surface-raised); border-color: var(--accent); }
 }
@@ -581,7 +581,7 @@
 
 @media (max-width: 699px) {
   .project-showcase { --radius: 24px; padding-block: 32px 40px; gap: 24px; }
-  #work-title { font-size: clamp(32px, 9vw, 40px); }
+  .work-title { font-size: clamp(32px, 9vw, 40px); }
   .bento { display: flex; flex-direction: column; gap: 16px; }
   .card { min-height: 340px; }
   .card--comnext { min-height: 440px; }
@@ -603,5 +603,4 @@
   .card:focus-visible { transform: none; }
   .card:hover *,
   .card:focus-visible * { translate: none !important; rotate: none !important; }
-  .card:hover .site-view img { transform: none !important; }
 }

@@ -1,0 +1,48 @@
+/* Fixed navigation has its own neutral palette, independent of the hero cycle. */
+.bottom-nav { --dock-width:430px; position:fixed; z-index:30; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; width:88px; max-width:calc(100vw - 24px); padding:7px; border:1px solid #ffffff26; border-radius:25px; background:#858583; color:#fff; box-shadow:0 12px 40px #0003; font:500 16px/1.2 "Inter Tight",Arial,sans-serif; transform:translate(-50%,18px); opacity:0; visibility:hidden; transition:width 520ms cubic-bezier(.22,1,.36,1),background 240ms,opacity 220ms,transform 360ms,visibility 220ms; }
+.bottom-nav[data-visible="true"] { opacity:1; visibility:visible; transform:translate(-50%,0); }
+.bottom-nav[data-expanded="true"] { width:var(--dock-width); }
+.bottom-nav[data-open="true"] { width:520px; background:#101010; border-color:#303030; }
+.dock-bar { display:grid; grid-template-columns:74px minmax(0,1fr) 104px; gap:6px; }
+.bottom-nav[data-expanded="false"] .dock-bar { grid-template-columns:74px 0 0; gap:0; }
+.dock-logo,.dock-trigger,.dock-resume { height:58px; min-width:0; border:0; border-radius:18px; color:#fff; background:#242424; text-decoration:none; display:flex; align-items:center; justify-content:center; font:inherit; }
+.dock-logo svg { width:48px; height:24px; fill:currentColor; }
+.dock-trigger { gap:14px; padding:0 14px; background:#50504f; cursor:pointer; white-space:nowrap; }
+.dock-label { overflow:hidden; text-overflow:ellipsis; }
+.dock-arrows { flex-shrink:0; width:11px; height:20px; fill:currentColor; }
+.dock-trigger,.dock-resume { opacity:0; visibility:hidden; transition:opacity 200ms,background 200ms,color 200ms; }
+.bottom-nav[data-expanded="true"] :is(.dock-trigger,.dock-resume) { opacity:1; visibility:visible; }
+.bottom-nav :is(a,button):focus-visible { outline:2px solid #c6d0a6; outline-offset:3px; }
+.dock-face { display:none; font-size:23px; font-weight:600; letter-spacing:1px; }
+.bottom-nav[data-open="true"] .dock-trigger { background:#fff; color:#151515; }
+.bottom-nav[data-open="true"] :is(.dock-label,.dock-arrows) { display:none; }
+.bottom-nav[data-open="true"] .dock-face { display:block; }
+.bottom-nav[data-open="true"] :is(.dock-logo,.dock-resume) { background:#202020; color:#a7a7a7; }
+.dock-panel { padding:13px 0 10px; }
+.dock-panel-heading { display:flex; justify-content:space-between; align-items:center; padding:0 17px 16px; font-size:16px; }
+.dock-count { color:#a7a7a7; font-size:11px; font-variant-numeric:tabular-nums; }
+.dock-track { position:relative; display:flex; gap:14px; padding:3px 13%; overflow-x:auto; overscroll-behavior:contain; scroll-snap-type:x mandatory; scrollbar-width:none; }
+.dock-track::-webkit-scrollbar { display:none; }
+.dock-preview { flex:0 0 100%; min-width:0; scroll-snap-align:center; color:#fff; text-decoration:none; opacity:.55; transform:scale(.95); transition:opacity 220ms,transform 220ms; border-radius:16px; }
+.dock-preview[data-selected="true"] { opacity:1; transform:scale(1); }
+.dock-thumbnail { position:relative; height:clamp(120px,24svh,210px); overflow:hidden; border-radius:13px; background:#f7f6f3; pointer-events:none; }
+.dock-preview-page { position:absolute; inset:0; overflow:hidden; display:grid; place-items:center; pointer-events:none; }
+.dock-preview-viewport { position:relative; overflow:hidden; flex:none; }
+.dock-preview-root { position:absolute; top:0; left:0; transform-origin:top left; text-align:left; color:var(--ink); font:400 17px/1.5 ui-sans-serif,system-ui,sans-serif; }
+.dock-preview-root * { pointer-events:none !important; animation:none !important; transition:none !important; }
+.dock-preview-root .card { opacity:1 !important; translate:none !important; }
+.dock-preview-root .project-showcase { justify-content:flex-start; }
+.dock-preview-root .hero-menu { display:none !important; }
+.dock-preview-caption { display:flex; justify-content:space-between; align-items:center; padding:10px 3px 0; font-size:13px; }
+.dock-preview-controls { display:flex; align-items:center; justify-content:space-between; padding:10px 17px 0; gap:8px; color:#aaa; font-size:11px; }
+.dock-preview-controls button { border:1px solid #444; border-radius:50%; background:#232323; color:#fff; width:32px; height:32px; cursor:pointer; font-size:18px; }
+.dock-preview-controls button:disabled { opacity:.3; cursor:default; }
+@media(hover:hover) { .dock-logo:hover,.dock-resume:hover { background:#353535; } .dock-trigger:hover { background:#626261; } .dock-preview:hover { opacity:1; } }
+@media(max-width:480px) { .bottom-nav { --dock-width:358px; bottom:calc(12px + env(safe-area-inset-bottom)); border-radius:22px; padding:6px; font-size:14px; } .dock-bar { grid-template-columns:62px minmax(0,1fr) 80px; gap:5px; } .bottom-nav[data-expanded="false"] .dock-bar { grid-template-columns:74px 0 0; } .dock-logo,.dock-trigger,.dock-resume { height:52px; border-radius:16px; } .dock-trigger { gap:10px; padding:0 9px; } .dock-logo svg { width:40px; } .dock-panel-heading { font-size:15px; } .dock-track { padding-inline:11%; gap:10px; } }
+@media(max-height:500px) { .dock-thumbnail { height:90px; } .dock-panel { padding-top:7px; } .dock-panel-heading { padding-bottom:8px; } .dock-preview-controls { padding-top:6px; } }
+@media(prefers-reduced-motion:reduce) { .bottom-nav,.dock-preview,.dock-trigger,.dock-resume { transition:none; } }
+/* Portrait pages read as small phone canvases instead of stretched desktop shots. */
+@media(max-width:480px) {
+  .dock-thumbnail { background:#252525; }
+  .dock-preview-viewport { border-radius:7px; box-shadow:0 3px 14px #0004; }
+}

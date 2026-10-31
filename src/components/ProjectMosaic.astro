@@ -3,10 +3,10 @@ import { brandMarks, mosaicProjects } from "../data/project-mosaic";
 import "../styles/project-mosaic.css";
 const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
 ---
-<section class="project-showcase" id="selected-work" aria-labelledby="work-title">
+<section class="project-showcase" id="selected-work" data-nav-section="Selected work" tabindex="-1" aria-labelledby="work-title">
   <header class="work-heading">
     <div class="work-heading-main">
-      <h2 id="work-title">Serious about building. <em>Curious about everything.</em></h2>
+      <h2 id="work-title" class="work-title">Serious about building. <em>Curious about everything.</em></h2>
     </div>
     <a class="all-projects" href="/projects/">All projects <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M8 2l6 6-6 6" transform="rotate(-45 8 8)" /></svg></a>
   </header>
