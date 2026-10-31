@@ -1,0 +1,42 @@
+---
+import { getProjects } from "../../lib/content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const projects = await getProjects();
+const groups = [
+  { id: "employer", label: "Employer work" },
+  { id: "independent", label: "Independent" },
+] as const;
+---
+
+<BaseLayout
+  title="Projects · Ayush Rameja"
+  description="Public project notes retained from earlier portfolio copy."
+>
+  <h1 class="text-4xl font-semibold tracking-tight">Projects</h1>
+  <p class="mt-4 max-w-xl text-[var(--muted)]">
+    Public project records, retained as written. Private work is not listed.
+  </p>
+  {
+    groups.map((group) => {
+      const entries = projects.filter((project) => project.data.kind === group.id);
+      return (
+        <section class="mt-10" aria-labelledby={`${group.id}-heading`}>
+          <h2 id={`${group.id}-heading`} class="text-xl font-semibold tracking-tight">
+            {group.label}
+          </h2>
+          <ul class="mt-4 divide-y divide-[var(--line)] border-y border-[var(--line)]">
+            {entries.map((project) => (
+              <li>
+                <a class="block py-4 no-underline hover:underline" href={`/projects/${project.id}/`}>
+                  <span class="block font-medium text-[var(--ink)]">{project.data.title}</span>
+                  <span class="mt-1 block text-sm text-[var(--muted)]">{project.data.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+</BaseLayout>

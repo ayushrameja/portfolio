@@ -1,0 +1,77 @@
+---
+import "../styles/global.css";
+import Intro from "../components/Intro.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  home?: boolean;
+}
+
+const { title, description, home = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const notesCurrent = path === "/notes" || path.startsWith("/notes/");
+const projectsCurrent = path === "/projects" || path.startsWith("/projects/");
+const year = 2026;
+---
+
+<!doctype html>
+<html lang="en" class:list={[{ "home-page": home }]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {home && <link rel="preload" href="/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />}
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline data-home={home ? "true" : "false"}>
+      (function () {
+        try {
+          if (document.currentScript?.getAttribute("data-home") !== "true") return;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          var root = document.documentElement;
+          root.classList.add("intro-pending");
+          window.setTimeout(function () {
+            if (root.classList.contains("intro-pending") && !root.classList.contains("intro-playing")) {
+              root.classList.remove("intro-pending");
+              var intro = document.getElementById("intro");
+              if (intro) intro.hidden = true;
+              var shell = document.getElementById("site-shell");
+              if (shell) shell.removeAttribute("inert");
+            }
+          }, 6000); // INTRO_INIT_FAILURE_MS
+        } catch (error) {
+          document.documentElement.classList.remove("intro-pending");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    {home && <Intro />}
+    <div class="site-shell" id="site-shell">
+      <a class="skip-link" href="#content">Skip to content</a>
+      {!home && <header class="mx-auto flex w-full max-w-3xl items-center justify-between gap-6 border-b border-[var(--line)] px-4 py-6 sm:px-8">
+        <a href="/" aria-label="Ayush Rameja, home"><img src="/brand/ar-circular.svg" width="66" height="32" alt="AR" /></a>
+        <nav aria-label="Primary" class="flex gap-6">
+          <a href="/projects/" aria-current={projectsCurrent ? 'page' : undefined}>Projects</a>
+          <a href="/notes/" aria-current={notesCurrent ? 'page' : undefined}>Notes</a>
+        </nav>
+      </header>}
+      <main id="content" tabindex="-1" class:list={[home ? "home-main" : "mx-auto w-full max-w-3xl px-4 py-10 sm:px-8 sm:py-14"]}>
+        <slot />
+      </main>
+      {!home && <footer class="mx-auto w-full max-w-3xl border-t border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)] sm:px-8">© {year} Ayush Rameja</footer>}
+    </div>
+    <script is:inline>
+      if (document.documentElement.classList.contains("intro-pending")) {
+        var shell = document.getElementById("site-shell");
+        var intro = document.getElementById("intro");
+        if (shell) shell.setAttribute("inert", "");
+        // Tailwind's layered [hidden] rule beats a stylesheet override.
+        if (intro) intro.hidden = false;
+      }
+    </script>
+  </body>
+</html>

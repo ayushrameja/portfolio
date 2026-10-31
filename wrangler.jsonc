@@ -2,22 +2,28 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "portfolio",
   "account_id": "423419184139ad08e82cba83e7afb59c",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2026-10-03",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
   "workers_dev": true,
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
   "preview_urls": true,
-  "routes": [
-    {
-      "pattern": "ayush.im/*",
-      "zone_name": "ayush.im"
+  "previews": {},
+  "routes": [{ "pattern": "ayush.im/*", "zone_name": "ayush.im" }],
+  // Assets-only Worker. No `main` script: pages are pre-rendered.
+  // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
+  // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/
+  "compatibility_date": "2026-10-27",
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01
     }
-  ],
-  "previews": {}
+  },
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
 }
