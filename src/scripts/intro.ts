@@ -74,15 +74,13 @@ export function startIntro(readiness?: Promise<void>) {
     return;
   }
 
-  const white = intro.querySelector(".intro-white");
   const logo = intro.querySelector(".intro-logo");
   const backdrop = intro.querySelector(".intro-backdrop");
   const hero = document.querySelector(".hero");
-  if (!white || !logo || !backdrop || !hero) { revealPage(); return; }
+  if (!logo || !backdrop || !hero) { revealPage(); return; }
   const animations: Animation[] = [];
   try {
-    animations.push(track(white, [[0, { opacity: 1, easing: "ease-in-out" }], [857, { opacity: 0 }], [DURATION, { opacity: 0 }]]));
-    animations.push(track(logo, [[0, { opacity: 0 }], [619, { opacity: 0, easing: "ease-in-out" }], [1190, { opacity: 1 }], [1571, { opacity: 1, easing: "ease-in-out" }], [2048, { opacity: 0 }], [DURATION, { opacity: 0 }]]));
+    animations.push(track(logo, [[0, { opacity: 0 }], [300, { opacity: 0, easing: "ease-in-out" }], [950, { opacity: 1 }], [1300, { opacity: 1, fill: "#f5f5ef", easing: "ease-in-out" }], [1700, { opacity: 0, fill: "#c6d0a6" }], [DURATION, { opacity: 0 }]]));
     // Remove the opaque backdrop only when the still-closed hero begins opening.
     animations.push(track(backdrop, [[0, { opacity: 1 }], [1761, { opacity: 1 }], [1762, { opacity: 0 }], [DURATION, { opacity: 0 }]]));
     animations.push(track(hero, [
@@ -91,19 +89,14 @@ export function startIntro(readiness?: Promise<void>) {
       [3381, { clipPath: "inset(0% 0% round var(--intro-radius))" }],
       [DURATION, { clipPath: "inset(0% 0% round var(--intro-radius))" }],
     ]));
-    const entrances: [string, number, number, number][] = [
-      [".hero-portrait", 2619, 3381, 8], [".marquee-window", 2381, 3286, 0],
-      ["#hero-title", 2667, 3476, 8], [".hero-description", 2762, 3571, 8],
-      [".work-link", 2905, 3714, 8], [".hero-header", 2810, 3714, 0], [".hero-footer", 2905, 3810, 0],
-    ];
-    for (const [selector, start, end, y] of entrances) {
-      const element = hero.querySelector(selector);
-      if (!element) continue;
-      // Individual translate preserves the marquee's existing transform.
-      animations.push(track(element, [[0, { opacity: 0, translate: `0 ${y}px` }],
-        [start, { opacity: 0, translate: `0 ${y}px`, easing: "cubic-bezier(.22,1,.36,1)" }],
-        [end, { opacity: 1, translate: "0 0" }], [DURATION, { opacity: 1, translate: "0 0" }]]));
-    }
+    // The aperture reveals a complete composition. Keeping the portrait opaque
+    // prevents background lettering bleeding through the subject's face.
+    const center = hero.querySelector(".hero-center");
+    if (center) animations.push(track(center, [
+      [0, { transform: "scale(1.025)" }],
+      [1762, { transform: "scale(1.025)", easing: "cubic-bezier(.22,1,.36,1)" }],
+      [3810, { transform: "scale(1)" }], [DURATION, { transform: "scale(1)" }],
+    ]));
   } catch {
     for (const animation of animations) animation.cancel();
     revealPage();

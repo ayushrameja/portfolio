@@ -198,10 +198,10 @@ test("delayed playback starts at frame zero", () => {
         assert.equal(animation.played, true);
         assert.equal(animation.cancelled, false);
       }
-      assert.equal(harness.animations.length, 11);
+      assert.equal(harness.animations.length, 4);
       const tile = harness.animations[0];
       assert.equal(tile.keyframes[0].offset, 0);
-      assert.equal(tile.keyframes[0].opacity, 1);
+      assert.equal(tile.keyframes[0].opacity, 0);
       assert.equal(tile.keyframes.at(-1).offset, 1);
       assert.equal(tile.keyframes.at(-1).opacity, 0);
       assert.equal(tile.options.duration, 4000);
@@ -392,4 +392,16 @@ test("hero expands on both axes and every track finishes within four seconds", (
   }
   harness.reduceMotion();
   assert.equal(harness.animations.every(animation => animation.cancelled), true);
+});
+
+
+test("logo clears before the aperture opens and the portrait never fades", () => {
+  const harness = installDocument();
+  startIntro(Promise.resolve());
+  const logo = harness.animations.find(a => a.target === "logo");
+  const hero = harness.animations.find(a => a.target === "hero");
+  assert.ok(logo.keyframes.at(-2).offset < hero.keyframes[1].offset);
+  assert.equal(harness.animations.some(a => a.target === ".hero-portrait"), false);
+  assert.equal(harness.animations.some(a => a.target === "white"), false);
+  harness.reduceMotion();
 });

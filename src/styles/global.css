@@ -135,3 +135,5 @@ html.intro-playing {
 
 
 html.intro-pending .marquee-track { animation-play-state: paused; }
+
+html.home-page, .home-page body { background:#171a18; }

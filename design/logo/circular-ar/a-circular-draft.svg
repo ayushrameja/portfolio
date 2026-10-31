@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><g id="a" fill="#111111">
-<path id="a-crown-left" d="M96 4A96 96 0 0 0 4 96H96Z" />
-<path id="a-crown-right" d="M104 4A96 96 0 0 1 196 96H104Z" />
-<path id="a-bowl" fill-rule="evenodd" d="M4 104H96V196A96 96 0 0 1 4 104ZM41 112H80V157A59 59 0 0 1 41 112Z" />
-<path id="a-stem" d="M104 104H196V196H104Z" />
-</g>
-</svg>
