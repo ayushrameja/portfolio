@@ -139,7 +139,6 @@ html.intro-pending .marquee-track { animation-play-state: paused; }
 /* Shared homepage surfaces keep the hero surround and work section continuous. */
 html.home-page {
   --home-canvas: #ffffff;
-  --home-frame-top: #171a18;
   --home-card: #faf8f3;
   --home-card-feature: #f4eee8;
   --home-paper: #fffdf9;
@@ -151,3 +150,12 @@ html.home-page, .home-page body { background:var(--home-canvas); }
 @media (max-width: 900px) { html.home-page { --home-content-inset: 48px; } }
 @media (max-width: 600px) { html.home-page { --home-content-inset: 30px; } }
 @media (max-width: 359px) { html.home-page { --home-content-inset: 26px; } }
+
+/* Keep a draggable native scrollbar, without the bright oversized rail. */
+html.home-page { scrollbar-width: thin; scrollbar-color: #738675 #dce3d7; }
+html.home-page::-webkit-scrollbar { width: 8px; }
+html.home-page::-webkit-scrollbar-track { background: #dce3d7; }
+html.home-page::-webkit-scrollbar-thumb { background: #738675; border: 2px solid #dce3d7; border-radius: 999px; }
+@media (forced-colors: active) {
+  html.home-page { scrollbar-color: auto; scrollbar-width: auto; }
+}

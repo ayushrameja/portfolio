@@ -143,6 +143,11 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
     removeEventListener: (type, fn) => forget("motion", type, fn),
   };
   globalThis.window = {
+    scrollY: 0,
+    scrollTo(options) { this.scrollY = options.top; },
+    history: { scrollRestoration: "auto" },
+    addEventListener: (type, fn) => remember("window", type, fn),
+    removeEventListener: (type, fn) => forget("window", type, fn),
     innerWidth: 390,
     innerHeight: 700,
     matchMedia: () => motion,
@@ -161,7 +166,7 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
   globalThis.requestAnimationFrame = () => 1;
   globalThis.cancelAnimationFrame = () => {};
 
-  return { animations, intro, content, shell, root, storage, parts, reduceMotion: () => { motion.matches = true; dispatch("motion", { type: "change" }); }, dispatch: (type, extra = {}) => {
+  return { animations, intro, content, shell, root, storage, parts, pagehide: () => dispatch("window", { type: "pagehide" }), reduceMotion: () => { motion.matches = true; dispatch("motion", { type: "change" }); }, dispatch: (type, extra = {}) => {
     const event = { type, preventDefault() { event.defaultPrevented = true; }, defaultPrevented: false, ...extra };
     dispatch("intro", event);
   } };
@@ -198,7 +203,9 @@ test("delayed playback starts at frame zero", () => {
         assert.equal(animation.played, true);
         assert.equal(animation.cancelled, false);
       }
-      assert.equal(harness.animations.length, 4);
+      for (const target of ["logo", "backdrop", "hero", ".hero-center"]) {
+        assert.ok(harness.animations.some(animation => animation.target === target));
+      }
       const tile = harness.animations[0];
       assert.equal(tile.keyframes[0].offset, 0);
       assert.equal(tile.keyframes[0].opacity, 0);
@@ -404,4 +411,61 @@ test("logo clears before the aperture opens and the portrait never fades", () =>
   assert.equal(harness.animations.some(a => a.target === ".hero-portrait"), false);
   assert.equal(harness.animations.some(a => a.target === "white"), false);
   harness.reduceMotion();
+});
+
+
+test("loader blends into the surround after readiness without extending the storyboard", () => {
+  const harness = installDocument();
+  startIntro(Promise.resolve());
+  const backdrop = harness.animations.find(a => a.target === "backdrop");
+  const fadeStart = backdrop.keyframes[1].offset * INTRO_DURATION_MS;
+  const fadeEnd = backdrop.keyframes[2].offset * INTRO_DURATION_MS;
+  assert.equal(backdrop.keyframes[0].opacity, 1);
+  assert.equal(backdrop.keyframes[1].opacity, 1);
+  assert.equal(backdrop.keyframes[2].opacity, 0);
+  assert.ok(fadeStart > INTRO_READY_HOLD_MS, "slow assets retain the opaque loading screen");
+  assert.ok(fadeEnd - fadeStart >= 800, "background blends rather than cuts");
+  assert.ok(fadeEnd < INTRO_DURATION_MS, "no added loading time");
+  harness.reduceMotion();
+});
+
+test("hero text staggers during the reveal and completes inside loading time", () => {
+  const harness = installDocument();
+  startIntro(Promise.resolve());
+  const selectors = ["#hero-title", ".hero-description p:first-child", ".hero-description .supporting", ".work-link"];
+  const tracks = selectors.map(selector => harness.animations.find(a => a.target === selector));
+  tracks.forEach((animation, index) => {
+    assert.ok(animation);
+    assert.equal(animation.keyframes[0].opacity, 0);
+    assert.ok(animation.keyframes[1].offset * INTRO_DURATION_MS > INTRO_READY_HOLD_MS);
+    assert.ok(animation.keyframes[2].offset < 1);
+    assert.equal(animation.keyframes.at(-1).opacity, 1);
+    if (index) assert.ok(animation.keyframes[1].offset > tracks[index - 1].keyframes[1].offset);
+  });
+  harness.reduceMotion();
+  assert.ok(tracks.every(a => a.cancelled));
+});
+
+
+test("refresh from Projects resets the viewport before starting the hero reveal", () => {
+  const harness = installDocument();
+  window.scrollY = 1100;
+  startIntro(Promise.resolve());
+  assert.equal(window.scrollY, 0);
+  harness.reduceMotion();
+});
+
+test("leaving mid-intro removes the interaction lock and cancels all tracks", () => {
+  const harness = installDocument();
+  harness.root.dataset.introScrollRestoration = "auto";
+  window.history.scrollRestoration = "manual";
+  harness.shell.setAttribute("inert", "");
+  startIntro(new Promise(() => {}));
+  harness.pagehide();
+  assert.equal(harness.root.classList.contains("intro-pending"), false);
+  assert.equal(harness.root.classList.contains("intro-playing"), false);
+  assert.equal(harness.intro.hidden, true);
+  assert.equal("inert" in harness.shell.attributes, false);
+  assert.ok(harness.animations.every(a => a.cancelled));
+  assert.equal(window.history.scrollRestoration, "auto");
 });

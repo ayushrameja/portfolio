@@ -2,8 +2,14 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import ProjectMosaic from "../components/ProjectMosaic.astro";
+import "lenis/dist/lenis.css";
 ---
 <BaseLayout title="Ayush Rameja" description="Ayush Rameja — full-stack engineer in Bengaluru building useful digital products. Explore selected work and notes on software engineering." home>
   <Hero />
   <ProjectMosaic />
 </BaseLayout>
+
+<script>
+  import { setupHomeScroll } from "../scripts/home-scroll";
+  setupHomeScroll();
+</script>

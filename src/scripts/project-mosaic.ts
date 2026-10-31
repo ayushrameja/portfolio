@@ -1,36 +1,63 @@
-/**
- * Selected-work bento behaviour.
- *
- * All motion is CSS (transform/opacity only). This script only flips classes:
- * - `is-ready`   → enables the one-time entrance reveal (no-JS keeps cards visible)
- * - `is-in`      → section has entered the viewport; cards reveal with a stagger
- * - `is-live`    → ambient loops may run (in view, tab visible, motion allowed)
- */
+import { setupProjectTextEntrance } from "./text-entrance.ts";
+
+/** Reveal each card when it enters the viewport, after the intro releases the page. */
 export function setupProjectMosaic(root: HTMLElement) {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const cards = root.querySelectorAll<HTMLElement>(".card");
   let inView = false;
-
-  function reflect() {
-    const live = inView && !reduced.matches && !document.hidden;
-    root.classList.toggle("is-live", live);
-
-  }
-
-  if (!reduced.matches) root.classList.add("is-ready");
-
-  const observer = new IntersectionObserver(entries => {
+  let started = false;
+  const reflect = () => {
+    root.classList.toggle("is-live", started && inView && !reduced.matches && !document.hidden);
+  };
+  const cardsObserver = new IntersectionObserver(entries => {
+    let stagger = 0;
     for (const entry of entries) {
-      inView = entry.isIntersecting;
-      if (inView) root.classList.add("is-in");
+      if (!entry.isIntersecting || entry.intersectionRatio <= 0 || document.hidden) continue;
+      const card = entry.target as HTMLElement;
+      card.style.setProperty("--reveal-delay", `${Math.min(stagger++, 3) * 80}ms`);
+      card.classList.add("is-revealed");
+      cardsObserver.unobserve(card);
     }
-    reflect();
-  }, { threshold: 0.12 });
-  observer.observe(root);
-
-  reduced.addEventListener("change", () => {
-    if (reduced.matches) root.classList.remove("is-ready");
+  }, { threshold: 0, rootMargin: "0px 0px -48px 0px" });
+  const sectionObserver = new IntersectionObserver(entries => {
+    inView = entries.some(entry => entry.isIntersecting);
     reflect();
   });
-  document.addEventListener("visibilitychange", reflect);
-  reflect();
+  const refreshCards = () => {
+    if (!started || document.hidden) return;
+    cards.forEach(card => {
+      if (card.classList.contains("is-revealed")) return;
+      cardsObserver.unobserve(card);
+      cardsObserver.observe(card);
+    });
+  };
+  const start = () => {
+    if (started || document.hidden || document.documentElement.classList.contains("intro-pending")) return;
+    started = true;
+    introObserver.disconnect();
+    if (!reduced.matches) root.classList.add("is-ready");
+    refreshCards();
+    sectionObserver.observe(root);
+    setupProjectTextEntrance(root);
+  };
+  const introObserver = new MutationObserver(start);
+  introObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  reduced.addEventListener("change", () => {
+    if (reduced.matches) {
+      root.classList.remove("is-ready");
+      cards.forEach(card => card.classList.add("is-revealed"));
+      cardsObserver.disconnect();
+    }
+    reflect();
+  });
+  root.addEventListener("focusin", event => {
+    const card = (event.target as HTMLElement).closest<HTMLElement>(".card");
+    if (card) {
+      card.style.setProperty("--reveal-delay", "0ms");
+      card.classList.add("is-revealed");
+      cardsObserver.unobserve(card);
+    }
+  });
+  document.addEventListener("visibilitychange", () => { start(); refreshCards(); reflect(); });
+  start();
 }

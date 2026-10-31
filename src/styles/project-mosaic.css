@@ -123,8 +123,8 @@
   background: var(--card-tint);
   transition:
     transform 0.5s var(--ease),
-    opacity 0.9s var(--ease) calc(var(--i) * 70ms),
-    translate 0.9s var(--ease) calc(var(--i) * 70ms);
+    opacity 0.9s var(--ease) var(--reveal-delay, 0ms),
+    translate 0.9s var(--ease) var(--reveal-delay, 0ms);
 }
 /* Hairline border drawn above the art so imagery never breaks the edge. */
 .card::before {
@@ -159,7 +159,7 @@
 
 /* One-time entrance (only when JS is running and motion is allowed). */
 .project-showcase.is-ready .card { opacity: 0; translate: 0 28px; }
-.project-showcase.is-ready.is-in .card { opacity: 1; translate: 0 0; }
+.project-showcase.is-ready .card.is-revealed { opacity: 1; translate: 0 0; }
 
 .card-inner {
   position: relative;
@@ -288,70 +288,50 @@
 .card--comnext .card-copy h3 { font-size: clamp(36px, 7.2cqi, 60px); letter-spacing: -0.045em; }
 .card--comnext .card-copy p { margin-top: 12px; font-size: 16px; max-width: 28ch; }
 
-.cms { position: absolute; inset: 0; display: grid; place-items: center; perspective: 1000px; }
-.cms-assembly {
+.autodesk-scene { position: absolute; inset: 0; display: grid; place-items: center; perspective: 1100px; }
+.autodesk-preview {
   position: relative;
-  width: min(82%, 380px);
-  height: min(calc(100% - 40px), 270px);
-}
-.cms-window {
-  display: grid;
-  grid-template-rows: auto 1.25fr 1fr auto;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-  border-radius: 14px;
-  background: var(--paper);
-  border: 1px solid var(--edge);
-  box-shadow: 0 24px 40px -24px rgb(57 36 69 / 0.28);
-  transform: rotateY(-16deg) rotateX(7deg) rotate(1.5deg);
+  width: min(94%, 560px, calc((100cqh - 48px) * 1.6));
+  aspect-ratio: 8 / 5;
+  transform: rotateY(-10deg) rotateX(5deg) rotate(-2deg);
   transition: transform 0.8s var(--ease);
 }
-.cms-bar { display: flex; align-items: center; gap: 5px; }
-.cms-bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--bloom-b); }
-.cms-bar span { flex: 1; height: 9px; margin-left: 8px; border-radius: 5px; background: color-mix(in oklab, var(--bloom-b) 16%, var(--paper)); }
-.cms-hero {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 5px;
-  padding: 12px;
-  border-radius: 9px;
-  background: linear-gradient(125deg, #866cab, #d69b7c);
-}
-.cms-hero span { height: 7px; width: 46%; border-radius: 4px; background: rgb(255 255 255 / 0.75); }
-.cms-hero span + span { width: 30%; background: rgb(255 255 255 / 0.45); }
-.cms-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.cms-row span { border-radius: 7px; background: color-mix(in oklab, var(--bloom-b) 14%, var(--paper)); transition: translate 0.6s var(--ease); }
-.cms-row span:nth-child(2) { background: color-mix(in oklab, var(--bloom-a) 18%, var(--paper)); transition-delay: 60ms; }
-.cms-row span:nth-child(3) { background: color-mix(in oklab, var(--bloom-c) 16%, var(--paper)); transition-delay: 120ms; }
-.cms-lines { display: grid; gap: 5px; padding: 2px 2px 4px; }
-.cms-lines span { height: 5px; width: 92%; border-radius: 3px; background: color-mix(in oklab, var(--bloom-b) 20%, var(--paper)); }
-.cms-lines span:nth-child(2) { width: 74%; }
-.cms-lines span:nth-child(3) { width: 84%; }
-
-.cms-chip {
+/* Three exact bands of one captured page: they resolve into a continuous image. */
+.autodesk-slice {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 11px 6px 7px;
-  border: 1px solid var(--edge);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: 0 6px 14px -10px rgb(57 36 69 / 0.2);
-  color: var(--fg);
-  font-size: 12px;
-  white-space: nowrap;
-  transition: translate 0.7s var(--ease);
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  background: #111;
+  outline: 1px solid rgb(255 255 255 / 0.14);
+  box-shadow: 0 18px 30px -18px rgb(30 20 40 / 0.28);
+  transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease);
 }
-.cms-chip b { width: 10px; height: 10px; border-radius: 3px; background: var(--accent); }
-.chip-a { top: 18%; left: -16px; }
-.chip-b { top: 60%; right: -16px; }
-.chip-b b { border-radius: 50%; background: #4f7e8b; }
-.chip-c { bottom: -12px; left: 18%; }
-.chip-c b { background: #806394; }
+.autodesk-slice img { display: block; width: 100%; max-width: none; height: auto; }
+.slice-nav { top: 0; height: 11%; border-radius: 10px 10px 0 0; --assemble-x: -22px; --assemble-y: -26px; --assemble-rotate: -4deg; --assemble-delay: 100ms; }
+.slice-hero { top: 11%; height: 51%; --assemble-x: 26px; --assemble-y: 0px; --assemble-rotate: 3deg; --assemble-delay: 240ms; }
+.slice-hero img { transform: translateY(-11%); }
+.slice-industry { top: 62%; height: 38%; border-radius: 0 0 10px 10px; --assemble-x: -16px; --assemble-y: 26px; --assemble-rotate: -2deg; --assemble-delay: 380ms; }
+.slice-industry img { transform: translateY(-62%); }
+.autodesk-caption { position: absolute; top: calc(100% + 14px); left: 0; right: 0; display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; line-height: 1; }
+.autodesk-caption i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.autodesk-caption > span { margin-left: auto; font-size: 9px; }
+.project-showcase.is-ready .card.is-revealed .autodesk-slice { animation: autodesk-assemble 1.3s var(--ease) var(--assemble-delay) backwards; }
+@keyframes autodesk-assemble {
+  from { opacity: 0; transform: translate3d(var(--assemble-x), var(--assemble-y), 60px) rotate(var(--assemble-rotate)); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); }
+}
+@media (hover: hover) {
+  .card--comnext:hover .autodesk-preview { transform: rotateY(0deg) rotateX(0deg) rotate(0deg); }
+  .card--comnext:hover .slice-nav { transform: translateY(-10px); }
+  .card--comnext:hover .slice-industry { transform: translateY(10px); }
+}
+.card--comnext:focus-visible .autodesk-preview { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .project-showcase .autodesk-slice { animation: none !important; transition: none; }
+  .project-showcase .autodesk-preview,
+  .project-showcase .autodesk-slice { transform: none !important; }
+}
 
 /* ==========================================================================
    Learn v2 — stacked course cards
@@ -502,35 +482,41 @@
    Google — API → Roles → GCP
    ========================================================================== */
 
-.nodes { position: absolute; inset: 0; display: flex; align-items: center; }
+.nodes {
+  --node-size: clamp(44px, min(19cqw, 70cqh), 88px);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--node-size) minmax(0, 1fr) var(--node-size) minmax(0, 1fr) var(--node-size);
+  align-items: center;
+}
 .node {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: clamp(56px, min(19cqw, 70cqh), 88px);
+  width: var(--node-size);
   aspect-ratio: 1;
   border: 1px solid color-mix(in oklab, var(--accent) 38%, transparent);
   border-radius: 50%;
   background: var(--surface);
   color: var(--accent);
   font-size: 12px;
-  transition: translate 0.5s var(--ease), background-color 0.4s ease;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
-.node:nth-child(3) { transition-delay: 60ms; }
-.node:nth-child(5) { transition-delay: 120ms; }
 .link {
   position: relative;
-  flex: 1;
+  min-width: 0;
   height: 8px;
   overflow: hidden;
   background: linear-gradient(color-mix(in oklab, var(--accent) 35%, transparent), color-mix(in oklab, var(--accent) 35%, transparent)) center / 100% 1px no-repeat;
 }
-.link i { position: absolute; inset: 0; transform: translateX(-100%); }
+.link i { position: absolute; inset: 0; opacity: 0; transform: translateX(-100%); }
 .link i::after {
   content: "";
   position: absolute;
-  top: 1px;
+  top: 50%;
   right: 0;
+  transform: translateY(-50%);
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -542,11 +528,6 @@
    ========================================================================== */
 
 @media (hover: hover) {
-  .card--comnext:hover .cms-window { transform: rotateY(-6deg) rotateX(3deg) rotate(0deg) scale(1.02); }
-  .card--comnext:hover .chip-a { translate: -3px -3px; }
-  .card--comnext:hover .chip-b { translate: 3px 0; }
-  .card--comnext:hover .chip-c { translate: 0 3px; }
-  .card--comnext:hover .cms-row span { translate: 0 -4px; }
 
   .card--learn:hover .course-back { rotate: 11deg; translate: 28px -26cqh; }
   .card--learn:hover .course-mid { rotate: -7deg; translate: 2px -13cqh; }
@@ -558,29 +539,29 @@
   .card--templio:hover .site { rotate: 0deg; translate: 0 -4px; }
   .card--templio:hover .site-view img { transform: translateY(-34%); }
 
-  .card--google:hover .node:nth-child(1) { translate: 0 -6px; }
-  .card--google:hover .node:nth-child(3) { translate: 0 6px; }
-  .card--google:hover .node:nth-child(5) { translate: 0 -6px; }
+  .card--google:hover .node { background: var(--surface-raised); border-color: var(--accent); }
 }
 
 /* ==========================================================================
    Ambient loops — only while visible and motion is allowed
    ========================================================================== */
 
-.is-live .cms-chip { animation: work-bob 5s ease-in-out infinite alternate; }
-.is-live .chip-b { animation-delay: -1.7s; }
-.is-live .chip-c { animation-delay: -3.4s; }
 .is-live .course-meter span { animation: work-meter 4.5s ease-in-out infinite alternate; }
 .is-live .pulse-track { animation: work-wave 7s linear infinite; }
 .is-live .pulse-live::before { animation: work-blink 1.8s ease-in-out infinite; }
-.is-live .link i { animation: work-travel 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-.is-live .link:nth-child(4) i { animation-delay: 1.3s; }
+/* One shared cycle: first connection travels, then the second. */
+.is-live .link i { animation: work-travel 4s linear infinite; }
+.is-live .link:nth-child(4) i { animation-delay: 2s; }
 
-@keyframes work-bob { to { transform: translateY(-8px); } }
 @keyframes work-meter { from { transform: scaleX(0.35); } to { transform: scaleX(0.82); } }
 @keyframes work-wave { to { transform: translateX(-50%); } }
 @keyframes work-blink { 50% { opacity: 0.25; } }
-@keyframes work-travel { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes work-travel {
+  0% { transform: translateX(-100%); opacity: 0; }
+  5% { opacity: 1; }
+  40% { transform: translateX(0); opacity: 1; }
+  45%, 100% { transform: translateX(0); opacity: 0; }
+}
 
 /* ==========================================================================
    Responsive
@@ -622,6 +603,5 @@
   .card:focus-visible { transform: none; }
   .card:hover *,
   .card:focus-visible * { translate: none !important; rotate: none !important; }
-  .card:hover .cms-window,
   .card:hover .site-view img { transform: none !important; }
 }

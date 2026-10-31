@@ -28,22 +28,42 @@ const year = 2026;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline data-home={home ? "true" : "false"}>
       (function () {
+        var root = document.documentElement;
+        function releaseIntro() {
+          root.classList.remove("intro-pending", "intro-playing");
+          var intro = document.getElementById("intro");
+          if (intro) intro.hidden = true;
+          var shell = document.getElementById("site-shell");
+          if (shell) shell.removeAttribute("inert");
+          var previous = root.dataset.introScrollRestoration;
+          if (previous === "auto" || previous === "manual") {
+            window.history.scrollRestoration = previous;
+            delete root.dataset.introScrollRestoration;
+          }
+        }
         try {
           if (document.currentScript?.getAttribute("data-home") !== "true") return;
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-          var root = document.documentElement;
+          // Preserve deep links and browser-history restoration. Only a top-level
+          // arrival/reload owns the full hero storyboard and its viewport.
+          var navigation = performance.getEntriesByType("navigation")[0];
+          if (window.location.hash || navigation?.type === "back_forward") return;
+          root.dataset.introScrollRestoration = window.history.scrollRestoration;
+          window.history.scrollRestoration = "manual";
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
           root.classList.add("intro-pending");
-          window.setTimeout(function () {
-            if (root.classList.contains("intro-pending") && !root.classList.contains("intro-playing")) {
-              root.classList.remove("intro-pending");
-              var intro = document.getElementById("intro");
-              if (intro) intro.hidden = true;
-              var shell = document.getElementById("site-shell");
-              if (shell) shell.removeAttribute("inert");
+          window.addEventListener("pageshow", function () {
+            if (root.classList.contains("intro-pending")) {
+              window.scrollTo({ top: 0, left: 0, behavior: "instant" });
             }
+          });
+          // A bfcache entry must never retain an invisible interaction blocker.
+          window.addEventListener("pagehide", releaseIntro, { once: true });
+          window.setTimeout(function () {
+            if (root.classList.contains("intro-pending") && !root.classList.contains("intro-playing")) releaseIntro();
           }, 6000); // INTRO_INIT_FAILURE_MS
         } catch (error) {
-          document.documentElement.classList.remove("intro-pending");
+          releaseIntro();
         }
       })();
     </script>

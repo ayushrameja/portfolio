@@ -61,6 +61,11 @@ function revealPage() {
   root.classList.remove("intro-pending", "intro-playing");
   document.getElementById("intro")?.setAttribute("hidden", "");
   document.getElementById("site-shell")?.removeAttribute("inert");
+  const previous = root.dataset.introScrollRestoration;
+  if (previous === "auto" || previous === "manual") {
+    window.history.scrollRestoration = previous;
+    delete root.dataset.introScrollRestoration;
+  }
 }
 
 export function startIntro(readiness?: Promise<void>) {
@@ -74,6 +79,10 @@ export function startIntro(readiness?: Promise<void>) {
     return;
   }
 
+  // The browser may restore scroll after the early head script. Reset again
+  // before making the hero's aperture and text tracks visible.
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
   const logo = intro.querySelector(".intro-logo");
   const backdrop = intro.querySelector(".intro-backdrop");
   const hero = document.querySelector(".hero");
@@ -81,14 +90,32 @@ export function startIntro(readiness?: Promise<void>) {
   const animations: Animation[] = [];
   try {
     animations.push(track(logo, [[0, { opacity: 0 }], [300, { opacity: 0, easing: "ease-in-out" }], [950, { opacity: 1 }], [1300, { opacity: 1, fill: "#f5f5ef", easing: "ease-in-out" }], [1700, { opacity: 0, fill: "#c6d0a6" }], [DURATION, { opacity: 0 }]]));
-    // Remove the opaque backdrop only when the still-closed hero begins opening.
-    animations.push(track(backdrop, [[0, { opacity: 1 }], [1761, { opacity: 1 }], [1762, { opacity: 0 }], [DURATION, { opacity: 0 }]]));
+    // Blend into the palette-colored surround after the readiness hold. This
+    // overlaps the aperture reveal and stays inside the existing 4s storyboard.
+    animations.push(track(backdrop, [[0, { opacity: 1 }], [1300, { opacity: 1, easing: "ease-in-out" }], [2300, { opacity: 0 }], [DURATION, { opacity: 0 }]]));
     animations.push(track(hero, [
       [0, { clipPath: "inset(50% 50% round 0px)" }],
       [1762, { clipPath: "inset(50% 50% round 0px)", easing: "cubic-bezier(.65,0,.25,1)" }],
       [3381, { clipPath: "inset(0% 0% round var(--intro-radius))" }],
       [DURATION, { clipPath: "inset(0% 0% round var(--intro-radius))" }],
     ]));
+    // Text enters while the aperture opens, finishing before the 4s handoff.
+    const textOrder = [
+      ".marquee-window", "#hero-title", ".hero-description p:first-child",
+      ".hero-description .supporting", ".work-link", ".hero-clock",
+      ".hero-location", ".hero-identity", ".resume-link", ".menu-toggle",
+    ];
+    textOrder.forEach((selector, index) => {
+      const text = hero.querySelector(selector);
+      if (!text) return;
+      const start = 2200 + index * 90;
+      animations.push(track(text, [
+        [0, { opacity: 0, translate: "0 16px" }],
+        [start, { opacity: 0, translate: "0 16px", easing: "cubic-bezier(.22,1,.36,1)" }],
+        [start + 650, { opacity: 1, translate: "0 0" }],
+        [DURATION, { opacity: 1, translate: "0 0" }],
+      ]));
+    });
     // The aperture reveals a complete composition. Keeping the portrait opaque
     // prevents background lettering bleeding through the subject's face.
     const center = hero.querySelector(".hero-center");
@@ -121,6 +148,7 @@ export function startIntro(readiness?: Promise<void>) {
     cancelAnimationFrame(frame);
     for (const animation of animations) animation.cancel();
     reduced.removeEventListener("change", onReduce);
+    window.removeEventListener("pagehide", complete);
     intro.removeEventListener("keydown", onKeydown);
     revealPage();
     const content = document.getElementById("content");
@@ -220,6 +248,7 @@ export function startIntro(readiness?: Promise<void>) {
   };
   frame = requestAnimationFrame(watch);
 
+  window.addEventListener("pagehide", complete, { once: true });
   intro.addEventListener("keydown", onKeydown);
   reduced.addEventListener("change", onReduce);
   intro.focus({ preventScroll: true });
