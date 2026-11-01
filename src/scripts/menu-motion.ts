@@ -1,3 +1,5 @@
+const menuTime = (ms: number) => ms / .9; // Play the existing choreography 10% slower.
+
 /** Native popover owns interaction; decorative exit copies never receive input. */
 export function setupMenuMotion(menu: HTMLElement) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -26,12 +28,12 @@ export function setupMenuMotion(menu: HTMLElement) {
     entering.push(menu.animate([
       { opacity: 0, transform: 'translateY(16px) scale(.97)' },
       { opacity: 1, transform: 'translateY(0) scale(1)' },
-    ], { duration: 280, easing: 'cubic-bezier(.22,1,.36,1)' }));
+    ], { duration: menuTime(280), easing: 'cubic-bezier(.22,1,.36,1)' }));
     menu.querySelectorAll('.menu-heading, a').forEach((item, index) => {
       entering.push(item.animate([
         { opacity: 0, transform: 'translateY(14px)' },
         { opacity: 1, transform: 'translateY(0)' },
-      ], { duration: 320, delay: 65 + index * 55, fill: 'backwards', easing: 'cubic-bezier(.22,1,.36,1)' }));
+      ], { duration: menuTime(320), delay: menuTime(65 + index * 55), fill: 'backwards', easing: 'cubic-bezier(.22,1,.36,1)' }));
     });
   }
 
@@ -83,7 +85,7 @@ export function setupMenuMotion(menu: HTMLElement) {
     panel.animate([
       { opacity: 1, transform: 'translateY(0)' },
       { opacity: 0, transform: 'translateY(36px)' },
-    ], { duration: 240, fill: 'forwards', easing: 'cubic-bezier(.4,0,1,1)' });
+    ], { duration: menuTime(240), fill: 'forwards', easing: 'cubic-bezier(.4,0,1,1)' });
     const animations: Animation[] = [];
     const rows = tiles.querySelectorAll<HTMLAnchorElement>('a');
     const faces = [
@@ -106,15 +108,15 @@ export function setupMenuMotion(menu: HTMLElement) {
         child.style.webkitTextFillColor = 'currentColor';
       });
       item.querySelectorAll<SVGElement>('svg, path').forEach(child => child.style.stroke = 'currentColor');
-      const delay = (rows.length - 1 - index) * 65;
-      const label = item.querySelector<HTMLElement>('span:not(.menu-number)');
+      const delay = menuTime((rows.length - 1 - index) * 65);
+      const label = item.querySelector<HTMLElement>(':scope > span:not(.menu-number)');
       if (label) {
         faces[index % faces.length].forEach((face, frame) => {
           faceTimers.push(window.setTimeout(() => {
             label.textContent = face;
             label.style.fontFamily = 'ui-monospace, monospace';
             label.style.letterSpacing = '.08em';
-          }, delay + 40 + frame * 155));
+          }, delay + menuTime(40 + frame * 155)));
         });
       }
       item.style.borderRadius = '12px';
@@ -126,13 +128,13 @@ export function setupMenuMotion(menu: HTMLElement) {
         { transform: `translate(${direction * 8}px,${distance * .08}px) rotate(${direction * 5}deg)`, opacity: .68, offset: .3 },
         { transform: `translate(${direction * 24}px,${distance * .65}px) rotate(${direction * 15}deg)`, opacity: .16, offset: .8 },
         { transform: `translate(${direction * 36}px,${distance}px) rotate(${direction * 23}deg)`, opacity: 0, offset: 1 },
-      ], { duration: 650, delay, fill: 'forwards', easing: 'cubic-bezier(.4,0,1,1)' }));
+      ], { duration: menuTime(650), delay, fill: 'forwards', easing: 'cubic-bezier(.4,0,1,1)' }));
     });
     const finishedLayer = layer;
     Promise.allSettled(animations.map(animation => animation.finished)).then(() => {
       if (exitLayer === finishedLayer) clearExit();
     });
-    cleanupTimer = window.setTimeout(clearExit, 1400);
+    cleanupTimer = window.setTimeout(clearExit, menuTime(1400));
   }
 
   menu.addEventListener('beforetoggle', event => {

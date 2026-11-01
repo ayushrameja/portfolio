@@ -2,6 +2,7 @@
 
 :root {
   color-scheme: light;
+  --intro-backdrop: #171a18;
   --paper: #f7f6f3;
   --ink: #171717;
   --muted: #4b4b4b;
@@ -117,10 +118,12 @@
   list-style: decimal;
 }
 
-html.intro-pending,
-html.intro-playing {
-  overflow: hidden;
+/* Reserve the same scrollbar space before, during, and after the intro. */
+html.home-page {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
+html, body { overflow-x: clip; }
 
 @media (prefers-reduced-motion: reduce) {
   html.intro-pending .site-shell,
@@ -158,4 +161,15 @@ html.home-page::-webkit-scrollbar-track { background: #dce3d7; }
 html.home-page::-webkit-scrollbar-thumb { background: #738675; border: 2px solid #dce3d7; border-radius: 999px; }
 @media (forced-colors: active) {
   html.home-page { scrollbar-color: auto; scrollbar-width: auto; }
+}
+
+
+/* Lock only the loading phase. Stable gutter keeps the hero's width unchanged
+   when native scrolling and Lenis take over at the interactive reveal. */
+html.home-page.intro-pending {
+  overflow-y: hidden;
+  background: var(--intro-backdrop);
+}
+html.home-page.intro-pending body {
+  touch-action: none;
 }

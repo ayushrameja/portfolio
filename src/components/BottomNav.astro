@@ -1,28 +1,27 @@
 ---
 import { heroTiles } from "../brand/hero-tiles";
+import DockPreview from "./DockPreview.astro";
 import "../styles/bottom-nav.css";
 const resume = "https://drive.google.com/file/d/1KH4dnH50ocYFxv0Cut7gqMltRDHgC088/preview";
 const sections = [{ id: "home", label: "Introduction", number: "01" }, { id: "selected-work", label: "Selected work", number: "02" }];
 ---
 <nav class="bottom-nav" aria-label="Page navigation" inert data-visible="false" data-expanded="false" data-open="false">
   <div class="dock-panel" id="dock-menu" hidden>
-    <div class="dock-panel-heading"><span>Scroll to explore</span><span class="dock-count" aria-live="polite">02 / 02</span></div>
+    <div class="dock-panel-heading"><span>Find your next stop</span><span class="dock-count" aria-live="polite">01 / 02</span></div>
     <div class="dock-track" aria-label="Section previews" data-lenis-prevent>
       {sections.map(section => (
         <a class="dock-preview" href={`#${section.id}`} data-section={section.id} aria-label={`Go to ${section.label}`}>
-          <div class="dock-thumbnail" aria-hidden="true"><div class="dock-preview-page" inert></div></div>
-          <span class="dock-preview-caption"><span>{section.label}</span><span aria-hidden="true">↗</span></span>
+          <div class="dock-thumbnail" aria-hidden="true"><DockPreview section={section.id} /></div>
+          <span class="dock-preview-caption">{section.label}</span>
         </a>
       ))}
     </div>
-    <div class="dock-preview-controls"><button type="button" class="dock-prev" aria-label="Previous section">←</button><span>Swipe or scroll · Select to jump</span><button type="button" class="dock-next" aria-label="Next section">→</button></div>
   </div>
   <div class="dock-bar">
     <a class="dock-logo" href="#home" aria-label="Back to introduction"><svg viewBox="0 0 105 50" aria-hidden="true">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg></a>
     <button class="dock-trigger" type="button" aria-expanded="false" aria-controls="dock-menu" inert>
-      <span class="dock-label">Selected work</span>
-      <svg class="dock-arrows" viewBox="0 0 20 28" aria-hidden="true"><path d="M8.3 2.5a2 2 0 0 1 3.4 0l6 8A2 2 0 0 1 16 13H4a2 2 0 0 1-1.7-2.5l6-8ZM4 16h12a2 2 0 0 1 1.7 2.5l-6 8a2 2 0 0 1-3.4 0l-6-8A2 2 0 0 1 4 16Z" /></svg>
-      <span class="dock-face" aria-hidden="true">(o _ o)</span>
+      <span class="dock-label">Introduction</span>
+      <span class="dock-close"><span class="dock-face" aria-hidden="true">(o_o)</span><span>Close</span></span>
     </button>
     <a class="dock-resume" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)" inert>Resume</a>
   </div>

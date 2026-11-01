@@ -1,6 +1,7 @@
 export const INTRO_DURATION_MS = 4000;
 const DURATION = INTRO_DURATION_MS;
 export const INTRO_READY_HOLD_MS = 1190;
+export const INTRO_INTERACTIVE_MS = 2300;
 // Failed or indefinitely pending resources must not trap visitors.
 export const PAGE_READY_FAILURE_MS = 15000;
 
@@ -132,6 +133,7 @@ export function startIntro(readiness?: Promise<void>) {
 
   let frame = 0;
   let closed = false;
+  let interactive = false;
   let stallTimer = 0;
   let readyTimer = 0;
   let pageReady = false;
@@ -152,7 +154,18 @@ export function startIntro(readiness?: Promise<void>) {
     intro.removeEventListener("keydown", onKeydown);
     revealPage();
     const content = document.getElementById("content");
-    content?.focus({ preventScroll: true });
+    if (!interactive) content?.focus({ preventScroll: true });
+  };
+
+  const releaseInteraction = () => {
+    if (interactive) return;
+    interactive = true;
+    root.classList.remove("intro-pending");
+    document.getElementById("site-shell")?.removeAttribute("inert");
+    // The backdrop is transparent now; remaining text tracks can finish independently.
+    intro.hidden = true;
+    intro.removeEventListener("keydown", onKeydown);
+    document.getElementById("content")?.focus({ preventScroll: true });
   };
 
   const onReduce = () => {
@@ -221,6 +234,7 @@ export function startIntro(readiness?: Promise<void>) {
       stallTimer = window.setTimeout(checkPlayback, INTRO_PLAYBACK_FAILURE_MS);
       return;
     }
+    if (pageReady && time >= INTRO_INTERACTIVE_MS) releaseInteraction();
     if (time >= DURATION) {
       animationFinished = true;
       revealWhenReady();
@@ -238,6 +252,7 @@ export function startIntro(readiness?: Promise<void>) {
   const watch = () => {
     const time = Number(animations[0]?.currentTime ?? DURATION);
     if (holdForReadiness(time)) return;
+    if (pageReady && time >= INTRO_INTERACTIVE_MS) releaseInteraction();
     if (time >= DURATION) {
       animationFinished = true;
       window.clearTimeout(stallTimer);

@@ -4,6 +4,7 @@ import { mock, test } from "node:test";
 import {
   INTRO_DURATION_MS,
   INTRO_READY_HOLD_MS,
+  INTRO_INTERACTIVE_MS,
   INTRO_INIT_FAILURE_MS,
   PAGE_READY_FAILURE_MS,
   waitForPageReady,
@@ -273,21 +274,31 @@ test("hold does not start playback", () => {
 });
 
 
-test("intro cuts away only after the full storyboard and page readiness", async () => {
+test("intro releases interaction during reveal while the full storyboard finishes", async () => {
   const harness = installDocument({ landing: true });
   let nextFrame;
   globalThis.requestAnimationFrame = (callback) => { nextFrame = callback; return 1; };
   startIntro(Promise.resolve());
   await Promise.resolve();
   assert.equal(harness.animations.some(animation => ["intro", "hero-copy"].includes(animation.target)), false);
-  harness.animations[0].currentTime = INTRO_DURATION_MS - 1;
+  harness.shell.setAttribute("inert", "");
+  harness.animations[0].currentTime = INTRO_INTERACTIVE_MS - 1;
   nextFrame();
   assert.equal(harness.intro.hidden, false);
+  assert.equal(harness.shell.attributes.inert, "");
+  harness.animations[0].currentTime = INTRO_INTERACTIVE_MS;
+  nextFrame();
+  assert.equal(harness.intro.hidden, true);
+  assert.equal(harness.shell.attributes.inert, undefined);
+  assert.equal(harness.root.classList.contains("intro-pending"), false);
+  assert.equal(harness.animations.some(animation => animation.cancelled), false);
+  document.activeElementId = "user-selected-link";
   harness.animations[0].currentTime = INTRO_DURATION_MS;
   nextFrame();
   assert.equal(harness.intro.hidden, true);
   assert.equal(harness.shell.attributes.inert, undefined);
   assert.equal(harness.animations.every(animation => animation.cancelled), true);
+  assert.equal(document.activeElementId, "user-selected-link");
 });
 
 function deferred() {

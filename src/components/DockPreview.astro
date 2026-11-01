@@ -1,0 +1,49 @@
+---
+import { getImage } from "astro:assets";
+import portrait from "../assets/portrait-approved.png";
+import { heroTiles } from "../brand/hero-tiles";
+interface Props { section: string }
+const { section } = Astro.props;
+const photo = section === "home" ? await getImage({ src: portrait, width: 320, format: "webp" }) : null;
+---
+<!-- One art-directed canvas at every breakpoint; no miniature responsive DOM. -->
+<svg class="dock-art" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  {section === "home" ? <>
+    <defs>
+      <linearGradient id="dock-intro-bg" x2="1" y2="1"><stop stop-color="#c6d0a6" /><stop offset="1" stop-color="#a9cec4" /></linearGradient>
+      <clipPath id="dock-portrait-clip"><rect x="395" y="48" width="194" height="270" rx="84" /></clipPath>
+    </defs>
+    <path fill="url(#dock-intro-bg)" d="M0 0h640v400H0z" />
+    <circle cx="490" cy="180" r="210" fill="none" stroke="#416657" stroke-opacity=".16" />
+    <circle cx="490" cy="180" r="165" fill="none" stroke="#416657" stroke-opacity=".16" />
+    <g transform="translate(48 52) scale(.85)" fill="#416657">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</g>
+    <text x="48" y="159" font-size="15" letter-spacing="2" fill="#3f564d">ENGINEER / CURIOUS HUMAN</text>
+    <text x="46" y="223" font-size="58" letter-spacing="-2" fill="#2b433b">Ayush</text>
+    <text x="46" y="281" font-size="58" letter-spacing="-2" fill="#2b433b">Rameja.</text>
+    <image href={photo?.src} x="395" y="48" width="194" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#dock-portrait-clip)" />
+    <path d="M48 344h544" stroke="#416657" stroke-opacity=".35" />
+    <text x="48" y="373" font-size="17" fill="#3f564d">Built from curiosity.</text>
+    <text x="592" y="373" font-size="17" fill="#3f564d" text-anchor="end">01 — INTRO</text>
+  </> : <>
+    <defs><clipPath id="dock-work-clip"><rect x="252" y="42" width="390" height="282" rx="15" /></clipPath></defs>
+    <path fill="#eeeae2" d="M0 0h640v400H0z" />
+    <path d="M320 0v400M0 200h640" stroke="#dbd6c9" />
+    <g transform="rotate(-8 450 200)">
+      <rect x="241" y="31" width="412" height="304" rx="22" fill="#34483d" />
+      <image href="/projects/autodesk-home.jpg" x="252" y="42" width="390" height="282" preserveAspectRatio="xMidYMid slice" clip-path="url(#dock-work-clip)" />
+    </g>
+    <rect x="43" y="54" width="122" height="28" rx="14" fill="#34483d" />
+    <text x="104" y="73" text-anchor="middle" font-size="13" letter-spacing="1" fill="#fffdf9">THE WORK</text>
+    <text x="42" y="153" font-size="52" letter-spacing="-2" fill="#262e28">Ideas.</text>
+    <text x="42" y="210" font-size="52" letter-spacing="-2" fill="#262e28">Built.</text>
+    <rect x="44" y="243" width="182" height="73" rx="12" fill="#c6d0a6" />
+    <path d="M62 280h27l8-17 13 34 12-26 9 9h35" fill="none" stroke="#416657" stroke-width="3" stroke-linecap="round" />
+    <circle cx="200" cy="280" r="6" fill="#416657" />
+    <path d="M48 344h544" stroke="#aaa99b" />
+    <text x="48" y="373" font-size="17" fill="#4b5144">Useful things, thoughtfully built.</text>
+    <text x="592" y="373" font-size="17" fill="#4b5144" text-anchor="end">02 — WORK</text>
+  </>}
+</svg>
+<style>
+  .dock-art { display:block; width:100%; height:100%; font-family:"Inter Tight",Arial,sans-serif; font-weight:500; }
+</style>
