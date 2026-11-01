@@ -17,6 +17,19 @@ export function dockVisible({ progress, viewport, menuOpen }: {
   return menuOpen || progress >= viewport * .2;
 }
 
+export function renderDockLabel(label: HTMLElement, text: string, animate: boolean, direction = 1) {
+  if (!animate) { label.textContent = text; return; }
+  // Replacing the letters cancels the previous transition during fast scrolling.
+  label.replaceChildren(...Array.from(text, (character, index) => {
+    const letter = document.createElement('span');
+    letter.className = 'dock-letter';
+    letter.textContent = character;
+    letter.style.setProperty('--letter-delay', `${index * 22}ms`);
+    letter.style.setProperty('--letter-offset', `${direction * .7}em`);
+    return letter;
+  }));
+}
+
 export function setupBottomNav() {
   const nav = document.querySelector<HTMLElement>('.bottom-nav');
   const hero = document.querySelector<HTMLElement>('.hero-frame');
@@ -142,6 +155,7 @@ export function setupBottomNav() {
     // A closed picker must follow scroll position, even when its button retains
     // focus after a click or the pointer remains over the fixed dock.
     const visible = dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
+    const appearing = visible && nav.dataset.visible !== 'true';
     if (visible !== (nav.dataset.visible === 'true')) {
       if (!visible && nav.contains(document.activeElement)) hero.focus({ preventScroll: true });
       nav.dataset.visible = String(visible);
@@ -163,8 +177,11 @@ export function setupBottomNav() {
     const atEnd = y + window.innerHeight >= (document.documentElement?.scrollHeight ?? Infinity) - 2;
     const active = currentSection(sections.map(section => ({ id: section.id, label: section.dataset.navSection ?? '', top: section.getBoundingClientRect().top })), atEnd ? window.innerHeight : window.innerHeight * .35);
     if (active) {
+      const direction = sections.findIndex(section => section.id === active.id) >= sections.findIndex(section => section.id === activeId) ? 1 : -1;
       activeId = active.id;
-      if (label.textContent !== active.label) label.textContent = active.label;
+      if (label.textContent !== active.label || appearing) {
+        renderDockLabel(label, active.label, visible && menu.hidden && !reduced.matches, direction);
+      }
       if (menu.hidden) trigger.setAttribute('aria-label', `${active.label}, explore sections`);
       links.forEach(link => {
         if (link.hash === `#${active.id}`) link.setAttribute('aria-current', 'location');

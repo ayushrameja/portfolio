@@ -98,7 +98,11 @@ function dockHarness() {
     handlers = {};
     attrs = {};
     children = [];
-    style = { removeProperty() {} };
+    style = { removeProperty() {}, setProperty(key, value) { this[key] = value; } };
+    _text = '';
+    get textContent() { return this.children.length ? this.children.map(child => child.textContent).join('') : this._text; }
+    set textContent(value) { this._text = value; this.children = []; }
+    replaceChildren(...children) { this._text = ''; this.children = children; }
     addEventListener(type, fn) { (this.handlers[type] ??= []).push(fn); }
     emit(type, event = {}) { this.handlers[type]?.forEach(fn => fn(event)); }
     setAttribute(key, value) { this.attrs[key] = value; }
@@ -121,6 +125,7 @@ function dockHarness() {
   track.clientWidth = 400;
   nav.querySelector = selector => ({ '.dock-trigger': trigger, '.dock-panel': menu, '.dock-label': label, '.dock-track': track, '.dock-resume': resume, '.dock-count': count })[selector];
   const doc = new Node();
+  doc.createElement = () => new Node();
   doc.querySelector = selector => selector === '.bottom-nav' ? nav : hero;
   doc.querySelectorAll = () => [hero];
   doc.activeElement = null;
@@ -215,5 +220,22 @@ test('a compact contact section becomes active at the page end before it reaches
     h.scroll(0);
     assert.equal(h.label.textContent, 'Introduction');
     assert.equal(h.nav.dataset.visible, 'false');
+  } finally { h.restore(); }
+});
+
+test('rapid label changes replace stale letters and reduced motion renders plain text', async () => {
+  const { renderDockLabel } = await import('../src/scripts/bottom-nav.ts');
+  const h = dockHarness();
+  try {
+    renderDockLabel(h.label, 'Selected work', true);
+    const oldLetters = [...h.label.children];
+    renderDockLabel(h.label, 'Introduction', true, -1);
+    assert.equal(h.label.textContent, 'Introduction');
+    assert.ok(h.label.children.every(letter => !oldLetters.includes(letter)));
+    assert.equal(h.label.children[0].style['--letter-offset'], '-0.7em');
+    assert.ok(parseInt(h.label.children[1].style['--letter-delay']) > parseInt(h.label.children[0].style['--letter-delay']));
+    renderDockLabel(h.label, 'Selected work', false);
+    assert.equal(h.label.textContent, 'Selected work');
+    assert.equal(h.label.children.length, 0);
   } finally { h.restore(); }
 });

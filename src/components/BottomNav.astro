@@ -4,7 +4,7 @@ import DockPreview from "./DockPreview.astro";
 import { contact } from "../data/contact";
 import "../styles/bottom-nav.css";
 const resume = contact.resume;
-const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", label: "Selected work" }, { id: "experience", label: "Experience" }, { id: "contact", label: "Contact" }];
+const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", label: "Selected work" }, { id: "experience", label: "Experience" }, { id: "notes", label: "Notes" }, { id: "contact", label: "Contact" }];
 ---
 <nav class="bottom-nav" aria-label="Page navigation" inert data-visible="false" data-expanded="false" data-open="false">
   <div class="dock-panel" id="dock-menu" hidden>
@@ -21,8 +21,9 @@ const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", 
   <div class="dock-bar">
     <a class="dock-logo" href="#home" aria-label="Back to introduction"><svg viewBox="0 0 105 50" aria-hidden="true">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg></a>
     <button class="dock-trigger" type="button" aria-expanded="false" aria-controls="dock-menu" inert>
-      <span class="dock-label">Introduction</span>
+      <span class="dock-label" aria-hidden="true">Introduction</span>
       <span class="dock-close"><span class="dock-face" aria-hidden="true">(o_o)</span><span>Close</span></span>
+      <svg class="dock-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 10 4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </button>
     <a class="dock-resume" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)" inert>Resume</a>
   </div>

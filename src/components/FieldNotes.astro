@@ -1,0 +1,64 @@
+---
+import { getEntry } from "astro:content";
+import { noteDate } from "../lib/note-presentation";
+import "../styles/field-notes.css";
+
+const [featured, review, life] = await Promise.all([
+  getEntry("notes", "how-to-review-agent-written-prs"),
+  getEntry("notes", "code-review-comments-that-actually-help"),
+  getEntry("notes", "gita-detachment-vs-apathy"),
+]);
+if (!featured || !review || !life) throw new Error("A curated Field Notes essay is missing from the notes collection.");
+const deskLabel = (desk: string) => desk === "engineering" ? "Engineering" : "Life";
+---
+<section class="field-notes" id="notes" data-nav-section="Notes" tabindex="-1" aria-labelledby="notes-title">
+  <header class="fn-section-heading">
+    <div><h2 id="notes-title">Field notes.</h2><p class="fn-intro">On building software and figuring out the rest.</p></div>
+    <a class="fn-archive-link" href="/notes/">All notes <svg class="fn-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </header>
+  <div class="fn-stories">
+    <article class="fn-featured" data-field-note-entrance>
+      <a class="fn-story-link" href={`/notes/${featured.id}/`} aria-labelledby="featured-title">
+        <div class="fn-meta"><span>{deskLabel(featured.data.desk)}</span><time datetime={featured.data.publishedAt}>{noteDate(featured.data.publishedAt)}</time><span>{featured.data.readingTime} read</span></div>
+        <h3 id="featured-title">{featured.data.title}</h3>
+        <div class="fn-reading-sample">
+          <blockquote>Someone still has to decide whether the diff is <mark>correct, safe, maintainable, and worth shipping.</mark></blockquote>
+          <div class="fn-margin-note" aria-hidden="true"><svg viewBox="0 0 40 32" fill="none"><path d="M34 28C12 28 8 18 10 5m-6 7 6-8 6 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>The part we can’t automate away.</span></div>
+        </div>
+        <span class="fn-read-story"><span>Read the essay</span><svg class="fn-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </article>
+    <div class="fn-secondary-stories">
+      <article class="fn-supporting" data-field-note-entrance style="--enter-delay:90ms">
+        <a class="fn-story-link" href={`/notes/${review.id}/`} aria-labelledby="review-title">
+          <div class="fn-meta"><span>{deskLabel(review.data.desk)}</span><span>{review.data.readingTime} read</span></div>
+          <h3 id="review-title">{review.data.title}</h3>
+          <p>{review.data.description}</p>
+          <svg class="fn-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+      <article class="fn-supporting" data-field-note-entrance style="--enter-delay:180ms">
+        <a class="fn-story-link" href={`/notes/${life.id}/`} aria-labelledby="life-title">
+          <div class="fn-meta"><span>{deskLabel(life.data.desk)}</span><span>{life.data.readingTime} read</span></div>
+          <h3 id="life-title">{life.data.title}</h3>
+          <p>{life.data.description}</p>
+          <svg class="fn-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+    </div>
+  </div>
+  <footer class="fn-endnote"><p>A few picks from the notebook.</p><p>Engineering, life, and the space between.</p></footer>
+</section>
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  if ('IntersectionObserver' in window && !reduced.matches) {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        if (!reduced.matches) entry.target.classList.add('fn-enter');
+        observer.unobserve(entry.target);
+      }
+    }, { threshold:0.15 });
+    document.querySelectorAll('[data-field-note-entrance]').forEach(element => observer.observe(element));
+  }
+</script>

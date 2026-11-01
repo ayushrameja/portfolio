@@ -6,7 +6,7 @@ const { home = false } = Astro.props;
 ---
 <section id="contact" class:list={["contact-section", { "contact-section-home": home }]} aria-labelledby="contact-title" data-nav-section={home ? "Contact" : undefined} tabindex="-1">
   <div class="contact-copy">
-    <h2 id="contact-title">Have a project in mind?</h2>
+    <h2 id="contact-title">{home ? <>Have a project <em>in mind?</em></> : "Have a project in mind?"}</h2>
     <p>Tell me what you’re building.</p>
   </div>
   <div class="contact-actions">
