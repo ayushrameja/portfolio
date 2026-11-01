@@ -1,0 +1,9 @@
+---
+import { brandMarks } from "../data/project-mosaic";
+interface Props { company: string }
+const { company } = Astro.props;
+const mark = company === "autodesk" ? brandMarks.autodesk : company === "siemens" ? brandMarks.siemens : null;
+---
+<span class:list={["company-mark", `company-mark-${company}`]} aria-hidden="true">
+  {mark && "paths" in mark ? <svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg> : <svg viewBox="0 0 40 36"><path d="M3 1 37 14v8L3 35V25l23-7L3 11Z" /></svg>}
+</span>

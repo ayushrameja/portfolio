@@ -24,6 +24,25 @@ export function setupProjectArtMotion(root: HTMLElement) {
     loop(".site-view img", "scale(.96)", "scale(1)", 14000);
     loop(".pulse-track svg", "scaleY(.86)", "scaleY(1)");
     loop(".service-flow i", "translateX(0)", "translateX(250%)", 10000);
+    loop(".journey-stop > svg", "translateY(0)", "translateY(-5px)", 10000);
+    loop(".service-core > svg", "scale(.92)", "scale(1.06)", 10000);
+    const travel = (selector: string, frames: Keyframe[], duration: number) => {
+      card.querySelectorAll<SVGElement>(selector).forEach((element, index) => {
+        const animation = element.animate(frames, { duration, iterations: Infinity, easing: "linear" });
+        animation.currentTime = index * duration / 2;
+        animations.push(animation);
+      });
+    };
+    travel(".journey-dashes", [
+      { strokeDashoffset: "0" },
+      { strokeDashoffset: "-40" },
+    ], 10000);
+    travel(".service-packet", [
+      { transform: "translateX(0px)", opacity: 0, offset: 0 },
+      { transform: "translateX(8px)", opacity: 1, offset: .15 },
+      { transform: "translateX(52px)", opacity: 1, offset: .85 },
+      { transform: "translateX(60px)", opacity: 0, offset: 1 },
+    ], 10000);
     running.set(card, animations);
     return animations;
   };

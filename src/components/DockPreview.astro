@@ -8,7 +8,7 @@ const { section } = Astro.props;
 const photo = section === "home" ? await getImage({ src: portrait, width: 320, format: "webp" }) : null;
 ---
 <!-- One art-directed canvas at every breakpoint; no miniature responsive DOM. -->
-{section === "contact" ? <div class="dock-contact-art" aria-hidden="true">
+{section === "experience" ? <div class="dock-experience-art" aria-hidden="true"><p>Good teams.<br />Meaningful work.</p><span>Autodesk</span><span>Siemens Technology</span><span>Accenture AI</span></div> : section === "contact" ? <div class="dock-contact-art" aria-hidden="true">
   <svg viewBox="0 0 105 50">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg>
   <p>Have a project<br />in mind?</p>
   <span>{contact.email}</span>
@@ -55,4 +55,18 @@ const photo = section === "home" ? await getImage({ src: portrait, width: 320, f
   .dock-contact-art svg { width:18%; height:auto; fill:var(--contact-accent); }
   .dock-contact-art p { font-size:clamp(22px,10cqi,36px); font-weight:500; line-height:1.1; letter-spacing:-.025em; }
   .dock-contact-art span { font-size:clamp(12px,5cqi,16px); }
+</style>
+
+<style>
+.dock-experience-art { display: flex; flex-direction: column; justify-content: center; gap: 7%; padding: 8%; height: 100%; background: var(--experience-paper); color: var(--experience-ink); font-family: var(--font-ui); container-type: inline-size; }
+.dock-experience-art p { font-size: clamp(20px, 9cqi, 32px); line-height: 1.1; }
+.dock-experience-art span { font-size: clamp(12px, 5cqi, 17px); border-top: 1px solid var(--experience-line); padding-top: 4%; }
+</style>
+
+<style>
+.dock-experience-art { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6%; background: var(--experience-paper); }
+.dock-experience-art p { grid-column: 1 / -1; }
+.dock-experience-art span { display: flex; align-items: center; border: 0; border-radius: 12px; padding: 12%; background: var(--career-autodesk); font-size: clamp(10px, 3.5cqi, 14px); }
+.dock-experience-art span:nth-of-type(2) { background: var(--career-siemens); }
+.dock-experience-art span:nth-of-type(3) { background: var(--career-accenture); }
 </style>

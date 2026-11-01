@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { setupProjectArtMotion } from '../src/scripts/project-art-motion.ts';
 
-function harness(t, { reduced = false } = {}) {
+function harness(t, { reduced = false, selectors = ['.shot img'] } = {}) {
   const events = () => ({ listeners: {}, addEventListener(name, fn) { this.listeners[name] = fn; }, emit(name) { this.listeners[name]?.(); } });
   const motion = { ...events(), matches: reduced };
   const toggle = { ...events(), hidden: true, textContent: '', attributes: {}, setAttribute(k, v) { this.attributes[k] = v; } };
   const animations = [];
   const cards = [0, 1].map(() => {
     const card = { querySelector() { return this.art; },
-      querySelectorAll: selector => selector === '.shot img' ? [{ animate(frames, options) {
+      querySelectorAll: selector => selectors.includes(selector) ? [{ animate(frames, options) {
         const animation = { frames, options, currentTime: 0, playState: 'running',
           cancel() { this.playState = 'idle'; }, pause() { this.playState = 'paused'; }, play() { this.playState = 'running'; } };
         animations.push(animation); return animation;
@@ -86,4 +86,22 @@ test('reduced motion stays static and cancels loops immediately when enabled', t
   assert.equal(h.animations[0].playState, 'idle');
   h.motion.matches = false; h.motion.emit('change');
   assert.equal(h.animations.length, 2); assert.equal(h.animations[1].playState, 'running');
+});
+
+
+test('diagram motion obeys pause, offscreen and reduced-motion controls', t => {
+  const h = harness(t, { selectors: ['.journey-stop > svg', '.service-core > svg', '.journey-dashes', '.service-packet'] });
+  h.observer.entries([0, 1]);
+  assert.equal(h.animations.length, 4);
+  assert.deepEqual(h.animations[2].frames, [{ strokeDashoffset: '0' }, { strokeDashoffset: '-40' }]);
+  assert.ok(h.animations.every(a => a.playState === 'running'));
+  h.toggle.emit('click');
+  assert.ok(h.animations.every(a => a.playState === 'paused'));
+  h.observer.entries([0, 0]); h.observer.entries([0, 1]);
+  assert.ok(h.animations.every(a => a.playState === 'paused'));
+  h.toggle.emit('click');
+  assert.ok(h.animations.every(a => a.playState === 'running'));
+  h.motion.matches = true; h.motion.emit('change');
+  assert.ok(h.animations.every(a => a.playState === 'idle'));
+  assert.equal(h.toggle.hidden, true);
 });

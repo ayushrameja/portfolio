@@ -32,10 +32,6 @@ const links = [
     <p class="hero-identity">Thoughtful interfaces. Working software.</p>
     <nav class="hero-actions" aria-label="Quick navigation">
       <a class="resume-link" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)">Resume <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>
-      <button class="hero-motion-toggle" type="button" data-hero-motion-toggle aria-label="Pause background animation" title="Pause background animation" aria-pressed="false" hidden>
-        <svg class="hero-pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
-        <svg class="hero-play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z" /></svg>
-      </button>
       <button class="menu-toggle" type="button" popovertarget="hero-menu" aria-controls="hero-menu" aria-expanded="false" aria-label="Open navigation menu">
         <span class="menu-label">Menu</span><svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h20M2 12h20M2 18h14" /></svg>
         <svg class="close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M5 19 19 5" /></svg>
@@ -204,13 +200,4 @@ const links = [
     .work-eyes,.work-eyes i,.work-eyes i::before,.eye-lid::after,.work-face,.hero-menu a,.hero-menu a::before,.menu-toggle,.menu-toggle::before { transition:none; }
     .work-link:hover .work-face,.work-link:focus-visible .work-face,.work-link.eyes-active .work-face,.work-link.eyes-active.eyes-curious .work-face { transform:none; }
   }
-  .hero-motion-toggle { display:flex; align-items:center; justify-content:center; width:60px; height:60px; flex-shrink:0; padding:0; border:1px solid color-mix(in oklab,var(--hero-ink) 55%,transparent); border-radius:14px; background:color-mix(in oklab,var(--color-paper) 35%,transparent); color:var(--hero-ink); cursor:pointer; }
-  .hero-motion-toggle[hidden] { display:none; }
-  .hero-motion-toggle svg { width:20px; height:20px; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-  .hero-motion-toggle .hero-play-icon { display:none; }
-  .hero-motion-toggle[aria-pressed="true"] .hero-pause-icon { display:none; }
-  .hero-motion-toggle[aria-pressed="true"] .hero-play-icon { display:block; }
-  .hero-motion-toggle:active { background:var(--hero-secondary); }
-  @media (hover:hover) { .hero-motion-toggle:hover { background:var(--hero-secondary); } }
-  @media (max-width:600px) { .hero-motion-toggle { width:52px; height:52px; } }
 </style>

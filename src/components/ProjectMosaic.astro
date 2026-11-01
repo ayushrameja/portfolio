@@ -1,6 +1,8 @@
 ---
 import { brandMarks, mosaicProjects } from "../data/project-mosaic";
 import "../styles/project-mosaic.css";
+import "../styles/showcase-grid-experiment.css";
+import "../styles/showcase-artwork.css";
 const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
 ---
 <section class="project-showcase" id="selected-work" data-nav-section="Selected work" tabindex="-1" aria-labelledby="work-title">
@@ -53,35 +55,21 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
                 </div>
               )}
               {project.id === "learn" && (
-                <div class="learning-map">
-                  <div class="learning-track">
-                    <svg viewBox="0 0 32 32"><path d="M16 8c-4-3-8-3-12-2v20c4-1 8-1 12 2 4-3 8-3 12-2V6c-4-1-8-1-12 2Zm0 0v20" /></svg>
-                    <span>Courses</span>
-                    <span class="learning-signal"><i></i></span>
-                  </div>
-                  <div class="learning-track">
-                    <svg viewBox="0 0 32 32"><path d="M5 26h15a6 6 0 0 0 0-12h-8a5 5 0 0 1 0-10h14m-5 0 5 0v5" /></svg>
-                    <span>Roadmaps</span>
-                    <span class="learning-signal"><i></i></span>
-                  </div>
-                  <div class="learning-track">
-                    <svg viewBox="0 0 32 32"><path d="M5 5h22v17H15l-8 6v-6H5Zm6 7h10m-10 5h6" /></svg>
-                    <span>Sessions</span>
-                    <span class="learning-signal"><i></i></span>
-                  </div>
+                <div class="learning-journey">
+                  <svg class="journey-line" viewBox="0 0 480 180" preserveAspectRatio="none" aria-hidden="true"><path class="journey-dashes" d="M70 110C150 110 150 45 240 45S330 110 410 110" /></svg>
+                  <div class="journey-stop journey-course"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 8c-4-3-8-3-12-2v20c4-1 8-1 12 2 4-3 8-3 12-2V6c-4-1-8-1-12 2Zm0 0v20" /></svg><span>Courses</span></div>
+                  <div class="journey-stop journey-roadmap"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 26h15a6 6 0 0 0 0-12h-8a5 5 0 0 1 0-10h14m-5 0h5v5" /></svg><span>Roadmaps</span></div>
+                  <div class="journey-stop journey-session"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 5h22v17H15l-8 6v-6H5Zm6 7h10m-10 5h6" /></svg><span>Sessions</span></div>
                 </div>
               )}
               {project.id === "studio" && (
-                <div class="shots">
-                  <figure class="shot shot-a"><img src="/projects/burnhop.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /><figcaption>Burnhop</figcaption></figure>
-                  <figure class="shot shot-b"><img src="/projects/greytrace.webp" alt="" width="1280" height="800" loading="lazy" decoding="async" /><figcaption>Greytrace</figcaption></figure>
+                <div class="studio-duo">
+                  <figure><div class="studio-game-image"><img src="/projects/burnhop.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /></div><figcaption>Burnhop</figcaption></figure>
+                  <figure><div class="studio-game-image"><img src="/projects/greytrace.webp" alt="" width="1280" height="800" loading="lazy" decoding="async" /></div><figcaption>Greytrace</figcaption></figure>
                 </div>
               )}
               {project.id === "templio" && (
-                <div class="site">
-                  <div class="site-bar"><i></i><i></i><i></i></div>
-                  <div class="site-view"><img src="/projects/templio.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /></div>
-                </div>
+                <div class="templio-preview"><img src="/projects/templio.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /></div>
               )}
               {project.id === "siemens" && (
                 <div class="pulse">
@@ -91,19 +79,11 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
                 </div>
               )}
               {project.id === "google" && (
-                <div class="learning-map service-map">
-                  <div class="learning-track">
-                    <svg viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" /></svg>
-                    <span>APIs</span><span class="learning-signal service-flow"><i></i></span>
-                  </div>
-                  <div class="learning-track">
-                    <svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6Z" /><path d="m8 12 3 3 5-6" /></svg>
-                    <span>Custom roles</span><span class="learning-signal service-flow"><i></i></span>
-                  </div>
-                  <div class="learning-track">
-                    <svg viewBox="0 0 24 24"><path d="M6 19a5 5 0 0 1-1-10 7 7 0 0 1 13-2 6 6 0 0 1 0 12Z" /></svg>
-                    <span>Cloud storage</span><span class="learning-signal service-flow"><i></i></span>
-                  </div>
+                <div class="service-architecture">
+                  <svg class="service-connectors" viewBox="0 0 480 180" preserveAspectRatio="none" aria-hidden="true"><path d="M115 90h65m120 0h65" /><path d="m170 84 8 6-8 6m185-12 8 6-8 6" /><circle class="service-packet" cx="115" cy="90" r="3" /><circle class="service-packet" cx="300" cy="90" r="3" /></svg>
+                  <div class="service-endpoint"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 3-11 5v9c0 7 11 12 11 12s11-5 11-12V8Z" /><path d="m10 16 4 4 8-9" /></svg><span>Custom roles</span></div>
+                  <div class="service-core"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m13 10-10 10 10 10m14-20 10 10-10 10M23 5l-6 30" /></svg><span>APIs</span></div>
+                  <div class="service-endpoint"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26a7 7 0 0 1-1-14 9 9 0 0 1 23 5 8 8 0 0 1-7 9Z" /><path d="M16 24V13m-4 4 4-4 4 4" /></svg><span>Cloud storage</span></div>
                 </div>
               )}
             </div>

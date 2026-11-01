@@ -1,0 +1,45 @@
+---
+import CompanyMark from "../../components/CompanyMark.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { experiences } from "../../data/experience";
+import { getProjects } from "../../lib/content";
+import "../../styles/project-pages.css";
+import "../../styles/experience.css";
+export function getStaticPaths() {
+  return experiences.map((experience, index) => ({ params: { slug: experience.id }, props: { experience, next: experiences[(index + 1) % experiences.length] } }));
+}
+const { experience, next } = Astro.props;
+const projects = (await getProjects()).filter(project => experience.projects.some(id => id === project.id) && project.data.visibility === "public");
+---
+<BaseLayout title={`${experience.company} experience · Ayush Rameja`} description={experience.description} project>
+  <div class="experience-detail" data-company={experience.id}>
+    <header class="experience-intro">
+      <nav class="project-breadcrumb" aria-label="Breadcrumb"><a href="/#experience">Experience</a><span aria-hidden="true">/</span><span>{experience.company}</span></nav>
+      <div class="experience-brand"><CompanyMark company={experience.id} /><span>{experience.company}</span></div>
+      <h1>{experience.title}</h1>
+      <p class="experience-lead">{experience.description}</p>
+      <a class="project-text-link" href="#company-projects">Explore the projects</a>
+      <dl class="experience-facts">
+        <div><dt>Company</dt><dd>{experience.company}</dd></div>
+        <div><dt>Role</dt><dd>{experience.role}</dd></div>
+        <div><dt>Tenure</dt><dd>{experience.start} to {experience.end}</dd></div>
+      </dl>
+    </header>
+    <section class="experience-story" aria-labelledby="experience-focus">
+      <h2 id="experience-focus">{experience.focus}</h2>
+      <div><p>{experience.story}</p><dl class="experience-contributions">{experience.contributions.map(([title, copy]) => <div><dt>{title}</dt><dd>{copy}</dd></div>)}</dl></div>
+    </section>
+    <section class="experience-projects" id="company-projects" aria-labelledby="company-projects-title">
+      <h2 id="company-projects-title">The work at {experience.company}</h2>
+      {projects.map(project => <a class="experience-project" href={`/projects/${project.id}/`}>
+        <div><h3>{project.data.title}</h3><p>{project.data.summary}</p></div>
+        <span>Read project</span>
+      </a>)}
+    </section>
+    <nav class="project-next" aria-label="More experience"><a class="project-text-link" href="/#experience">All experience</a><a class="project-next-link" href={`/experience/${next.id}/`}><span>Next chapter</span><strong>{next.company}</strong></a></nav>
+  </div>
+</BaseLayout>
+
+<style>
+  h2 { min-width: 0; overflow-wrap: break-word; }
+</style>

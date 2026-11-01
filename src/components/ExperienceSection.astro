@@ -1,0 +1,22 @@
+---
+import { experiences } from "../data/experience";
+import CompanyMark from "./CompanyMark.astro";
+import "../styles/experience.css";
+import "../styles/experience-grid-experiment.css";
+---
+<section class="experience-section" id="experience" data-nav-section="Experience" tabindex="-1" aria-labelledby="experience-title">
+  <header class="experience-heading">
+    <h2 id="experience-title">Good teams.<br />Meaningful work.</h2>
+    <p>My experience across learning platforms, industrial systems and enterprise software.</p>
+  </header>
+  <ol class="career-deck">
+    {experiences.map(experience => <li>
+      <a class:list={["career-card", `career-card-${experience.id}`]} href={`/experience/${experience.id}/`} aria-labelledby={`experience-${experience.id}`}>
+        <div class="career-brand"><CompanyMark company={experience.id} /><h3 id={`experience-${experience.id}`}>{experience.company}</h3></div>
+        <div class="career-copy"><p>{experience.title}</p><span>{experience.summary}</span></div>
+        <div class="career-tenure"><span>{experience.role}</span><span>{experience.start} to {experience.end}</span></div>
+        <div class="career-link"><span>Explore chapter</span><span class="career-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></span></div>
+      </a>
+    </li>)}
+  </ol>
+</section>
