@@ -1,0 +1,16 @@
+---
+import { contact } from "../data/contact";
+import "../styles/contact-section.css";
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+---
+<section id="contact" class:list={["contact-section", { "contact-section-home": home }]} aria-labelledby="contact-title" data-nav-section={home ? "Contact" : undefined} tabindex="-1">
+  <div class="contact-copy">
+    <h2 id="contact-title">Have a project in mind?</h2>
+    <p>Tell me what you’re building.</p>
+  </div>
+  <div class="contact-actions">
+    <a class="contact-email" href={`mailto:${contact.email}`}>{contact.email}</a>
+    <a class="contact-resume" href={contact.resume} target="_blank" rel="noopener noreferrer">View résumé<span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+</section>

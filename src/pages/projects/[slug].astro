@@ -1,91 +1,75 @@
 ---
 import { render } from "astro:content";
 import { getProjects } from "../../lib/content";
+import { projectClient, projectImages } from "../../data/project-presentation";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/project-pages.css";
 
 export async function getStaticPaths() {
   const projects = await getProjects();
-  return projects.map((project) => ({
+  return projects.map((project, index) => ({
     params: { slug: project.id },
-    props: { project },
+    props: { project, next: projects[(index + 1) % projects.length] },
   }));
 }
 
-const { project } = Astro.props;
-const { Content } = await render(project);
+const { project, next } = Astro.props;
+const { Content, headings } = await render(project);
+const images = projectImages[project.id] ?? [];
+const sections = headings.filter(heading => heading.depth === 2);
+const hasBody = Boolean(project.body?.trim());
 const facts = [
-  ["Role", project.data.role],
-  ["Status", project.data.status],
-  ["Client", project.data.client],
+  ["My role", project.data.role],
+  ["Client", projectClient(project.data.client, project.data.employer)],
   ["Timeline", project.data.timeline],
+  ["Status", project.data.status],
 ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 ---
 
-<BaseLayout title={`${project.data.title} · Ayush Rameja`} description={project.data.summary}>
-  <p class="text-sm text-[var(--muted)]">
-    <a href="/projects/">Projects</a>
-    <span aria-hidden="true"> · </span>
-    {project.data.kind === "employer" ? "Employer work" : "Independent"}
-  </p>
-  <h1 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">{project.data.title}</h1>
-  <p class="mt-4 text-lg leading-relaxed">{project.data.summary}</p>
-  {
-    facts.length > 0 && (
-      <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-        {facts.map(([label, value]) => (
-          <div>
-            <dt class="text-sm text-[var(--muted)]">{label}</dt>
-            <dd class="mt-1">{value}</dd>
-          </div>
-        ))}
-      </dl>
-    )
-  }
-  {
-    project.data.skills && project.data.skills.length > 0 && (
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Skills">
-        {project.data.skills.map((skill) => (
-          <li class="border border-[var(--line)] px-2 py-1 text-sm">{skill}</li>
-        ))}
-      </ul>
-    )
-  }
-  <article class="content mt-8 max-w-[65ch]">
-    <Content />
-  </article>
-  <ul class="mt-8 flex flex-col gap-2">
-    {
-      project.data.href && (
-        <li>
-          <a class="inline-flex min-h-11 items-center underline" href={project.data.href} target="_blank" rel="noopener noreferrer">
-            Visit site<span class="sr-only"> (opens in a new tab)</span>
-          </a>
-        </li>
-      )
-    }
-    {
-      project.data.source && (
-        <li>
-          <a class="inline-flex min-h-11 items-center underline" href={project.data.source} target="_blank" rel="noopener noreferrer">
-            Source<span class="sr-only"> (opens in a new tab)</span>
-          </a>
-        </li>
-      )
-    }
-  </ul>
-  <p class="mt-8 text-sm text-[var(--muted)]">Source text is from the archived project records.</p>
-</BaseLayout>
+<BaseLayout title={`${project.data.title} · Ayush Rameja`} description={project.data.summary} project>
+  <header class="project-intro">
+    <nav class="project-breadcrumb" aria-label="Breadcrumb">
+      <a href="/projects/">Projects</a><span aria-hidden="true">/</span>
+      <span>{project.data.kind === "employer" ? "Employer work" : "Independent"}</span>
+    </nav>
+    <h1>{project.data.title}</h1>
+    <p class="project-lead">{project.data.summary}</p>
+    {(project.data.href || project.data.source) && <div class="project-actions">
+      {project.data.href && <a class="project-button" href={project.data.href} target="_blank" rel="noopener noreferrer">Visit site<span class="sr-only"> (opens in a new tab)</span></a>}
+      {project.data.source && <a class={project.data.href ? "project-text-link" : "project-button"} href={project.data.source} target="_blank" rel="noopener noreferrer">Source<span class="sr-only"> (opens in a new tab)</span></a>}
+    </div>}
+    {facts.length > 0 && <dl class="project-facts">
+      {facts.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+    </dl>}
+  </header>
 
-<style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-</style>
+  {images.length > 0 && <div class:list={["project-gallery", { "project-gallery-pair": images.length > 1 }]}>
+    {images.map((image, index) => <figure>
+      <div class="project-image-surface"><img src={image.src} alt={image.alt} width={image.width} height={image.height} loading={index === 0 ? "eager" : "lazy"} decoding="async" /></div>
+      <figcaption>{image.caption}</figcaption>
+    </figure>)}
+  </div>}
+
+  {(hasBody || project.data.skills?.length) && <div class="project-story-layout">
+    <aside class="project-story-aside">
+      {sections.length > 0 && <nav class="project-contents" aria-label="On this page">
+        <h2>In this project</h2>
+        {sections.map(section => <a href={`#${section.slug}`}>{section.text}</a>)}
+      </nav>}
+      {project.data.skills && project.data.skills.length > 0 && <section aria-labelledby="tools-heading">
+        <h2 id="tools-heading">Built with</h2>
+        <ul class="project-tools">{project.data.skills.map(skill => <li>{skill}</li>)}</ul>
+      </section>}
+    </aside>
+    {hasBody && <article class="project-story">
+      {sections.length === 0 && <h2>The work</h2>}
+      <Content />
+      {project.data.kind === "employer" && <p class="project-source-note">Figures reflect the original project record.</p>}
+    </article>}
+  </div>}
+
+  <nav class="project-next" aria-label="More projects">
+    <a href="/projects/" class="project-text-link">All projects</a>
+    <a href={`/projects/${next.id}/`} class="project-next-link"><span>Next project</span><strong>{next.data.title}</strong></a>
+  </nav>
+</BaseLayout>

@@ -1,3 +1,4 @@
+import { setupProjectArtMotion } from "./project-art-motion.ts";
 import { setupProjectTextEntrance } from "./text-entrance.ts";
 
 /** Reveal each card when it enters the viewport, after the intro releases the page. */
@@ -39,6 +40,7 @@ export function setupProjectMosaic(root: HTMLElement) {
     refreshCards();
     sectionObserver.observe(root);
     setupProjectTextEntrance(root);
+    setupProjectArtMotion(root);
   };
   const introObserver = new MutationObserver(start);
   introObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });

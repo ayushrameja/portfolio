@@ -1,42 +1,34 @@
 ---
 import { getProjects } from "../../lib/content";
+import { projectClient } from "../../data/project-presentation";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/project-pages.css";
 
 const projects = await getProjects();
 const groups = [
-  { id: "employer", label: "Employer work" },
-  { id: "independent", label: "Independent" },
+  { id: "employer", label: "Employer work", description: "Engineering for Autodesk, Siemens and clients through Accenture." },
+  { id: "independent", label: "Independent", description: "Games, websites and tools built from curiosity." },
 ] as const;
 ---
 
-<BaseLayout
-  title="Projects · Ayush Rameja"
-  description="Public project notes retained from earlier portfolio copy."
->
-  <h1 class="text-4xl font-semibold tracking-tight">Projects</h1>
-  <p class="mt-4 max-w-xl text-[var(--muted)]">
-    Public project records, retained as written. Private work is not listed.
-  </p>
-  {
-    groups.map((group) => {
-      const entries = projects.filter((project) => project.data.kind === group.id);
-      return (
-        <section class="mt-10" aria-labelledby={`${group.id}-heading`}>
-          <h2 id={`${group.id}-heading`} class="text-xl font-semibold tracking-tight">
-            {group.label}
-          </h2>
-          <ul class="mt-4 divide-y divide-[var(--line)] border-y border-[var(--line)]">
-            {entries.map((project) => (
-              <li>
-                <a class="block py-4 no-underline hover:underline" href={`/projects/${project.id}/`}>
-                  <span class="block font-medium text-[var(--ink)]">{project.data.title}</span>
-                  <span class="mt-1 block text-sm text-[var(--muted)]">{project.data.summary}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      );
-    })
-  }
+<BaseLayout title="Projects · Ayush Rameja" description="Explore Ayush Rameja's professional engineering work and independent projects, with contributions, outcomes and project details." project>
+  <header class="project-intro project-index-intro">
+    <h1>Work, in detail.</h1>
+    <p class="project-lead">Professional engineering and independent projects, with the work behind each one.</p>
+    <nav class="project-index-jumps" aria-label="Project categories">
+      {groups.map(group => <a href={`#${group.id}-heading`}>{group.label}</a>)}
+    </nav>
+  </header>
+  {groups.map(group => <section class="project-index-group" aria-labelledby={`${group.id}-heading`}>
+    <header><h2 id={`${group.id}-heading`}>{group.label}</h2><p>{group.description}</p></header>
+    <ul class="project-index-list">
+      {projects.filter(project => project.data.kind === group.id).map(project => <li>
+        <a class="project-index-entry" href={`/projects/${project.id}/`}>
+          <div class="project-index-name"><h3>{project.data.title}</h3><p>{projectClient(project.data.client, project.data.employer) ?? project.data.status ?? project.data.role}</p></div>
+          <p class="project-index-summary">{project.data.summary}</p>
+          <span class="project-index-action">View project</span>
+        </a>
+      </li>)}
+    </ul>
+  </section>)}
 </BaseLayout>

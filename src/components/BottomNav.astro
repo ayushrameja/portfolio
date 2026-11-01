@@ -1,13 +1,14 @@
 ---
 import { heroTiles } from "../brand/hero-tiles";
 import DockPreview from "./DockPreview.astro";
+import { contact } from "../data/contact";
 import "../styles/bottom-nav.css";
-const resume = "https://drive.google.com/file/d/1KH4dnH50ocYFxv0Cut7gqMltRDHgC088/preview";
-const sections = [{ id: "home", label: "Introduction", number: "01" }, { id: "selected-work", label: "Selected work", number: "02" }];
+const resume = contact.resume;
+const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", label: "Selected work" }, { id: "contact", label: "Contact" }];
 ---
 <nav class="bottom-nav" aria-label="Page navigation" inert data-visible="false" data-expanded="false" data-open="false">
   <div class="dock-panel" id="dock-menu" hidden>
-    <div class="dock-panel-heading"><span>Find your next stop</span><span class="dock-count" aria-live="polite">01 / 02</span></div>
+    <div class="dock-panel-heading"><span>Find your next stop</span><span class="dock-count" aria-live="polite">01 / {String(sections.length).padStart(2, "0")}</span></div>
     <div class="dock-track" aria-label="Section previews" data-lenis-prevent>
       {sections.map(section => (
         <a class="dock-preview" href={`#${section.id}`} data-section={section.id} aria-label={`Go to ${section.label}`}>

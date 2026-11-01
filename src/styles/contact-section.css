@@ -1,0 +1,92 @@
+/* Hallmark · component: contact section · genre: playful · theme: existing portfolio · motion: still · v2.0.0 */
+/* Critique: make the real email the focal point; keep the close compact and readable. */
+/* Native email and resume links have no disabled, loading, error or success state. */
+:root {
+  --contact-ink: var(--color-ink);
+  --contact-muted: #3f564d;
+  --contact-accent: var(--color-accent);
+  --contact-surface: var(--color-surface);
+  --contact-hover: #d0ded5;
+  --contact-line: #8d9e8c;
+  --contact-font: var(--font-ui);
+  --contact-width: var(--content-width);
+}
+.contact-section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: var(--space-8);
+  margin-block: 32px 48px;
+  padding: clamp(24px, 4vw, 48px);
+  border-radius: 28px;
+  background: var(--contact-surface);
+  color: var(--contact-ink);
+  font-family: var(--contact-font);
+  scroll-margin-block: 32px;
+}
+.contact-section-home {
+  width: min(calc(100% - 2 * var(--home-content-inset)), var(--contact-width));
+  margin-inline: auto;
+  margin-block: 16px 0;
+  padding-block: 56px;
+}
+.contact-copy h2 {
+  max-width: 14ch;
+  margin: 0;
+  font-size: clamp(32px, 3.4vw, 48px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  min-width: 0;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+.contact-copy p { margin-top: var(--space-4); font-size: 18px; line-height: 1.5; color: var(--contact-muted); }
+.contact-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; min-width: 0; }
+.contact-section .contact-email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  max-width: 100%;
+  color: var(--contact-ink);
+  font-size: clamp(24px, 3vw, 40px);
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -.025em;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 8px;
+}
+.contact-section .contact-resume {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid var(--contact-line);
+  border-radius: 14px;
+  color: var(--contact-ink);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.contact-section:focus-visible, .contact-section a:focus-visible { outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
+.contact-section .contact-email:active { color: var(--contact-accent); }
+.contact-section .contact-resume:active { background: var(--contact-hover); }
+@media (hover: hover) {
+  .contact-section .contact-email:hover { color: var(--contact-accent); }
+  .contact-section .contact-resume:hover { background: var(--contact-hover); }
+}
+@media (max-width: 800px) {
+  .contact-section { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .contact-copy h2 { max-width: 18ch; }
+  .contact-section .contact-email { font-size: clamp(24px, 6vw, 36px); }
+}
+@media (max-width: 600px) {
+  .contact-section { padding: 28px 24px; border-radius: 24px; margin-block: 24px 32px; }
+  .contact-section-home { margin-bottom: 0; }
+  .contact-copy p { font-size: 16px; }
+}

@@ -11,7 +11,7 @@ export function setupProjectTextEntrance(root: HTMLElement) {
       observer.unobserve(entry.target);
       if (reduced.matches || entry.target.contains(document.activeElement)) continue;
       const targets = entry.target.querySelectorAll<HTMLElement>(
-        "#work-title, .all-projects, .brand-name, .brand-kind, h3, p",
+        "#work-title, .work-actions, .brand-name, .brand-kind, h3, p",
       );
       targets.forEach((target, index) => {
         const animation = target.animate([

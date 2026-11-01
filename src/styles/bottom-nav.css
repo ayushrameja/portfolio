@@ -1,5 +1,5 @@
 /* Fixed navigation has its own neutral palette, independent of the hero cycle. */
-.bottom-nav { --dock-width:430px; position:fixed; z-index:30; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; width:88px; max-width:calc(100vw - 24px); padding:7px; border:1px solid #ffffff26; border-radius:25px; background:#858583; color:#fff; box-shadow:0 12px 40px #0003; font:500 16px/1.2 "Inter Tight",Arial,sans-serif; transform:translate(-50%,18px); opacity:0; visibility:hidden; transition:width 578ms cubic-bezier(.22,1,.36,1),background 267ms,opacity 244ms,transform 400ms,visibility 244ms; }
+.bottom-nav { --dock-width:430px; position:fixed; z-index:30; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; width:88px; max-width:calc(100vw - 24px); padding:7px; border:1px solid #ffffff26; border-radius:25px; background:#858583; color:#fff; box-shadow:0 12px 40px #0003; font:500 16px/1.2 var(--font-ui); transform:translate(-50%,18px); opacity:0; visibility:hidden; transition:width 578ms cubic-bezier(.22,1,.36,1),background 267ms,opacity 244ms,transform 400ms,visibility 244ms; }
 .bottom-nav[data-visible="true"] { opacity:1; visibility:visible; transform:translate(-50%,0); }
 .bottom-nav[data-expanded="true"] { width:var(--dock-width); }
 .bottom-nav[data-open="true"] { width:520px; background:#101010; border-color:#303030; }
@@ -11,7 +11,7 @@
 .dock-label { overflow:hidden; text-overflow:ellipsis; }
 .dock-trigger,.dock-resume { opacity:0; visibility:hidden; transition:opacity 222ms,background 222ms,color 222ms; }
 .bottom-nav[data-expanded="true"] :is(.dock-trigger,.dock-resume) { opacity:1; visibility:visible; }
-.bottom-nav :is(a,button):focus-visible { outline:2px solid #c6d0a6; outline-offset:3px; }
+.bottom-nav :is(a,button):focus-visible { outline:var(--focus-width) solid var(--color-focus-light); outline-offset:var(--focus-offset); box-shadow:0 0 0 var(--focus-offset) var(--color-focus-dark); }
 .dock-close { display:none; align-items:center; gap:10px; }
 .dock-face { font:600 17px/1 ui-monospace,monospace; letter-spacing:-1px; }
 .bottom-nav[data-open="true"] .dock-trigger { background:#fff; color:#151515; }
@@ -34,4 +34,11 @@
 @media (forced-colors: active) {
   .bottom-nav { border:1px solid ButtonText; }
   .dock-trigger,.dock-logo,.dock-resume { border:1px solid ButtonText; }
+}
+
+/* Both rings remain distinct on the grey closed dock and the dark open picker. */
+.dock-count { font-size: var(--text-caption); }
+.dock-preview-caption { font-size: var(--text-small); padding-top: var(--space-3); }
+@media (forced-colors: active) {
+  .bottom-nav :is(a, button):focus-visible { outline-color: Highlight; box-shadow: none; }
 }

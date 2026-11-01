@@ -8,7 +8,13 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
     <div class="work-heading-main">
       <h2 id="work-title" class="work-title">Serious about building. <em>Curious about everything.</em></h2>
     </div>
+    <div class="work-actions">
+    <button class="art-motion-toggle" type="button" data-art-motion-toggle aria-pressed="false" aria-label="Pause artwork" title="Pause artwork" hidden>
+      <svg class="art-pause-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14M16 5v14" /></svg>
+      <svg class="art-play-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 10 7-10 7Z" /></svg>
+    </button>
     <a class="all-projects" href="/projects/">All projects <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M8 2l6 6-6 6" transform="rotate(-45 8 8)" /></svg></a>
+    </div>
   </header>
 
   <div class="bento">
@@ -24,7 +30,11 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
                     ? <span class="brand-mask" style={`--mask:url(${mark.mask})`}></span>
                     : <svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg>}
                 </span>
-                <span class="brand-text"><span class="brand-name">{project.org}</span><span class="brand-kind">{project.kind}</span></span>
+                <span class="brand-text">
+                  <span class="brand-name">{project.org}</span>
+                  {project.attribution && <span class="brand-attribution">{project.attribution}</span>}
+                  <span class="brand-kind">{project.kind}</span>
+                </span>
               </span>
               <span class="card-cta" aria-hidden="true"><span class="cta-label">View project</span><span class="cta-icon"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span></span>
             </header>
@@ -43,13 +53,21 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
                 </div>
               )}
               {project.id === "learn" && (
-                <div class="courses">
-                  <div class="course course-back">Roadmap</div>
-                  <div class="course course-mid">Live session</div>
-                  <div class="course course-front">
-                    <span class="course-title">Make progress</span>
-                    <span class="course-meter"><span></span></span>
-                    <span class="course-meta"><span>Module 3 of 5</span><span>60%</span></span>
+                <div class="learning-map">
+                  <div class="learning-track">
+                    <svg viewBox="0 0 32 32"><path d="M16 8c-4-3-8-3-12-2v20c4-1 8-1 12 2 4-3 8-3 12-2V6c-4-1-8-1-12 2Zm0 0v20" /></svg>
+                    <span>Courses</span>
+                    <span class="learning-signal"><i></i></span>
+                  </div>
+                  <div class="learning-track">
+                    <svg viewBox="0 0 32 32"><path d="M5 26h15a6 6 0 0 0 0-12h-8a5 5 0 0 1 0-10h14m-5 0 5 0v5" /></svg>
+                    <span>Roadmaps</span>
+                    <span class="learning-signal"><i></i></span>
+                  </div>
+                  <div class="learning-track">
+                    <svg viewBox="0 0 32 32"><path d="M5 5h22v17H15l-8 6v-6H5Zm6 7h10m-10 5h6" /></svg>
+                    <span>Sessions</span>
+                    <span class="learning-signal"><i></i></span>
                   </div>
                 </div>
               )}
@@ -67,20 +85,25 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
               )}
               {project.id === "siemens" && (
                 <div class="pulse">
-                  <span class="pulse-live">Live</span>
                   <div class="pulse-window"><div class="pulse-track">
-                    <svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0 48h30l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h18l12-26 14 40 14-30 10 16h40l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h2" /></svg>
                     <svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0 48h30l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h18l12-26 14 40 14-30 10 16h40l10-8 10 8h16l10-30 14 52 14-38 12 16h24l10-8 10 8h2" /></svg>
                   </div></div>
                 </div>
               )}
               {project.id === "google" && (
-                <div class="nodes">
-                  <span class="node">APIs</span>
-                  <span class="link"><i></i></span>
-                  <span class="node">Roles</span>
-                  <span class="link"><i></i></span>
-                  <span class="node">GCP</span>
+                <div class="learning-map service-map">
+                  <div class="learning-track">
+                    <svg viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" /></svg>
+                    <span>APIs</span><span class="learning-signal service-flow"><i></i></span>
+                  </div>
+                  <div class="learning-track">
+                    <svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6Z" /><path d="m8 12 3 3 5-6" /></svg>
+                    <span>Custom roles</span><span class="learning-signal service-flow"><i></i></span>
+                  </div>
+                  <div class="learning-track">
+                    <svg viewBox="0 0 24 24"><path d="M6 19a5 5 0 0 1-1-10 7 7 0 0 1 13-2 6 6 0 0 1 0 12Z" /></svg>
+                    <span>Cloud storage</span><span class="learning-signal service-flow"><i></i></span>
+                  </div>
                 </div>
               )}
             </div>
@@ -88,6 +111,7 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
             <div class="card-copy">
               <h3 id={`card-${project.id}-title`}>{project.title}</h3>
               <p>{project.summary}</p>
+              {project.visualNote && <p class="visual-note">{project.visualNote}</p>}
             </div>
           </article>
         </a>

@@ -12,9 +12,11 @@ export interface MosaicProject {
   id: "comnext" | "learn" | "studio" | "templio" | "siemens" | "google";
   title: string;
   org: string;
+  attribution?: string;
   kind: "Professional" | "Personal";
   brand: BrandId;
   summary: string;
+  visualNote?: string;
   href: string;
   /** Dark artwork accent with contrast on the card’s pale surfaces. */
   accent: string;
@@ -40,6 +42,7 @@ export const mosaicProjects: MosaicProject[] = [
     kind: "Professional",
     brand: "autodesk",
     summary: "From static pages to a content-driven web platform.",
+    visualNote: "Public-site reference",
     href: "/projects/comnext/",
     accent: "#88513e",
   },
@@ -50,6 +53,7 @@ export const mosaicProjects: MosaicProject[] = [
     kind: "Professional",
     brand: "autodesk",
     summary: "Courses, roadmaps and live support sessions.",
+    visualNote: "Workflow illustration",
     href: "/projects/mvp-learn-v2/",
     accent: "#70508f",
   },
@@ -65,21 +69,24 @@ export const mosaicProjects: MosaicProject[] = [
   },
   {
     id: "siemens",
-    title: "IGBT Health & Advaantics",
+    title: "IGBT Health",
     org: "Siemens",
     kind: "Professional",
     brand: "siemens",
     summary: "Real-time industrial monitoring.",
+    visualNote: "Signal illustration",
     href: "/projects/igbt-health-app/",
     accent: "#276e65",
   },
   {
     id: "google",
     title: "Customer Experience",
-    org: "Google · via Accenture",
+    org: "Google",
+    attribution: "via Accenture",
     kind: "Professional",
     brand: "google",
     summary: "APIs, custom roles and cloud storage.",
+    visualNote: "Concept illustration",
     href: "/projects/google-customer-experience/",
     accent: "#346980",
   },

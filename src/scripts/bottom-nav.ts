@@ -11,10 +11,10 @@ export function nearestPreview(centers: number[], viewportCenter: number) {
 }
 
 /** Stay available after the threshold, including continuous downward scrolling. */
-export function dockVisible({ progress, viewport, engaged }: {
-  progress: number; viewport: number; engaged: boolean;
+export function dockVisible({ progress, viewport, menuOpen }: {
+  progress: number; viewport: number; menuOpen: boolean;
 }) {
-  return engaged || progress >= viewport * .2;
+  return menuOpen || progress >= viewport * .2;
 }
 
 export function setupBottomNav() {
@@ -36,7 +36,6 @@ export function setupBottomNav() {
   let wheelAxis: 'horizontal' | 'vertical' | undefined;
   let previewFrame = 0;
   let scrollFrame = 0;
-  let pointerInside = false;
 
   const reflectSelection = (index: number) => {
     if (selected === index && links[index]?.dataset.selected === 'true') return;
@@ -52,12 +51,14 @@ export function setupBottomNav() {
     reflectSelection(links.indexOf(target));
   };
   const close = (restoreFocus = false) => {
+    const wasOpen = !menu.hidden;
     cancelAnimationFrame(previewFrame);
     menu.hidden = true;
     nav.dataset.open = 'false';
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-label', `${label.textContent}, explore sections`);
     if (restoreFocus) trigger.focus({ preventScroll: true });
+    if (wasOpen) schedule();
   };
   trigger.addEventListener('click', () => {
     if (!menu.hidden) { close(); return; }
@@ -131,10 +132,6 @@ export function setupBottomNav() {
     if (event.relatedTarget instanceof Node && !nav.contains(event.relatedTarget)) close();
     schedule();
   });
-  nav.addEventListener('pointerenter', event => {
-    if (event.pointerType !== 'touch') pointerInside = true;
-  });
-  nav.addEventListener('pointerleave', () => { pointerInside = false; schedule(); });
   nav.addEventListener('focusin', schedule);
 
   const update = () => {
@@ -142,9 +139,11 @@ export function setupBottomNav() {
     const y = window.scrollY;
     const progress = Math.max(0, y); // 20vh from the page top, independent of section geometry.
     const past = progress >= window.innerHeight * .2;
-    const engaged = !menu.hidden || pointerInside || nav.contains(document.activeElement);
-    const visible = dockVisible({ progress, viewport: window.innerHeight, engaged });
+    // A closed picker must follow scroll position, even when its button retains
+    // focus after a click or the pointer remains over the fixed dock.
+    const visible = dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
     if (visible !== (nav.dataset.visible === 'true')) {
+      if (!visible && nav.contains(document.activeElement)) hero.focus({ preventScroll: true });
       nav.dataset.visible = String(visible);
       nav.inert = !visible;
       if (visible) {
@@ -160,7 +159,9 @@ export function setupBottomNav() {
         resume.inert = true;
       }
     }
-    const active = currentSection(sections.map(section => ({ id: section.id, label: section.dataset.navSection ?? '', top: section.getBoundingClientRect().top })), window.innerHeight * .35);
+    // A compact final section cannot always reach the usual reading line.
+    const atEnd = y + window.innerHeight >= (document.documentElement?.scrollHeight ?? Infinity) - 2;
+    const active = currentSection(sections.map(section => ({ id: section.id, label: section.dataset.navSection ?? '', top: section.getBoundingClientRect().top })), atEnd ? window.innerHeight : window.innerHeight * .35);
     if (active) {
       activeId = active.id;
       if (label.textContent !== active.label) label.textContent = active.label;
@@ -175,7 +176,6 @@ export function setupBottomNav() {
   window.addEventListener('scroll', schedule, { passive: true });
   window.addEventListener('resize', schedule);
   window.addEventListener('pageshow', () => {
-    pointerInside = false;
     nav.dataset.visible = 'false'; // Restart a partially expanded dock restored from bfcache.
     schedule();
   });
@@ -184,8 +184,8 @@ export function setupBottomNav() {
     wheelTimer = 0;
     wheelAxis = undefined;
     track.style.removeProperty('scroll-snap-type');
-    cancelAnimationFrame(previewFrame); cancelAnimationFrame(scrollFrame); scrollFrame = 0;
     close();
+    cancelAnimationFrame(previewFrame); cancelAnimationFrame(scrollFrame); scrollFrame = 0;
   });
   new ResizeObserver(schedule).observe(hero);
   update();

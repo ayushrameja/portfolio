@@ -1,4 +1,12 @@
 @import "tailwindcss";
+@import "./tokens.css";
+
+@font-face {
+  font-family: "Inter Tight";
+  src: url("/fonts/inter-tight-latin.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
 
 :root {
   color-scheme: light;
@@ -8,7 +16,7 @@
   --muted: #4b4b4b;
   --line: #d6d3cc;
   --link: #1d4ed8;
-  --focus: #1d4ed8;
+  --focus: var(--color-focus);
 }
 
 @layer base {
@@ -26,7 +34,7 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 1.0625rem;
     line-height: 1.5;
   }
@@ -45,8 +53,8 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 3px;
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--focus-offset);
   }
 }
 
@@ -106,7 +114,7 @@
 }
 
 .content :where(code) {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-code);
   font-size: 0.92em;
 }
 
@@ -144,7 +152,7 @@ html.home-page {
   --home-canvas: #ffffff;
   --home-card: #faf8f3;
   --home-card-feature: #f4eee8;
-  --home-paper: #fffdf9;
+  --home-paper: var(--color-paper);
   --home-content-inset: 64px;
 }
 html.home-page, .home-page body { background:var(--home-canvas); }

@@ -9,7 +9,7 @@ function harness(t, { pending = true, reduced = false } = {}) {
   };
   const animations = [];
   const element = () => ({
-    classList: classes(), style: { setProperty() {} }, contains: () => false,
+    addEventListener() {}, querySelector: () => null, classList: classes(), style: { setProperty() {} }, contains: () => false,
     querySelectorAll: () => [0, 1].map(() => ({ animate(frames, options) {
       const animation = { frames, options, cancel() {} };
       animations.push(animation);
