@@ -239,3 +239,27 @@ test('rapid label changes replace stale letters and reduced motion renders plain
     assert.equal(h.label.children.length, 0);
   } finally { h.restore(); }
 });
+
+test('interior dock works without a hero and stays available at the top after Escape and history restore', async () => {
+  const { setupBottomNav } = await import('../src/scripts/bottom-nav.ts');
+  const h = dockHarness();
+  try {
+    h.nav.dataset.home = 'false';
+    h.label.textContent = 'Notes';
+    h.doc.querySelector = selector => selector === '.bottom-nav' ? h.nav : null;
+    h.doc.querySelectorAll = () => [];
+    setupBottomNav();
+    assert.equal(h.nav.dataset.visible, 'true');
+    assert.equal(h.nav.inert, false);
+    assert.equal(h.trigger.inert, false);
+    h.trigger.emit('click'); h.flush();
+    assert.equal(h.menu.hidden, false);
+    h.doc.emit('keydown', { key: 'Escape', preventDefault() {} }); h.flush();
+    assert.equal(h.menu.hidden, true);
+    assert.equal(h.doc.activeElement, h.trigger);
+    h.scroll(1000); h.scroll(0);
+    window.emit('pageshow'); h.flush();
+    assert.equal(h.nav.dataset.visible, 'true');
+    assert.equal(h.label.textContent, 'Notes');
+  } finally { h.restore(); }
+});

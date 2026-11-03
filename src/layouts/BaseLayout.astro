@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import BottomNav from "../components/BottomNav.astro";
 import Intro from "../components/Intro.astro";
 import ContactSection from "../components/ContactSection.astro";
 import { heroTiles } from "../brand/hero-tiles";
@@ -87,6 +88,7 @@ const year = 2026;
         <ContactSection home={home} />
       </main>
       {!home && <footer class={project ? "project-site-footer" : "mx-auto w-full max-w-3xl border-t border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)] sm:px-8"}>© {year} Ayush Rameja</footer>}
+      <BottomNav home={home} />
     </div>
     <script is:inline>
       if (document.documentElement.classList.contains("intro-pending")) {

@@ -3,15 +3,21 @@ import { heroTiles } from "../brand/hero-tiles";
 import DockPreview from "./DockPreview.astro";
 import { contact } from "../data/contact";
 import "../styles/bottom-nav.css";
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+const path = Astro.url.pathname;
+const category = path.startsWith("/projects") ? "Selected work" : path.startsWith("/notes") ? "Notes" : path.startsWith("/experience") ? "Experience" : "Explore";
+const backHref = /^\/projects\/.+/.test(path) ? "/projects/" : /^\/notes\/.+/.test(path) ? "/notes/" : path.startsWith("/experience/") ? "/#experience" : "/#home";
+const backLabel = backHref === "/projects/" ? "Back to projects" : backHref === "/notes/" ? "Back to notes" : backHref === "/#experience" ? "Back to experience" : "Back to home";
 const resume = contact.resume;
 const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", label: "Selected work" }, { id: "experience", label: "Experience" }, { id: "notes", label: "Notes" }, { id: "contact", label: "Contact" }];
 ---
-<nav class="bottom-nav" aria-label="Page navigation" inert data-visible="false" data-expanded="false" data-open="false">
+<nav class="bottom-nav" aria-label="Portfolio navigation" data-home={String(home)} inert={home} data-visible={String(!home)} data-expanded={String(!home)} data-open="false">
   <div class="dock-panel" id="dock-menu" hidden>
     <div class="dock-panel-heading"><span>Find your next stop</span><span class="dock-count" aria-live="polite">01 / {String(sections.length).padStart(2, "0")}</span></div>
     <div class="dock-track" aria-label="Section previews" data-lenis-prevent>
       {sections.map(section => (
-        <a class="dock-preview" href={`#${section.id}`} data-section={section.id} aria-label={`Go to ${section.label}`}>
+        <a class="dock-preview" href={`${home ? "" : "/"}#${section.id}`} data-section={section.id} aria-label={`Go to ${section.label}`}>
           <div class="dock-thumbnail" aria-hidden="true"><DockPreview section={section.id} /></div>
           <span class="dock-preview-caption">{section.label}</span>
         </a>
@@ -19,13 +25,14 @@ const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", 
     </div>
   </div>
   <div class="dock-bar">
-    <a class="dock-logo" href="#home" aria-label="Back to introduction"><svg viewBox="0 0 105 50" aria-hidden="true">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg></a>
-    <button class="dock-trigger" type="button" aria-expanded="false" aria-controls="dock-menu" inert>
-      <span class="dock-label" aria-hidden="true">Introduction</span>
+    {!home && <a class="dock-back" href={backHref} aria-label={backLabel} title={backLabel}><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg></a>}
+    <a class="dock-logo" href={home ? "#home" : "/#home"} aria-label="Back to introduction"><svg viewBox="0 0 105 50" aria-hidden="true">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg></a>
+    <button class="dock-trigger" type="button" aria-expanded="false" aria-controls="dock-menu" aria-label={`${home ? "Introduction" : category}, explore sections`} inert={home}>
+      <span class="dock-label" aria-hidden="true">{home ? "Introduction" : category}</span>
       <span class="dock-close"><span class="dock-face" aria-hidden="true">(o_o)</span><span>Close</span></span>
       <svg class="dock-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 10 4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </button>
-    <a class="dock-resume" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)" inert>Resume</a>
+    <a class="dock-resume" href={resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)" inert={home}>Resume</a>
   </div>
 </nav>
 <script>

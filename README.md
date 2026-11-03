@@ -44,7 +44,7 @@ Each full homepage load plays the complete four-second logo and expanding-apertu
 
 Reduced-motion preferences bypass the intro and disable the continuous hero animations. Escape does not skip the storyboard. Without JavaScript, the intro stays hidden and the HTML remains available. Inner pages do not play the intro. Development-only `?introDelay=1500` and `?introDelay=hold` hooks support failure testing.
 
-Contact opens `mailto:wave@ayush.im`; Resume opens the configured Google Drive preview. No contact backend or email credentials are configured.
+The shared contact section offers direct email and a name/email/message form. The form posts to `/api/contact` using the Gmail SMTP setup from `main`; Resume opens the configured Google Drive preview. See Contact form below for runtime and verification details.
 
 ## Redirects
 
@@ -66,7 +66,6 @@ These archived routes have no single replacement and are not redirected to the h
 
 - `/resume` — production résumé page was not rebuilt.
 - `/experience/autodesk`, `/experience/siemens`, `/experience/accenture` — employer chapters covered several projects.
-- `/api/contact` — no contact Worker is configured.
 - `/about` — unpublished about page. Low HP Studio does not replace that page.
 - `/playground` — unpublished index included Receipt creator and TypeRush, which this site excludes.
 - `/work` — unpublished selected-work index. `/projects/` is a different collection.
@@ -76,3 +75,27 @@ These archived routes have no single replacement and are not redirected to the h
 The `portfolio` Worker retains the production `ayush.im/*` route. Branch previews use the top-level `previews` block and do not change production routes. `pnpm run deploy:preview` builds and publishes a branch preview.
 
 `infra/domain-redirects/` is the independent `portfolio-domain-redirects` Worker from `main`; it preserves the existing `.com` and `www` redirects, including paths and query strings. Deploy it separately with `pnpm run deploy:redirects`. Its Workers Builds root is `/infra/domain-redirects`, with no build command, `npx --yes wrangler@4.146.0 deploy` for production and `npx --yes wrangler@4.146.0 preview` for previews; its build watch path is `infra/domain-redirects/*`.
+
+
+## Contact form
+
+The shared contact form posts `name`, `email`, and `message` to `/api/contact`.
+`src/server/worker.mjs` adapts main’s Gmail/Nodemailer delivery to the static Astro site.
+The Worker uses existing `SMTP_EMAIL`, `SMTP_PASSWORD`, and optional `CONTACT_EMAIL`
+secrets (recipient defaults to `SMTP_EMAIL`); credentials never enter the browser bundle.
+Pages still use static assets. Only `/api/contact` requests run the email handler.
+
+For local end-to-end work, use `pnpm preview:cloudflare`. Astro dev alone serves the UI,
+not the Worker endpoint. Supply local SMTP values in an ignored `.dev.vars` only when
+intentionally testing real delivery; otherwise missing credentials return 503.
+Tests inject a mail sender and do not send messages. Browser tests should intercept the
+endpoint, and those responses are simulated, not proof of inbox delivery.
+
+The endpoint enforces same-origin submissions, field/body limits, and an approximate
+three-attempts-per-minute limit per IP and Cloudflare location. It sends plain text,
+sets Reply-To to the visitor, and reports success only after SMTP accepts the configured
+recipient. SMTP acceptance does not guarantee inbox delivery. Native form submission
+also works without JavaScript. Sending errors preserve the browser draft.
+
+Cloudflare deployment and a separately authorized real inbox test are still required
+to verify delivery on the published site. Existing secrets are preserved on deployment.

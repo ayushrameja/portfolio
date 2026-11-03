@@ -38,13 +38,14 @@ export function setupBottomNav() {
   const label = nav?.querySelector<HTMLElement>('.dock-label');
   const track = nav?.querySelector<HTMLElement>('.dock-track');
   const resume = nav?.querySelector<HTMLElement>('.dock-resume');
-  if (!nav || !hero || !trigger || !menu || !label || !track || !resume) return;
-  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-section]'));
+  if (!nav || !trigger || !menu || !label || !track || !resume) return;
+  const isHome = nav.dataset.home !== 'false';
+  const sections = isHome ? Array.from(document.querySelectorAll<HTMLElement>('[data-nav-section]')) : [];
   const links = Array.from(track.querySelectorAll<HTMLAnchorElement>('.dock-preview'));
   const count = nav.querySelector<HTMLElement>('.dock-count')!;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = 0;
-  let activeId = 'home';
+  let activeId = isHome ? 'home' : ({ 'Selected work': 'selected-work', Notes: 'notes', Experience: 'experience' }[label.textContent ?? ''] ?? 'home');
   let wheelTimer = 0;
   let wheelAxis: 'horizontal' | 'vertical' | undefined;
   let previewFrame = 0;
@@ -154,10 +155,10 @@ export function setupBottomNav() {
     const past = progress >= window.innerHeight * .2;
     // A closed picker must follow scroll position, even when its button retains
     // focus after a click or the pointer remains over the fixed dock.
-    const visible = dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
+    const visible = !isHome || dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
     const appearing = visible && nav.dataset.visible !== 'true';
     if (visible !== (nav.dataset.visible === 'true')) {
-      if (!visible && nav.contains(document.activeElement)) hero.focus({ preventScroll: true });
+      if (!visible && nav.contains(document.activeElement)) hero?.focus({ preventScroll: true });
       nav.dataset.visible = String(visible);
       nav.inert = !visible;
       if (visible) {
@@ -204,6 +205,6 @@ export function setupBottomNav() {
     close();
     cancelAnimationFrame(previewFrame); cancelAnimationFrame(scrollFrame); scrollFrame = 0;
   });
-  new ResizeObserver(schedule).observe(hero);
+  if (hero) new ResizeObserver(schedule).observe(hero);
   update();
 }

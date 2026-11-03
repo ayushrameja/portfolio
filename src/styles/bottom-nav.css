@@ -71,3 +71,18 @@
 @media (forced-colors: active) {
   .bottom-nav :is(a, button):focus-visible { outline-color: Highlight; box-shadow: none; }
 }
+
+/* Interior pages keep the same dock, with a predictable parent-page back link. */
+.bottom-nav[data-home="false"] { --dock-width: 480px; }
+.bottom-nav[data-home="false"] .dock-bar { grid-template-columns: 48px 62px minmax(0, 1fr) 92px; }
+.dock-back { display: flex; align-items: center; justify-content: center; min-width: 0; height: 58px; border-radius: 18px; background: #242424; color: #fff; text-decoration: none; }
+.dock-back svg { width: 24px; height: 24px; }
+html:not(.home-page) .site-shell { padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+@media (hover: hover) { .dock-back:hover { background: #353535; } }
+@media (max-width: 480px) {
+  .bottom-nav[data-home="false"] { --dock-width: 380px; }
+  .bottom-nav[data-home="false"] .dock-bar { grid-template-columns: 40px 42px minmax(0, 1fr) 68px; }
+  .dock-back { height: 52px; border-radius: 16px; }
+  .bottom-nav[data-home="false"] .dock-logo svg { width: 32px; }
+}
+@media (forced-colors: active) { .dock-back { border: 1px solid ButtonText; } }
