@@ -1,3 +1,4 @@
+import { createPageScope } from "./page-scope.ts";
 type SectionPosition = { id: string; label: string; top: number };
 
 export function currentSection(sections: SectionPosition[], activationLine: number) {
@@ -31,6 +32,7 @@ export function renderDockLabel(label: HTMLElement, text: string, animate: boole
 }
 
 export function setupBottomNav() {
+  const scope = createPageScope();
   const nav = document.querySelector<HTMLElement>('.bottom-nav');
   const hero = document.querySelector<HTMLElement>('.hero-frame');
   const trigger = nav?.querySelector<HTMLButtonElement>('.dock-trigger');
@@ -74,7 +76,7 @@ export function setupBottomNav() {
     if (restoreFocus) trigger.focus({ preventScroll: true });
     if (wasOpen) schedule();
   };
-  trigger.addEventListener('click', () => {
+  scope.listen(trigger, 'click', () => {
     if (!menu.hidden) { close(); return; }
     menu.hidden = false;
     nav.dataset.open = 'true';
@@ -84,19 +86,19 @@ export function setupBottomNav() {
       goToPreview(Math.max(0, links.findIndex(link => link.dataset.section === activeId)), false);
     });
   });
-  new ResizeObserver(() => {
+  scope.observe(new ResizeObserver(() => {
     if (menu.hidden || wheelTimer) return;
     cancelAnimationFrame(previewFrame);
     previewFrame = requestAnimationFrame(() => goToPreview(selected, false));
-  }).observe(track);
-  track.addEventListener('scroll', () => {
+  })).observe(track);
+  scope.listen(track, 'scroll', () => {
     const center = track.getBoundingClientRect().left + track.clientWidth / 2;
     reflectSelection(nearestPreview(links.map(link => {
       const rect = link.getBoundingClientRect();
       return rect.left + rect.width / 2;
     }), center));
   }, { passive: true });
-  track.addEventListener('wheel', event => {
+  scope.listen(track, 'wheel', event => {
     if (event.ctrlKey) return;
     // Choose once per gesture so diagonal trackpad momentum cannot switch handlers.
     wheelAxis ??= Math.abs(event.deltaX) > Math.abs(event.deltaY) ? 'horizontal' : 'vertical';
@@ -116,7 +118,7 @@ export function setupBottomNav() {
     const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? track.clientWidth : 1;
     track.scrollBy({ left: event.deltaY * unit, behavior: 'instant' });
   }, { passive: false });
-  track.addEventListener('keydown', event => {
+  scope.listen(track, 'keydown', event => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
     const index = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : selected + (event.key === 'ArrowLeft' ? -1 : 1);
@@ -124,37 +126,36 @@ export function setupBottomNav() {
     goToPreview(bounded);
     links[bounded]?.focus({ preventScroll: true });
   });
-  track.addEventListener('focusin', event => {
+  scope.listen(track, 'focusin', event => {
     const index = links.indexOf((event.target as Element).closest<HTMLAnchorElement>('.dock-preview')!);
     if (index >= 0) goToPreview(index);
   });
-  menu.addEventListener('click', event => {
+  scope.listen(menu, 'click', event => {
     if (!(event.target instanceof Element)) return;
     const link = event.target.closest<HTMLAnchorElement>('.dock-preview');
     if (!link) return;
     close();
     document.getElementById(link.hash.slice(1))?.focus({ preventScroll: true });
   });
-  document.addEventListener('pointerdown', event => {
+  scope.listen(document, 'pointerdown', event => {
     if (event.target instanceof Node && !nav.contains(event.target)) close();
   });
   // Safari does not focus buttons on pointer clicks; Escape must also work then.
-  document.addEventListener('keydown', event => {
+  scope.listen(document, 'keydown', event => {
     if (event.key === 'Escape' && !menu.hidden) { event.preventDefault(); close(true); }
   });
-  nav.addEventListener('focusout', event => {
+  scope.listen(nav, 'focusout', event => {
     if (event.relatedTarget instanceof Node && !nav.contains(event.relatedTarget)) close();
     schedule();
   });
-  nav.addEventListener('focusin', schedule);
+  scope.listen(nav, 'focusin', schedule);
 
   const update = () => {
     scrollFrame = 0;
     const y = window.scrollY;
     const progress = Math.max(0, y); // 20vh from the page top, independent of section geometry.
     const past = progress >= window.innerHeight * .2;
-    // A closed picker must follow scroll position, even when its button retains
-    // focus after a click or the pointer remains over the fixed dock.
+    // Home always follows the scroll threshold, including client-side returns.
     const visible = !isHome || dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
     const appearing = visible && nav.dataset.visible !== 'true';
     if (visible !== (nav.dataset.visible === 'true')) {
@@ -191,20 +192,22 @@ export function setupBottomNav() {
     }
   };
   function schedule() { if (!scrollFrame) scrollFrame = requestAnimationFrame(update); }
-  window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', schedule);
-  window.addEventListener('pageshow', () => {
+  scope.listen(window, 'scroll', schedule, { passive: true });
+  scope.listen(window, 'resize', schedule);
+  scope.listen(window, 'pageshow', () => {
     nav.dataset.visible = 'false'; // Restart a partially expanded dock restored from bfcache.
     schedule();
   });
-  window.addEventListener('pagehide', () => {
+  const cleanup = () => {
     clearTimeout(wheelTimer);
     wheelTimer = 0;
     wheelAxis = undefined;
     track.style.removeProperty('scroll-snap-type');
     close();
     cancelAnimationFrame(previewFrame); cancelAnimationFrame(scrollFrame); scrollFrame = 0;
-  });
-  if (hero) new ResizeObserver(schedule).observe(hero);
+  };
+  scope.listen(window, 'pagehide', cleanup);
+  scope.add(cleanup);
+  if (hero) scope.observe(new ResizeObserver(schedule)).observe(hero);
   update();
 }

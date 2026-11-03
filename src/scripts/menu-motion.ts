@@ -1,7 +1,9 @@
+import { createPageScope } from "./page-scope.ts";
 const menuTime = (ms: number) => ms / .9; // Play the existing choreography 10% slower.
 
 /** Native popover owns interaction; decorative exit copies never receive input. */
 export function setupMenuMotion(menu: HTMLElement) {
+  const scope = createPageScope();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let entering: Animation[] = [];
   let exitLayer: HTMLElement | undefined;
@@ -137,11 +139,12 @@ export function setupMenuMotion(menu: HTMLElement) {
     cleanupTimer = window.setTimeout(clearExit, menuTime(1400));
   }
 
-  menu.addEventListener('beforetoggle', event => {
+  scope.listen(menu, 'beforetoggle', event => {
     if ((event as ToggleEvent).newState === 'closed') leave();
     else clearExit();
   });
-  reduced.addEventListener('change', () => { clearEntrance(); clearExit(); });
-  window.addEventListener('pagehide', () => { clearEntrance(); clearExit(); });
+  scope.listen(reduced, 'change', () => { clearEntrance(); clearExit(); });
+  scope.listen(window, 'pagehide', () => { clearEntrance(); clearExit(); });
+  scope.add(() => { clearEntrance(); clearExit(); });
   return { enter };
 }

@@ -46,55 +46,63 @@ const links = [
 <script>
   import { setupHeroMotion } from "../scripts/hero-motion";
   import { setupButtonEyes } from "../scripts/button-eyes";
-  const workButton = document.querySelector<HTMLAnchorElement>(".work-link");
-  if (workButton) setupButtonEyes(workButton);
   import { setupMenuMotion } from "../scripts/menu-motion";
-  const clock = document.querySelector<HTMLTimeElement>("#hero-clock");
-  const day = document.querySelector("#clock-day");
-  const time = document.querySelector("#clock-time");
-  const clockFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit", hour12: true });
-  const dayFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", weekday: "short" });
-  function updateClock() {
-    const now = new Date();
-    if (clock) clock.dateTime = now.toISOString();
-    if (day) day.textContent = `${dayFormat.format(now)} · `;
-    if (time) time.textContent = clockFormat.format(now);
-  }
-  updateClock();
-  window.setInterval(updateClock, 30_000);
-  const menu = document.querySelector<HTMLElement>("#hero-menu");
-  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
-  const menuMotion = menu ? setupMenuMotion(menu) : undefined;
-  menu?.addEventListener("beforetoggle", event => {
-    if ((event as ToggleEvent).newState === "closed" && menu.contains(document.activeElement)) {
-      toggle?.focus({ preventScroll: true });
+  import { createPageScope } from "../scripts/page-scope";
+  document.addEventListener("astro:page-load", () => {
+    if (!document.querySelector(".hero")) return;
+    const scope = createPageScope();
+    const workButton = document.querySelector<HTMLAnchorElement>(".work-link");
+    if (workButton) setupButtonEyes(workButton);
+    const clock = document.querySelector<HTMLTimeElement>("#hero-clock");
+    const day = document.querySelector("#clock-day");
+    const time = document.querySelector("#clock-time");
+    const clockFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit", hour12: true });
+    const dayFormat = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", weekday: "short" });
+    function updateClock() {
+      const now = new Date();
+      if (clock) clock.dateTime = now.toISOString();
+      if (day) day.textContent = `${dayFormat.format(now)} · `;
+      if (time) time.textContent = clockFormat.format(now);
     }
+    updateClock();
+    const clockTimer = window.setInterval(updateClock, 30_000);
+    scope.add(() => window.clearInterval(clockTimer));
+    const menu = document.querySelector<HTMLElement>("#hero-menu");
+    const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+    const menuMotion = menu ? setupMenuMotion(menu) : undefined;
+    scope.listen(menu, "beforetoggle", event => {
+      if (!menu) return;
+      if ((event as ToggleEvent).newState === "closed" && menu.contains(document.activeElement)) {
+        toggle?.focus({ preventScroll: true });
+      }
+    });
+    scope.listen(menu, "toggle", () => {
+      if (!menu) return;
+      const open = menu.matches(":popover-open");
+      toggle?.setAttribute("aria-expanded", String(open));
+      toggle?.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+      const label = toggle?.querySelector(".menu-label");
+      if (label) label.textContent = open ? "Close" : "Menu";
+      if (open) { positionMenu(); menuMotion?.enter(); }
+      else if (menu.contains(document.activeElement)) toggle?.focus();
+      if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
+    });
+    function positionMenu() {
+      if (!menu || !toggle || !menu.matches(":popover-open")) return;
+      const trigger = toggle.getBoundingClientRect();
+      const mobile = window.innerWidth <= 600;
+      const left = mobile ? (window.innerWidth-menu.offsetWidth)/2 : trigger.right-menu.offsetWidth;
+      menu.style.left = `${Math.max(12, Math.min(left, window.innerWidth-menu.offsetWidth-12))}px`;
+      menu.style.top = `${Math.max(12, trigger.top-menu.offsetHeight-20)}px`;
+    }
+    scope.listen(window, "resize", positionMenu);
+    scope.listen(window, "scroll", positionMenu, { passive: true });
+    const hero = document.querySelector<HTMLElement>(".hero");
+    if (hero) setupHeroMotion(hero);
+    const reflectVisibility = () => hero?.classList.toggle("page-hidden", document.hidden);
+    scope.listen(document, "visibilitychange", reflectVisibility);
+    reflectVisibility();
   });
-  menu?.addEventListener("toggle", () => {
-    const open = menu.matches(":popover-open");
-    toggle?.setAttribute("aria-expanded", String(open));
-    toggle?.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
-    const label = toggle?.querySelector(".menu-label");
-    if (label) label.textContent = open ? "Close" : "Menu";
-    if (open) { positionMenu(); menuMotion?.enter(); }
-    else if (menu.contains(document.activeElement)) toggle?.focus();
-    if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
-  });
-  function positionMenu() {
-    if (!menu || !toggle || !menu.matches(":popover-open")) return;
-    const trigger = toggle.getBoundingClientRect();
-    const mobile = window.innerWidth <= 600;
-    const left = mobile ? (window.innerWidth-menu.offsetWidth)/2 : trigger.right-menu.offsetWidth;
-    menu.style.left = `${Math.max(12, Math.min(left, window.innerWidth-menu.offsetWidth-12))}px`;
-    menu.style.top = `${Math.max(12, trigger.top-menu.offsetHeight-20)}px`;
-  }
-  window.addEventListener("resize", positionMenu);
-  window.addEventListener("scroll", positionMenu, { passive: true });
-  const hero = document.querySelector<HTMLElement>(".hero");
-  if (hero) setupHeroMotion(hero);
-  const reflectVisibility = () => hero?.classList.toggle("page-hidden", document.hidden);
-  document.addEventListener("visibilitychange", reflectVisibility);
-  reflectVisibility();
 </script>
 <style is:inline set:html={heroPaletteCSS} />
 <style>

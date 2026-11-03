@@ -151,6 +151,7 @@ export function startIntro(readiness?: Promise<void>) {
     for (const animation of animations) animation.cancel();
     reduced.removeEventListener("change", onReduce);
     window.removeEventListener("pagehide", complete);
+    document.removeEventListener("astro:before-swap", complete);
     intro.removeEventListener("keydown", onKeydown);
     revealPage();
     const content = document.getElementById("content");
@@ -264,6 +265,7 @@ export function startIntro(readiness?: Promise<void>) {
   frame = requestAnimationFrame(watch);
 
   window.addEventListener("pagehide", complete, { once: true });
+  document.addEventListener("astro:before-swap", complete, { once: true });
   intro.addEventListener("keydown", onKeydown);
   reduced.addEventListener("change", onReduce);
   intro.focus({ preventScroll: true });

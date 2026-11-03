@@ -3,6 +3,11 @@
 .bottom-nav[data-visible="true"] { opacity:1; visibility:visible; transform:translate(-50%,0); }
 .bottom-nav[data-expanded="true"] { width:var(--dock-width); }
 .bottom-nav[data-open="true"] { width:520px; background:#101010; border-color:#303030; }
+/* Keep the logo at full size while the surrounding dock retracts toward it. */
+.bottom-nav[data-route-motion], .bottom-nav[data-route-collapsed] { overflow:hidden; transition:none; }
+.bottom-nav[data-route-collapsed] { width:90px; }
+.bottom-nav[data-route-collapsed] :is(.dock-trigger,.dock-resume) { opacity:0; visibility:hidden; }
+.bottom-nav[data-route-motion] :is(.dock-trigger,.dock-resume) { visibility:visible; transition:none; }
 .dock-bar { display:grid; grid-template-columns:74px minmax(0,1fr) 104px; gap:6px; }
 .bottom-nav[data-expanded="false"] .dock-bar { grid-template-columns:74px 0 0; gap:0; }
 .dock-logo,.dock-trigger,.dock-resume { height:58px; min-width:0; border:0; border-radius:18px; color:#fff; background:#242424; text-decoration:none; display:flex; align-items:center; justify-content:center; font:inherit; }
@@ -58,6 +63,7 @@
 }
 @media(max-width:480px) { .bottom-nav { --dock-width:358px; bottom:calc(12px + env(safe-area-inset-bottom)); border-radius:22px; padding:6px; font-size:14px; } .dock-bar { grid-template-columns:62px minmax(0,1fr) 80px; gap:5px; } .bottom-nav[data-expanded="false"] .dock-bar { grid-template-columns:74px 0 0; } .dock-logo,.dock-trigger,.dock-resume { height:52px; border-radius:16px; } .dock-trigger { gap:10px; padding:0 9px; } .dock-logo svg { width:40px; } .dock-panel-heading { font-size:15px; } .dock-track { padding-inline:11%; gap:10px; } }
 @media(max-height:500px) { .dock-thumbnail { height:90px; } .dock-panel { padding-top:7px; } .dock-panel-heading { padding-bottom:8px; }  }
+@media(max-width:480px) { .bottom-nav[data-route-collapsed] { width:76px; } }
 @media(prefers-reduced-motion:reduce) { .bottom-nav,.dock-preview,.dock-trigger,.dock-resume { transition:none; } }
 @media(prefers-reduced-motion:reduce) { .dock-letter { animation:none; } .dock-chevron { transition:none; } }
 @media (forced-colors: active) {

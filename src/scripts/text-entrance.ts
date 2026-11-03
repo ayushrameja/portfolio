@@ -1,10 +1,12 @@
+import { createPageScope } from "./page-scope.ts";
 /** Animate whole text blocks to keep wrapping, selection and accessible names intact. */
 export function setupProjectTextEntrance(root: HTMLElement) {
+  const scope = createPageScope();
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const running = new Set<Animation>();
   const groups = root.querySelectorAll<HTMLElement>(".work-heading, .brand-text, .card-copy");
   const pending = new Set<Element>(groups);
-  const observer = new IntersectionObserver(entries => {
+  const observer = scope.observe(new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting || entry.intersectionRatio <= 0 || document.hidden) continue;
       pending.delete(entry.target);
@@ -22,18 +24,19 @@ export function setupProjectTextEntrance(root: HTMLElement) {
         animation.onfinish = () => { running.delete(animation); animation.cancel(); };
       });
     }
-  }, { threshold: 0, rootMargin: "0px 0px -40px 0px" });
+  }, { threshold: 0, rootMargin: "0px 0px -40px 0px" }));
   groups.forEach(group => observer.observe(group));
   const finish = () => {
     running.forEach(animation => animation.cancel());
     running.clear();
   };
   // Keyboard navigation should never land on a temporarily transparent label.
-  root.addEventListener("focusin", finish);
-  reduced.addEventListener("change", () => { if (reduced.matches) finish(); });
-  document.addEventListener("visibilitychange", () => {
+  scope.add(finish);
+  scope.listen(root, "focusin", finish);
+  scope.listen(reduced, "change", () => { if (reduced.matches) finish(); });
+  scope.listen(document, "visibilitychange", () => {
     if (document.hidden) return;
     pending.forEach(group => { observer.unobserve(group); observer.observe(group); });
   });
-  window.addEventListener("pagehide", finish);
+  scope.listen(window, "pagehide", finish);
 }

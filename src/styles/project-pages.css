@@ -22,13 +22,7 @@
 .project-page :is(h1, h2, h3) { min-width: 0; overflow-wrap: break-word; text-wrap: balance; }
 .project-intro h1 { min-width: 0; overflow-wrap: break-word; }
 .project-page :is(p, dd) { text-wrap: pretty; }
-.project-site-header, .project-main, .project-site-footer { width: min(100% - 2 * var(--project-inset), var(--project-width)); margin-inline: auto; }
-.project-site-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); min-height: 100px; border-bottom: 1px solid var(--project-line); }
-.project-site-header > a { display: inline-flex; align-items: center; min-height: 48px; }
-.project-site-mark { display: block; width: 80px; height: 40px; fill: var(--project-accent); }
-.project-site-header nav { gap: var(--space-6); }
-.project-site-header nav a { display: inline-flex; align-items: center; min-height: 48px; text-decoration: none; }
-.project-site-header a[aria-current="page"] { text-decoration: underline; }
+.project-main, .project-site-footer { width: min(100% - 2 * var(--project-inset), var(--project-width)); margin-inline: auto; }
 .project-site-footer { padding-block: 28px; border-top: 1px solid var(--project-line); color: var(--project-muted); font-size: 15px; }
 
 .project-intro { padding-block: 48px 40px; }
@@ -86,7 +80,7 @@
 @media (hover: hover) {
   .project-button:hover { background: var(--project-ink); }
   .project-index-entry:hover { background: var(--project-hover); }
-  .project-next-link:hover strong, .project-site-header nav a:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .project-next-link:hover strong { text-decoration: underline; text-underline-offset: 5px; }
 }
 .project-button:active { background: var(--project-ink); }
 @media (max-width: 800px) {
@@ -96,9 +90,6 @@
   .project-index-action { grid-column: 2; }
 }
 @media (max-width: 600px) {
-  .project-site-header { min-height: 80px; }
-  .project-site-mark { width: 64px; height: 32px; }
-  .project-site-header nav { gap: 20px; }
   .project-intro { padding-block: 24px 32px; }
   .project-breadcrumb { margin-bottom: var(--space-4); }
   .project-facts { margin-top: 28px; gap: 24px 16px; }

@@ -1,8 +1,10 @@
+import { createPageScope } from "./page-scope.ts";
 import { setupProjectArtMotion } from "./project-art-motion.ts";
 import { setupProjectTextEntrance } from "./text-entrance.ts";
 
 /** Reveal each card when it enters the viewport, after the intro releases the page. */
 export function setupProjectMosaic(root: HTMLElement) {
+  const scope = createPageScope();
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const cards = root.querySelectorAll<HTMLElement>(".card");
   let inView = false;
@@ -10,7 +12,7 @@ export function setupProjectMosaic(root: HTMLElement) {
   const reflect = () => {
     root.classList.toggle("is-live", started && inView && !reduced.matches && !document.hidden);
   };
-  const cardsObserver = new IntersectionObserver(entries => {
+  const cardsObserver = scope.observe(new IntersectionObserver(entries => {
     let stagger = 0;
     for (const entry of entries) {
       if (!entry.isIntersecting || entry.intersectionRatio <= 0 || document.hidden) continue;
@@ -19,11 +21,11 @@ export function setupProjectMosaic(root: HTMLElement) {
       card.classList.add("is-revealed");
       cardsObserver.unobserve(card);
     }
-  }, { threshold: 0, rootMargin: "0px 0px -48px 0px" });
-  const sectionObserver = new IntersectionObserver(entries => {
+  }, { threshold: 0, rootMargin: "0px 0px -48px 0px" }));
+  const sectionObserver = scope.observe(new IntersectionObserver(entries => {
     inView = entries.some(entry => entry.isIntersecting);
     reflect();
-  });
+  }));
   const refreshCards = () => {
     if (!started || document.hidden) return;
     cards.forEach(card => {
@@ -42,9 +44,9 @@ export function setupProjectMosaic(root: HTMLElement) {
     setupProjectTextEntrance(root);
     setupProjectArtMotion(root);
   };
-  const introObserver = new MutationObserver(start);
+  const introObserver = scope.observe(new MutationObserver(start));
   introObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-  reduced.addEventListener("change", () => {
+  scope.listen(reduced, "change", () => {
     if (reduced.matches) {
       root.classList.remove("is-ready");
       cards.forEach(card => card.classList.add("is-revealed"));
@@ -52,7 +54,7 @@ export function setupProjectMosaic(root: HTMLElement) {
     }
     reflect();
   });
-  root.addEventListener("focusin", event => {
+  scope.listen(root, "focusin", event => {
     const card = (event.target as HTMLElement).closest<HTMLElement>(".card");
     if (card) {
       card.style.setProperty("--reveal-delay", "0ms");
@@ -60,6 +62,6 @@ export function setupProjectMosaic(root: HTMLElement) {
       cardsObserver.unobserve(card);
     }
   });
-  document.addEventListener("visibilitychange", () => { start(); refreshCards(); reflect(); });
+  scope.listen(document, "visibilitychange", () => { start(); refreshCards(); reflect(); });
   start();
 }

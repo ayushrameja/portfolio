@@ -1,3 +1,4 @@
+import { createPageScope } from "./page-scope.ts";
 type ContactField = HTMLInputElement | HTMLTextAreaElement;
 export function fieldError(name: string, value: string) {
   const text = value.trim();
@@ -8,6 +9,9 @@ export function fieldError(name: string, value: string) {
   return '';
 }
 export function setupContactForm() {
+  const scope = createPageScope();
+  const controller = new AbortController();
+  scope.add(() => controller.abort());
   document.querySelectorAll<HTMLFormElement>('.contact-form').forEach(form => {
     const fields = Array.from(form.querySelectorAll<ContactField>('input, textarea'));
     const button = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
@@ -17,18 +21,18 @@ export function setupContactForm() {
     const validate = (field: ContactField) => {
       const error = fieldError(field.name, field.value);
       field.setAttribute('aria-invalid', String(Boolean(error)));
-      document.getElementById(`${field.id}-error`)!.textContent = error;
+      form.querySelector<HTMLElement>(`#${field.id}-error`)!.textContent = error;
       return !error;
     };
     form.noValidate = true;
     fields.forEach(field => {
-      field.addEventListener('blur', () => { touched.add(field); validate(field); });
-      field.addEventListener('input', () => {
+      scope.listen(field, 'blur', () => { touched.add(field); validate(field); });
+      scope.listen(field, 'input', () => {
         if (touched.has(field)) validate(field);
         if (!submitting) { form.dataset.state = 'idle'; status.textContent = ''; }
       });
     });
-    form.addEventListener('submit', async event => {
+    scope.listen(form, 'submit', async event => {
       event.preventDefault();
       if (submitting) return;
       const invalid = fields.filter(field => { touched.add(field); return !validate(field); });
@@ -43,20 +47,22 @@ export function setupContactForm() {
       try {
         const response = await fetch(form.action, {
           method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(payload), signal: AbortSignal.timeout(30000),
+          body: JSON.stringify(payload), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
         });
         const data = await response.json();
+        if (controller.signal.aborted) return;
         if (!response.ok || data.success !== true) throw new Error(response.status === 429 ? 'Too many attempts. Please wait a minute and try again.' : 'Your message wasn’t sent. Please try again or use the email link.');
         // Preserve anything the visitor typed while the request was in flight.
         fields.forEach(field => {
           if (field.value.trim() === payload[field.name]) field.value = '';
           field.removeAttribute('aria-invalid');
-          document.getElementById(`${field.id}-error`)!.textContent = '';
+          form.querySelector<HTMLElement>(`#${field.id}-error`)!.textContent = '';
         });
         touched.clear();
         form.dataset.state = 'success';
         status.textContent = 'Message sent. Thank you for getting in touch.';
       } catch (error) {
+        if (controller.signal.aborted) return;
         form.dataset.state = 'error';
         status.textContent = error instanceof Error && error.name === 'TimeoutError'
           ? 'Delivery couldn’t be confirmed. Your message is still here; you can email me directly.'

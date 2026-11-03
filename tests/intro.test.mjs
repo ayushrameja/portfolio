@@ -122,6 +122,8 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
 
   const storage = new Map();
   const document = {
+    addEventListener(type, fn) { remember("document", type, fn); },
+    removeEventListener(type, fn) { forget("document", type, fn); },
     documentElement: root,
     readyState: "complete",
     images: [],
@@ -167,7 +169,7 @@ function installDocument({ reduced = false, pending = true, requestedAt = null, 
   globalThis.requestAnimationFrame = () => 1;
   globalThis.cancelAnimationFrame = () => {};
 
-  return { animations, intro, content, shell, root, storage, parts, pagehide: () => dispatch("window", { type: "pagehide" }), reduceMotion: () => { motion.matches = true; dispatch("motion", { type: "change" }); }, dispatch: (type, extra = {}) => {
+  return { animations, intro, content, shell, root, storage, parts, beforeSwap: () => dispatch("document", { type: "astro:before-swap" }), pagehide: () => dispatch("window", { type: "pagehide" }), reduceMotion: () => { motion.matches = true; dispatch("motion", { type: "change" }); }, dispatch: (type, extra = {}) => {
     const event = { type, preventDefault() { event.defaultPrevented = true; }, defaultPrevented: false, ...extra };
     dispatch("intro", event);
   } };
@@ -479,4 +481,16 @@ test("leaving mid-intro removes the interaction lock and cancels all tracks", ()
   assert.equal("inert" in harness.shell.attributes, false);
   assert.ok(harness.animations.every(a => a.cancelled));
   assert.equal(window.history.scrollRestoration, "auto");
+});
+
+test("client navigation mid-intro releases the old page before Astro swaps it", () => {
+  const harness = installDocument();
+  harness.shell.setAttribute("inert", "");
+  startIntro(new Promise(() => {}));
+  harness.beforeSwap();
+  assert.equal(harness.root.classList.contains("intro-pending"), false);
+  assert.equal(harness.root.classList.contains("intro-playing"), false);
+  assert.equal(harness.intro.hidden, true);
+  assert.equal("inert" in harness.shell.attributes, false);
+  assert.ok(harness.animations.every(a => a.cancelled));
 });

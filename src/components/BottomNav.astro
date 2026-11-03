@@ -12,7 +12,7 @@ const backLabel = backHref === "/projects/" ? "Back to projects" : backHref === 
 const resume = contact.resume;
 const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", label: "Selected work" }, { id: "experience", label: "Experience" }, { id: "notes", label: "Notes" }, { id: "contact", label: "Contact" }];
 ---
-<nav class="bottom-nav" aria-label="Portfolio navigation" data-home={String(home)} inert={home} data-visible={String(!home)} data-expanded={String(!home)} data-open="false">
+<nav class="bottom-nav" transition:name="bottom-nav" transition:animate="none" aria-label="Portfolio navigation" data-home={String(home)} inert={home} data-visible={String(!home)} data-expanded={String(!home)} data-open="false">
   <div class="dock-panel" id="dock-menu" hidden>
     <div class="dock-panel-heading"><span>Find your next stop</span><span class="dock-count" aria-live="polite">01 / {String(sections.length).padStart(2, "0")}</span></div>
     <div class="dock-track" aria-label="Section previews" data-lenis-prevent>
@@ -37,5 +37,7 @@ const sections = [{ id: "home", label: "Introduction" }, { id: "selected-work", 
 </nav>
 <script>
   import { setupBottomNav } from "../scripts/bottom-nav";
-  setupBottomNav();
+  document.addEventListener("astro:page-load", () => {
+    setupBottomNav();
+  });
 </script>

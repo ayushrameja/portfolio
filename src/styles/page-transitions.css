@@ -1,0 +1,28 @@
+/* Shared by ClientRouter's native and fallback paths. Astro disables both
+   animations when the visitor requests reduced motion. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+@keyframes page-leave {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* The logo remains a separate snapshot while the page changes underneath it.
+   Live width animations run before/after the page transition on both paths. */
+::view-transition-group(bottom-nav) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  mix-blend-mode: normal;
+}

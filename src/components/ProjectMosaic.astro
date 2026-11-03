@@ -101,8 +101,10 @@ const arrowPath = "M4 12 12 4M5.5 4H12v6.5";
 </section>
 <script>
   import { setupProjectMosaic } from "../scripts/project-mosaic";
-  const section = document.querySelector<HTMLElement>("#selected-work");
-  if (section) {
-    setupProjectMosaic(section);
-  }
+  document.addEventListener("astro:page-load", () => {
+    const section = document.querySelector<HTMLElement>("#selected-work");
+    if (section) {
+      setupProjectMosaic(section);
+    }
+  });
 </script>

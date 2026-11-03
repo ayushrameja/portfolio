@@ -151,6 +151,32 @@ function dockHarness() {
   };
 }
 
+test('client returns home hide the dock at the hero and reveal it after scrolling', async () => {
+  const { setupBottomNav } = await import('../src/scripts/bottom-nav.ts');
+  const h = dockHarness();
+  try {
+    h.doc.documentElement = { dataset: { clientNavigation: 'true' }, scrollHeight: 4000 };
+    h.nav.dataset.visible = 'false';
+    h.nav.dataset.expanded = 'false';
+    h.nav.inert = true;
+    setupBottomNav();
+    assert.equal(h.nav.dataset.visible, 'false');
+    assert.equal(h.nav.inert, true);
+    h.scroll(1200);
+    assert.equal(h.nav.dataset.visible, 'true');
+    assert.equal(h.nav.dataset.expanded, 'true');
+    h.trigger.emit('click');
+    h.doc.emit('keydown', { key: 'Escape', preventDefault() {} });
+    h.scroll(1200);
+    h.scroll(0);
+    assert.equal(h.nav.dataset.visible, 'false');
+    assert.equal(h.nav.inert, true);
+    h.scroll(1200);
+    assert.equal(h.nav.dataset.visible, 'true');
+    assert.equal(h.nav.inert, false);
+  } finally { h.restore(); }
+});
+
 test('closing the section picker then scrolling home does not pin the dock through retained focus or hover', async () => {
   const { setupBottomNav } = await import('../src/scripts/bottom-nav.ts');
   const h = dockHarness();

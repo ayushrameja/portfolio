@@ -1,3 +1,4 @@
+import { createPageScope } from "./page-scope.ts";
 /** Bounded positions keep the eyebrows and eyes inside the button's dark base. */
 export function eyePosition(width: number, fraction: number) {
   return (Math.max(0, Math.min(1, fraction)) - .5) * Math.max(0, width - 76);
@@ -5,6 +6,7 @@ export function eyePosition(width: number, fraction: number) {
 
 /** Short visits, not a permanent animation loop. Timers sleep offscreen/hidden. */
 export function setupButtonEyes(button: HTMLAnchorElement) {
+  const scope = createPageScope();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const lids = Array.from(button.querySelectorAll<HTMLElement>('.eye-lid'));
   const timers = new Set<number>();
@@ -55,6 +57,7 @@ export function setupButtonEyes(button: HTMLAnchorElement) {
     ], { duration: 210, delay: index * 35, easing: 'ease-in-out' }));
     later(blink, 2300 + Math.random() * 1500);
   };
+  scope.add(() => { paused = true; stop(); });
   const wander = () => {
     if (!active || !canPlay()) return;
     const position = Math.random();
@@ -86,16 +89,16 @@ export function setupButtonEyes(button: HTMLAnchorElement) {
     if (pointerInside || keyboardFocus) start();
     else scheduleVisit();
   };
-  button.addEventListener('pointerenter', event => {
+  scope.listen(button, 'pointerenter', event => {
     if (event.pointerType === 'touch') return;
     pointerInside = true;
     start();
   });
-  button.addEventListener('pointerleave', () => {
+  scope.listen(button, 'pointerleave', () => {
     pointerInside = false;
     if (!keyboardFocus) { stop(); scheduleVisit(); }
   });
-  button.addEventListener('pointermove', event => {
+  scope.listen(button, 'pointermove', event => {
     if (!active || event.pointerType === 'touch') return;
     const rect = button.getBoundingClientRect();
     const eyes = button.querySelector('.work-eyes')!.getBoundingClientRect();
@@ -110,24 +113,24 @@ export function setupButtonEyes(button: HTMLAnchorElement) {
     timers.delete(wanderTimer);
     wanderTimer = later(wander, 1900);
   });
-  button.addEventListener('focus', () => {
+  scope.listen(button, 'focus', () => {
     keyboardFocus = button.matches(':focus-visible');
     if (keyboardFocus) start();
   });
-  button.addEventListener('blur', () => {
+  scope.listen(button, 'blur', () => {
     keyboardFocus = false;
     if (!pointerInside) { stop(); scheduleVisit(); }
   });
-  new IntersectionObserver(entries => {
+  scope.observe(new IntersectionObserver(entries => {
     inView = entries.some(entry => entry.isIntersecting);
     resume();
-  }, { threshold: .5 }).observe(button);
-  new MutationObserver(resume).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  reduced.addEventListener('change', resume);
-  document.addEventListener('visibilitychange', () => {
+  }, { threshold: .5 })).observe(button);
+  scope.observe(new MutationObserver(resume)).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  scope.listen(reduced, 'change', resume);
+  scope.listen(document, 'visibilitychange', () => {
     if (document.hidden) pointerInside = false;
     resume();
   });
-  window.addEventListener('pagehide', () => { paused = true; stop(); });
-  window.addEventListener('pageshow', () => { paused = false; resume(); });
+  scope.listen(window, 'pagehide', () => { paused = true; stop(); });
+  scope.listen(window, 'pageshow', () => { paused = false; resume(); });
 }

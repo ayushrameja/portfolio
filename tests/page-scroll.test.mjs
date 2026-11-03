@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { createScrollLifecycle } from '../src/scripts/home-scroll.ts';
+import { createScrollLifecycle } from '../src/scripts/page-scroll.ts';
 
 test('scroll stays native through loading and reduced motion, with one smooth instance after reveal', () => {
   const instances = [];

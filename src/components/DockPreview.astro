@@ -79,3 +79,10 @@ const photo = section === "home" ? await getImage({ src: portrait, width: 320, f
 .dock-experience-art span:nth-of-type(2) { background: #e3eeea; }
 .dock-experience-art span:nth-of-type(3) { background: #eee7ec; }
 </style>
+
+<style>
+/* Previews mirror the open homepage sections instead of the retired card layouts. */
+.dock-notes-art div { background: none; border-block: 1px solid var(--color-accent); border-radius: 0; padding: 6% 0; }
+.dock-experience-art { display: flex; flex-direction: column; gap: 0; justify-content: space-between; }
+.dock-experience-art span, .dock-experience-art span:nth-of-type(2), .dock-experience-art span:nth-of-type(3) { width: 100%; padding: 4% 0; border-top: 1px solid var(--color-accent); border-radius: 0; background: none; }
+</style>

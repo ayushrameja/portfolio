@@ -1,5 +1,7 @@
+import { createPageScope } from "./page-scope.ts";
 /** Slow artwork loops, paused offscreen or by the visitor. Copy and links stay still. */
 export function setupProjectArtMotion(root: HTMLElement) {
+  const scope = createPageScope();
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const cards = root.querySelectorAll<HTMLElement>(".card");
   const toggle = root.querySelector<HTMLButtonElement>("[data-art-motion-toggle]");
@@ -65,7 +67,7 @@ export function setupProjectArtMotion(root: HTMLElement) {
       animations.forEach(animation => active ? animation.play() : animation.pause());
     });
   };
-  const observer = new IntersectionObserver(entries => {
+  const observer = scope.observe(new IntersectionObserver(entries => {
     for (const entry of entries) {
       const card = (entry.target as HTMLElement).closest<HTMLElement>(".card");
       if (!card) continue;
@@ -73,15 +75,19 @@ export function setupProjectArtMotion(root: HTMLElement) {
       else visible.delete(card);
     }
     sync();
-  }, { threshold: 0 });
+  }, { threshold: 0 }));
   cards.forEach(card => {
     const art = card.querySelector<HTMLElement>(".card-art");
     if (art) observer.observe(art);
   });
-  toggle?.addEventListener("click", () => { paused = !paused; sync(); });
-  reduced.addEventListener("change", sync);
-  document.addEventListener("visibilitychange", sync);
-  window.addEventListener("pagehide", () => { suspended = true; sync(); });
-  window.addEventListener("pageshow", () => { suspended = false; sync(); });
+  scope.listen(toggle, "click", () => { paused = !paused; sync(); });
+  scope.listen(reduced, "change", sync);
+  scope.listen(document, "visibilitychange", sync);
+  scope.listen(window, "pagehide", () => { suspended = true; sync(); });
+  scope.listen(window, "pageshow", () => { suspended = false; sync(); });
   sync();
+  scope.add(() => {
+    running.forEach(animations => animations.forEach(animation => animation.cancel()));
+    running.clear();
+  });
 }

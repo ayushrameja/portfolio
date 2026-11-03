@@ -13,7 +13,9 @@ import { heroTiles } from "../brand/hero-tiles";
 </div>
 <script>
   import { scheduleIntro, startIntro } from "../scripts/intro";
-  scheduleIntro(import.meta.env.DEV ? new URLSearchParams(window.location.search).get("introDelay") : null, startIntro);
+  document.addEventListener("astro:page-load", () => {
+    scheduleIntro(import.meta.env.DEV ? new URLSearchParams(window.location.search).get("introDelay") : null, startIntro);
+  });
 </script>
 <style>
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
