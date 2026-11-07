@@ -58,8 +58,10 @@ export async function handleContact(request, env, sendMail) {
       return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Message sent</title><h1>Message sent.</h1><p>Thank you for getting in touch.</p><a href="/#contact">Return to the portfolio</a></html>', { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'" } });
     }
     return json({ success: true });
-  } catch {
-    // Do not log credentials, visitor details, message bodies, or SMTP errors.
+  } catch (error) {
+    // Log the SMTP failure code only. Messages can repeat mailbox addresses.
+    const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : 'unknown';
+    console.error(JSON.stringify({ event: 'contact_send_failed', code }));
     return json({ error: 'Unable to send your message. Please try again or use the email link.' }, 502);
   }
 }
