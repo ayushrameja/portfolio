@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ProjectMosaic from "../components/ProjectMosaic.astro";
+import ExperienceSection from "../components/ExperienceSection.astro";
+import FieldNotes from "../components/FieldNotes.astro";
+import "../styles/home-sections.css";
+---
+<BaseLayout title="Ayush Rameja" description="Ayush Rameja — full-stack engineer in Bengaluru building useful digital products. Explore selected work and notes on software engineering." home>
+  <Hero />
+  <ProjectMosaic />
+  <ExperienceSection />
+  <FieldNotes />
+</BaseLayout>
+
+<style>
+  :global(.home-main) { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+</style>

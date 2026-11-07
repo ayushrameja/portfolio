@@ -1,0 +1,213 @@
+import { createPageScope } from "./page-scope.ts";
+type SectionPosition = { id: string; label: string; top: number };
+
+export function currentSection(sections: SectionPosition[], activationLine: number) {
+  return sections.reduce<SectionPosition | undefined>((active, section) =>
+    section.top <= activationLine ? section : active, sections[0]);
+}
+
+export function nearestPreview(centers: number[], viewportCenter: number) {
+  return centers.reduce((best, center, index) =>
+    Math.abs(center - viewportCenter) < Math.abs(centers[best] - viewportCenter) ? index : best, 0);
+}
+
+/** Stay available after the threshold, including continuous downward scrolling. */
+export function dockVisible({ progress, viewport, menuOpen }: {
+  progress: number; viewport: number; menuOpen: boolean;
+}) {
+  return menuOpen || progress >= viewport * .2;
+}
+
+export function renderDockLabel(label: HTMLElement, text: string, animate: boolean, direction = 1) {
+  if (!animate) { label.textContent = text; return; }
+  // Replacing the letters cancels the previous transition during fast scrolling.
+  label.replaceChildren(...Array.from(text, (character, index) => {
+    const letter = document.createElement('span');
+    letter.className = 'dock-letter';
+    letter.textContent = character;
+    letter.style.setProperty('--letter-delay', `${index * 22}ms`);
+    letter.style.setProperty('--letter-offset', `${direction * .7}em`);
+    return letter;
+  }));
+}
+
+export function setupBottomNav() {
+  const scope = createPageScope();
+  const nav = document.querySelector<HTMLElement>('.bottom-nav');
+  const hero = document.querySelector<HTMLElement>('.hero-frame');
+  const trigger = nav?.querySelector<HTMLButtonElement>('.dock-trigger');
+  const menu = nav?.querySelector<HTMLElement>('.dock-panel');
+  const label = nav?.querySelector<HTMLElement>('.dock-label');
+  const track = nav?.querySelector<HTMLElement>('.dock-track');
+  const resume = nav?.querySelector<HTMLElement>('.dock-resume');
+  if (!nav || !trigger || !menu || !label || !track || !resume) return;
+  const isHome = nav.dataset.home !== 'false';
+  const sections = isHome ? Array.from(document.querySelectorAll<HTMLElement>('[data-nav-section]')) : [];
+  const links = Array.from(track.querySelectorAll<HTMLAnchorElement>('.dock-preview'));
+  const count = nav.querySelector<HTMLElement>('.dock-count')!;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let selected = 0;
+  let activeId = isHome ? 'home' : ({ 'Selected work': 'selected-work', Notes: 'notes', Experience: 'experience' }[label.textContent ?? ''] ?? 'home');
+  let wheelTimer = 0;
+  let wheelAxis: 'horizontal' | 'vertical' | undefined;
+  let previewFrame = 0;
+  let scrollFrame = 0;
+
+  const reflectSelection = (index: number) => {
+    if (selected === index && links[index]?.dataset.selected === 'true') return;
+    selected = index;
+    links.forEach((link, i) => { link.dataset.selected = String(i === index); });
+    count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(links.length).padStart(2, '0')}`;
+  };
+  const goToPreview = (index: number, smooth = true) => {
+    const target = links[Math.max(0, Math.min(links.length - 1, index))];
+    if (!target) return;
+    const left = target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2;
+    track.scrollTo({ left, behavior: smooth && !reduced.matches ? 'smooth' : 'instant' });
+    reflectSelection(links.indexOf(target));
+  };
+  const close = (restoreFocus = false) => {
+    const wasOpen = !menu.hidden;
+    cancelAnimationFrame(previewFrame);
+    menu.hidden = true;
+    nav.dataset.open = 'false';
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-label', `${label.textContent}, explore sections`);
+    if (restoreFocus) trigger.focus({ preventScroll: true });
+    if (wasOpen) schedule();
+  };
+  scope.listen(trigger, 'click', () => {
+    if (!menu.hidden) { close(); return; }
+    menu.hidden = false;
+    nav.dataset.open = 'true';
+    trigger.setAttribute('aria-expanded', 'true');
+    trigger.setAttribute('aria-label', 'Close section previews');
+    previewFrame = requestAnimationFrame(() => {
+      goToPreview(Math.max(0, links.findIndex(link => link.dataset.section === activeId)), false);
+    });
+  });
+  scope.observe(new ResizeObserver(() => {
+    if (menu.hidden || wheelTimer) return;
+    cancelAnimationFrame(previewFrame);
+    previewFrame = requestAnimationFrame(() => goToPreview(selected, false));
+  })).observe(track);
+  scope.listen(track, 'scroll', () => {
+    const center = track.getBoundingClientRect().left + track.clientWidth / 2;
+    reflectSelection(nearestPreview(links.map(link => {
+      const rect = link.getBoundingClientRect();
+      return rect.left + rect.width / 2;
+    }), center));
+  }, { passive: true });
+  scope.listen(track, 'wheel', event => {
+    if (event.ctrlKey) return;
+    // Choose once per gesture so diagonal trackpad momentum cannot switch handlers.
+    wheelAxis ??= Math.abs(event.deltaX) > Math.abs(event.deltaY) ? 'horizontal' : 'vertical';
+    clearTimeout(wheelTimer);
+    wheelTimer = window.setTimeout(() => {
+      const translated = wheelAxis === 'vertical';
+      wheelTimer = 0;
+      wheelAxis = undefined;
+      track.style.removeProperty('scroll-snap-type');
+      if (translated && !menu.hidden) goToPreview(selected);
+    }, 180);
+    // Horizontal gestures belong to the browser: preserve native inertia and snapping.
+    if (wheelAxis === 'horizontal') return;
+    event.preventDefault();
+    // Vertical wheels need translation, but mandatory snap must not fight each tick.
+    track.style.scrollSnapType = 'none';
+    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? track.clientWidth : 1;
+    track.scrollBy({ left: event.deltaY * unit, behavior: 'instant' });
+  }, { passive: false });
+  scope.listen(track, 'keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const index = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : selected + (event.key === 'ArrowLeft' ? -1 : 1);
+    const bounded = Math.max(0, Math.min(links.length - 1, index));
+    goToPreview(bounded);
+    links[bounded]?.focus({ preventScroll: true });
+  });
+  scope.listen(track, 'focusin', event => {
+    const index = links.indexOf((event.target as Element).closest<HTMLAnchorElement>('.dock-preview')!);
+    if (index >= 0) goToPreview(index);
+  });
+  scope.listen(menu, 'click', event => {
+    if (!(event.target instanceof Element)) return;
+    const link = event.target.closest<HTMLAnchorElement>('.dock-preview');
+    if (!link) return;
+    close();
+    document.getElementById(link.hash.slice(1))?.focus({ preventScroll: true });
+  });
+  scope.listen(document, 'pointerdown', event => {
+    if (event.target instanceof Node && !nav.contains(event.target)) close();
+  });
+  // Safari does not focus buttons on pointer clicks; Escape must also work then.
+  scope.listen(document, 'keydown', event => {
+    if (event.key === 'Escape' && !menu.hidden) { event.preventDefault(); close(true); }
+  });
+  scope.listen(nav, 'focusout', event => {
+    if (event.relatedTarget instanceof Node && !nav.contains(event.relatedTarget)) close();
+    schedule();
+  });
+  scope.listen(nav, 'focusin', schedule);
+
+  const update = () => {
+    scrollFrame = 0;
+    const y = window.scrollY;
+    const progress = Math.max(0, y); // 20vh from the page top, independent of section geometry.
+    const past = progress >= window.innerHeight * .2;
+    // Home always follows the scroll threshold, including client-side returns.
+    const visible = !isHome || dockVisible({ progress, viewport: window.innerHeight, menuOpen: !menu.hidden });
+    const appearing = visible && nav.dataset.visible !== 'true';
+    if (visible !== (nav.dataset.visible === 'true')) {
+      if (!visible && nav.contains(document.activeElement)) hero?.focus({ preventScroll: true });
+      nav.dataset.visible = String(visible);
+      nav.inert = !visible;
+      if (visible) {
+        // Show the complete dock at the threshold; don't spend its first appearance
+        // as a collapsed logo that can disappear again during continuous scrolling.
+        nav.dataset.expanded = 'true';
+        trigger.inert = false;
+        resume.inert = false;
+      } else {
+        close();
+        if (!past) nav.dataset.expanded = 'false';
+        trigger.inert = true;
+        resume.inert = true;
+      }
+    }
+    // A compact final section cannot always reach the usual reading line.
+    const atEnd = y + window.innerHeight >= (document.documentElement?.scrollHeight ?? Infinity) - 2;
+    const active = currentSection(sections.map(section => ({ id: section.id, label: section.dataset.navSection ?? '', top: section.getBoundingClientRect().top })), atEnd ? window.innerHeight : window.innerHeight * .35);
+    if (active) {
+      const direction = sections.findIndex(section => section.id === active.id) >= sections.findIndex(section => section.id === activeId) ? 1 : -1;
+      activeId = active.id;
+      if (label.textContent !== active.label || appearing) {
+        renderDockLabel(label, active.label, visible && menu.hidden && !reduced.matches, direction);
+      }
+      if (menu.hidden) trigger.setAttribute('aria-label', `${active.label}, explore sections`);
+      links.forEach(link => {
+        if (link.hash === `#${active.id}`) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    }
+  };
+  function schedule() { if (!scrollFrame) scrollFrame = requestAnimationFrame(update); }
+  scope.listen(window, 'scroll', schedule, { passive: true });
+  scope.listen(window, 'resize', schedule);
+  scope.listen(window, 'pageshow', () => {
+    nav.dataset.visible = 'false'; // Restart a partially expanded dock restored from bfcache.
+    schedule();
+  });
+  const cleanup = () => {
+    clearTimeout(wheelTimer);
+    wheelTimer = 0;
+    wheelAxis = undefined;
+    track.style.removeProperty('scroll-snap-type');
+    close();
+    cancelAnimationFrame(previewFrame); cancelAnimationFrame(scrollFrame); scrollFrame = 0;
+  };
+  scope.listen(window, 'pagehide', cleanup);
+  scope.add(cleanup);
+  if (hero) scope.observe(new ResizeObserver(schedule)).observe(hero);
+  update();
+}

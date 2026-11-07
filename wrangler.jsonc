@@ -2,22 +2,33 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "portfolio",
   "account_id": "423419184139ad08e82cba83e7afb59c",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2026-10-03",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
   "workers_dev": true,
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
   "preview_urls": true,
-  "routes": [
-    {
-      "pattern": "ayush.im/*",
-      "zone_name": "ayush.im"
+  "previews": {},
+  "routes": [{ "pattern": "ayush.im/*", "zone_name": "ayush.im" }],
+  "main": "src/server/worker.mjs",
+  "compatibility_flags": ["nodejs_compat"],
+  "ratelimits": [{ "name": "CONTACT_RATE_LIMITER", "namespace_id": "2026110301", "simple": { "limit": 3, "period": 60 } }],
+  // Pages stay pre-rendered; only contact requests invoke the email handler.
+  // https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
+  // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/
+  "compatibility_date": "2026-10-27",
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01
     }
-  ],
-  "previews": {}
+  },
+  "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/contact", "/api/contact/*"],
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
 }

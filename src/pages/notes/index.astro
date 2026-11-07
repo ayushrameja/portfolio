@@ -1,0 +1,42 @@
+---
+import { getNotes } from "../../lib/content";
+import { noteDate } from "../../lib/note-presentation";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/project-pages.css";
+import "../../styles/notes.css";
+
+const notes = await getNotes();
+const desks = [
+  { id: "engineering", label: "Engineering" },
+  { id: "life", label: "Life" },
+] as const;
+---
+
+<BaseLayout title="Notes · Ayush Rameja" description="Archived engineering and life essays by Ayush Rameja." project>
+  <header class="project-intro project-index-intro">
+    <h1>Notes</h1>
+    <p class="project-lead">{notes.length} archived essays, retained as written.</p>
+    <nav class="project-index-jumps" aria-label="Note categories">
+      {desks.map(desk => <a href={`#${desk.id}-heading`}>{desk.label}</a>)}
+    </nav>
+  </header>
+  {desks.map(desk => {
+    const entries = notes.filter(note => note.data.desk === desk.id);
+    return (
+      <section class="notes-group" aria-labelledby={`${desk.id}-heading`}>
+        <h2 id={`${desk.id}-heading`}>{desk.label}</h2>
+        <ul class="notes-list">
+          {entries.map(note => <li>
+            <a class="notes-entry" href={`/notes/${note.id}/`}>
+              <h3>{note.data.title}</h3>
+              <span class="notes-entry-meta">
+                <time datetime={note.data.publishedAt}>{noteDate(note.data.publishedAt)}</time>
+                <span>{note.data.readingTime} read</span>
+              </span>
+            </a>
+          </li>)}
+        </ul>
+      </section>
+    );
+  })}
+</BaseLayout>

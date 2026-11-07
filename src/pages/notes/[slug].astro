@@ -1,0 +1,52 @@
+---
+import { render } from "astro:content";
+import { getNotes } from "../../lib/content";
+import { noteDate } from "../../lib/note-presentation";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/project-pages.css";
+import "../../styles/notes.css";
+
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  return notes.map(note => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { Content, headings } = await render(note);
+const sections = headings.filter(heading => heading.depth === 2);
+const deskLabel = note.data.desk === "engineering" ? "Engineering" : "Life";
+---
+
+<BaseLayout title={`${note.data.title} · Ayush Rameja`} description={note.data.description} project>
+  <div class="notes-reading">
+    <header class="notes-header" id="article-top">
+      <nav class="project-breadcrumb" aria-label="Breadcrumb">
+        <a href="/notes/">Notes</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/notes/#${note.data.desk}-heading`}>{deskLabel}</a>
+      </nav>
+      <h1 id="article-title">{note.data.title}</h1>
+      <p class="notes-meta">
+        <time datetime={note.data.publishedAt}>{noteDate(note.data.publishedAt)}</time>
+        <span>{note.data.readingTime} read</span>
+      </p>
+      <p class="notes-description">{note.data.description}</p>
+      {note.data.tags.length > 0 && <ul class="notes-tags" aria-label="Tags">
+        {note.data.tags.map(tag => <li>{tag}</li>)}
+      </ul>}
+    </header>
+    {sections.length > 1 && <details class="notes-outline">
+      <summary>In this article</summary>
+      <nav aria-label="Article contents">
+        {sections.map(section => <a href={`#${section.slug}`}>{section.text}</a>)}
+      </nav>
+    </details>}
+    <article class="notes-body" aria-labelledby="article-title">
+      <Content />
+    </article>
+    <nav class="notes-end" aria-label="Article navigation">
+      <a href={`/notes/#${note.data.desk}-heading`}>More {deskLabel.toLowerCase()} notes</a>
+      <a href="#article-top">Back to top</a>
+    </nav>
+  </div>
+</BaseLayout>

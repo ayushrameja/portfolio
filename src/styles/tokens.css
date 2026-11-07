@@ -1,0 +1,26 @@
+/* Shared portfolio type, spacing and palette roles; component artwork keeps its accents. */
+:root {
+  --font-ui: "Inter Tight", Arial, sans-serif;
+  --font-editorial: Georgia, "Times New Roman", serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-caption: .8125rem;
+  --text-small: .875rem;
+  --text-body: 1rem;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --color-paper: #fffdf9;
+  --color-ink: #2b433b;
+  --color-accent: #416657;
+  --color-surface: #e6eddf;
+  --color-work-ink: #302f35;
+  --color-work-muted: #514d57;
+  --color-focus: #2b433b;
+  --color-focus-light: #ffffff;
+  --color-focus-dark: #171717;
+  --focus-width: 2px;
+  --focus-offset: 4px;
+  --content-width: 1120px;
+}

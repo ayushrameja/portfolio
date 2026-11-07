@@ -1,0 +1,116 @@
+---
+import "../styles/global.css";
+import "../styles/page-transitions.css";
+import "lenis/dist/lenis.css";
+import { ClientRouter } from "astro:transitions";
+import { pageTransition } from "../scripts/page-transition";
+import ReadingNav from "../components/ReadingNav.astro";
+import BottomNav from "../components/BottomNav.astro";
+import Intro from "../components/Intro.astro";
+import ContactSection from "../components/ContactSection.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  home?: boolean;
+  project?: boolean;
+}
+
+const { title, description, home = false, project = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const year = 2026;
+---
+
+<!doctype html>
+<html lang="en" transition:animate={pageTransition} class:list={[{ "home-page": home, "project-page": project }]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preload" href="/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <ClientRouter fallback="animate" />
+    <script>
+      import { preparePageSwap } from "../scripts/page-transition";
+      import { setupPageScroll } from "../scripts/page-scroll";
+      import { prepareDockDeparture, finishDockArrival } from "../scripts/dock-route-motion";
+      import { handleSectionNavigation } from "../scripts/section-navigation";
+      document.addEventListener("click", handleSectionNavigation, { capture: true });
+      document.addEventListener("astro:before-preparation", prepareDockDeparture);
+      document.addEventListener("astro:before-swap", preparePageSwap);
+      document.addEventListener("astro:before-swap", finishDockArrival);
+      document.addEventListener("astro:page-load", setupPageScroll);
+    </script>
+    <script is:inline data-home={home ? "true" : "false"}>
+      (function () {
+        var root = document.documentElement;
+        function releaseIntro() {
+          root.classList.remove("intro-pending", "intro-playing");
+          var intro = document.getElementById("intro");
+          if (intro) intro.hidden = true;
+          var shell = document.getElementById("site-shell");
+          if (shell) shell.removeAttribute("inert");
+          var previous = root.dataset.introScrollRestoration;
+          if (previous === "auto" || previous === "manual") {
+            window.history.scrollRestoration = previous;
+            delete root.dataset.introScrollRestoration;
+          }
+        }
+        try {
+          // Inline scripts may run again when entering home via ClientRouter.
+          if (root.dataset.clientNavigation === "true") return;
+          if (document.currentScript?.getAttribute("data-home") !== "true") return;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          // Preserve deep links and browser-history restoration. Only a top-level
+          // arrival/reload owns the full hero storyboard and its viewport.
+          var navigation = performance.getEntriesByType("navigation")[0];
+          if (window.location.hash || navigation?.type === "back_forward") return;
+          // Internal returns use the short route transition, not the arrival
+          // storyboard. Reloads and direct/external arrivals still get the intro.
+          var previousUrl = window.navigation?.activation?.from?.url || document.referrer;
+          if (navigation?.type !== "reload" && previousUrl &&
+              new URL(previousUrl).origin === window.location.origin) return;
+          root.dataset.introScrollRestoration = window.history.scrollRestoration;
+          window.history.scrollRestoration = "manual";
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+          root.classList.add("intro-pending");
+          window.addEventListener("pageshow", function () {
+            if (root.classList.contains("intro-pending")) {
+              window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            }
+          });
+          // A bfcache entry must never retain an invisible interaction blocker.
+          window.addEventListener("pagehide", releaseIntro, { once: true });
+          window.setTimeout(function () {
+            if (root.classList.contains("intro-pending") && !root.classList.contains("intro-playing")) releaseIntro();
+          }, 6000); // INTRO_INIT_FAILURE_MS
+        } catch (error) {
+          releaseIntro();
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    {home && <Intro />}
+    <div class="site-shell" id="site-shell">
+      <a class="skip-link" href="#content">Skip to content</a>
+      <main id="content" tabindex="-1" class:list={[home ? "home-main" : project ? "project-main" : "mx-auto w-full max-w-3xl px-4 py-10 sm:px-8 sm:py-14"]}>
+        <slot />
+        {home && <ContactSection home />}
+      </main>
+      {!home && <footer class={project ? "project-site-footer" : "mx-auto w-full max-w-3xl border-t border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)] sm:px-8"}>© {year} Ayush Rameja</footer>}
+      {home ? <BottomNav home /> : <ReadingNav />}
+    </div>
+    <script is:inline>
+      if (document.documentElement.classList.contains("intro-pending")) {
+        var shell = document.getElementById("site-shell");
+        var intro = document.getElementById("intro");
+        if (shell) shell.setAttribute("inert", "");
+        // Tailwind's layered [hidden] rule beats a stylesheet override.
+        if (intro) intro.hidden = false;
+      }
+    </script>
+  </body>
+</html>

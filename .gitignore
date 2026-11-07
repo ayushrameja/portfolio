@@ -46,10 +46,16 @@ yarn-error.log*
 *~
 .DS_Store
 
+# Astro
+.astro/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
 # Misc
 .turbo
 
 .open-next/
 .cloudflare-dry-run/
-.wrangler/
 .dev.vars*
