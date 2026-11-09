@@ -1,0 +1,248 @@
+{
+  "src/components/BottomNav.astro": {
+    "text": [
+      "Find your next stop",
+      "(o_o)",
+      "Close",
+      "Resume"
+    ],
+    "labels": [
+      "Portfolio navigation",
+      "Section previews",
+      "Back to introduction",
+      "Resume (opens in a new tab)"
+    ]
+  },
+  "src/components/ContactSection.astro": {
+    "text": [
+      "Let’s talk.",
+      "A product to build, a system to simplify, or a new opportunity.",
+      "Bengaluru, India",
+      "UTC +05:30",
+      "LinkedIn",
+      "(opens in a new tab)",
+      "GitHub",
+      "View résumé",
+      "Tell me what you have in mind. All fields are required.",
+      "Your name",
+      "Email address",
+      "Your message",
+      "Send message",
+      "Submitting opens a confirmation page. You can also use the email link."
+    ],
+    "labels": [
+      "Contact links",
+      "Send Ayush a message"
+    ]
+  },
+  "src/components/DockPreview.astro": {
+    "text": [
+      "Field notes.",
+      "Engineering",
+      "Building software.",
+      "Keeping perspective.",
+      "Engineering, life, and the space between.",
+      "Good teams.",
+      "Meaningful work.",
+      "Autodesk",
+      "Siemens Technology",
+      "Accenture AI",
+      "Let’s talk."
+    ],
+    "labels": []
+  },
+  "src/components/ExperienceSection.astro": {
+    "text": [
+      "Good teams.",
+      "Meaningful work.",
+      "My experience across learning platforms, industrial systems and enterprise software.",
+      "to",
+      "Explore chapter"
+    ],
+    "labels": []
+  },
+  "src/components/FieldNotes.astro": {
+    "text": [
+      "Field notes.",
+      "On building software and figuring out the rest.",
+      "All notes",
+      "read",
+      "Someone still has to decide whether the diff is",
+      "correct, safe, maintainable, and worth shipping.",
+      "The part we can’t automate away.",
+      "Read the essay"
+    ],
+    "labels": []
+  },
+  "src/components/Hero.astro": {
+    "text": [
+      "Local time in Bengaluru:",
+      "India · IST",
+      "Bengaluru,",
+      "India",
+      "IN",
+      "Built from curiosity. Built from curiosity. ",
+      "Ayush Rameja",
+      "Full-stack engineer building useful digital products.",
+      "Built with care. Driven by curiosity.",
+      "Explore my work",
+      "Thoughtful interfaces. Working software.",
+      "Resume",
+      "Menu",
+      "Explore"
+    ],
+    "labels": [
+      "Ayush Rameja, home",
+      "Portrait of Ayush Rameja",
+      "Quick navigation",
+      "Resume (opens in a new tab)",
+      "Open navigation menu",
+      "Main navigation"
+    ]
+  },
+  "src/components/Intro.astro": {
+    "text": [
+      "Site introduction",
+      "Loading page…"
+    ],
+    "labels": []
+  },
+  "src/components/ProjectMosaic.astro": {
+    "text": [
+      "Serious about building.",
+      "Curious about everything.",
+      "All projects",
+      "View project",
+      "autodesk.com",
+      "Homepage preview",
+      "Courses",
+      "Roadmaps",
+      "Sessions",
+      "Burnhop",
+      "Greytrace",
+      "Custom roles",
+      "APIs",
+      "Cloud storage"
+    ],
+    "labels": [
+      "Pause artwork"
+    ]
+  },
+  "src/components/ReadingNav.astro": {
+    "text": [
+      "Resume"
+    ],
+    "labels": [
+      "Page navigation",
+      "Ayush Rameja, home",
+      "Resume (opens in a new tab)"
+    ]
+  },
+  "src/layouts/BaseLayout.astro": {
+    "text": [
+      "Skip to content",
+      "© Ayush Rameja"
+    ],
+    "labels": []
+  },
+  "src/pages/404.astro": {
+    "text": [
+      "Page not found",
+      "That address is not on this site.",
+      "Back to home"
+    ],
+    "labels": [
+      "Page not found · Ayush Rameja",
+      "That address is not on this site."
+    ]
+  },
+  "src/pages/experience/[slug].astro": {
+    "text": [
+      "Experience",
+      "Explore the projects",
+      "Company",
+      "Role",
+      "Tenure",
+      "to",
+      "The work at",
+      "Read project",
+      "All experience",
+      "Next chapter"
+    ],
+    "labels": [
+      "Breadcrumb",
+      "More experience"
+    ]
+  },
+  "src/pages/index.astro": {
+    "text": [],
+    "labels": [
+      "Ayush Rameja",
+      "Ayush Rameja — full-stack engineer in Bengaluru building useful digital products. Explore selected work and notes on software engineering."
+    ]
+  },
+  "src/pages/notes/[slug].astro": {
+    "text": [
+      "Notes",
+      "read",
+      "In this article",
+      "More notes",
+      "Back to top"
+    ],
+    "labels": [
+      "Breadcrumb",
+      "Tags",
+      "Article contents",
+      "Article navigation"
+    ]
+  },
+  "src/pages/notes/index.astro": {
+    "text": [
+      "Notes",
+      "archived essays, retained as written.",
+      "read"
+    ],
+    "labels": [
+      "Notes · Ayush Rameja",
+      "Archived engineering and life essays by Ayush Rameja.",
+      "Note categories"
+    ]
+  },
+  "src/pages/projects/[slug].astro": {
+    "text": [
+      "Projects",
+      "Visit site",
+      "(opens in a new tab)",
+      "Source",
+      "In this project",
+      "Built with",
+      "The work",
+      "Figures reflect the original project record.",
+      "All projects",
+      "Next project"
+    ],
+    "labels": [
+      "Breadcrumb",
+      "On this page",
+      "More projects"
+    ]
+  },
+  "src/pages/projects/index.astro": {
+    "text": [
+      "Work, in detail.",
+      "Professional engineering and independent projects, with the work behind each one.",
+      "View project"
+    ],
+    "labels": [
+      "Projects · Ayush Rameja",
+      "Explore Ayush Rameja's professional engineering work and independent projects, with contributions, outcomes and project details.",
+      "Project categories"
+    ]
+  },
+  "projectGroups": [
+    "Employer work",
+    "Engineering for Autodesk, Siemens and clients through Accenture.",
+    "Independent",
+    "Games, websites and tools built from curiosity."
+  ]
+}

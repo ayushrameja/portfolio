@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Inter Tight";
+  src: url("/fonts/inter-tight-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root { color-scheme: light; background: #efeee8; color: #222321; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.hero { min-height: 100svh; display: grid; place-items: center; padding: 24px; }
+.hero h1 { margin: 0; font: 500 clamp(40px, 9vw, 160px)/1 "Inter Tight", sans-serif; letter-spacing: -0.065em; text-align: center; }
+.hero:focus { outline: none; }

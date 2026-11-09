@@ -1,0 +1,15 @@
+---
+import BrandMark from "./BrandMark.astro";
+import "../styles/page-turn-intro.css";
+---
+<div class="page-turn-intro" data-page-turn-intro aria-label="Site introduction">
+  <div class="page-turn-intro__art" aria-hidden="true">
+    <BrandMark class="page-turn-intro__mark" />
+    <canvas class="page-turn-intro__canvas"></canvas>
+  </div>
+  <button class="page-turn-intro__skip" type="button" data-intro-skip>Skip intro <span aria-hidden="true">↗</span></button>
+</div>
+<script>
+  import { startPageTurnIntro } from "../scripts/page-turn-intro";
+  startPageTurnIntro();
+</script>

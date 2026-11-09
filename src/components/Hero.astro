@@ -1,19 +1,20 @@
 ---
 import { Image } from "astro:assets";
-import { heroPaletteCSS } from "../scripts/hero-palette";
+import PageTurnIntro from "./PageTurnIntro.astro";
 import { heroTiles } from "../brand/hero-tiles";
 import portrait from "../assets/portrait-approved.png";
 import { contact } from "../data/contact";
 const resume = contact.resume;
 const arrowPath = "M2 8h12M8 2l6 6-6 6";
 const links = [
-  { label: "Work", href: "/projects/" },
-  { label: "Notes", href: "/notes/" },
+  { label: "Work", href: "https://ayush.im/projects/" },
+  { label: "Notes", href: "https://ayush.im/notes/" },
   { label: "Resume", href: resume },
   { label: "Contact", href: `mailto:${contact.email}` },
 ];
 ---
 <div class="hero-frame" id="home" data-nav-section="Introduction" tabindex="-1"><section class="hero" aria-labelledby="hero-title">
+  <PageTurnIntro />
   <header class="hero-header">
     <time id="hero-clock" class="hero-clock" ><span class="sr-only">Local time in Bengaluru: </span><span class="clock-day" id="clock-day"></span><span id="clock-time">India · IST</span></time>
     <a class="hero-logo" href="/" aria-label="Ayush Rameja, home"><svg viewBox="0 0 105 50" aria-hidden="true">{heroTiles.map(d => <path d={d} fill-rule="evenodd" />)}</svg></a>
@@ -26,7 +27,7 @@ const links = [
     </div>
     <h1 id="hero-title" class="hero-title">Ayush Rameja</h1>
     <div class="hero-description"><p>Full-stack engineer building useful digital products.</p><p class="supporting">Built with care. Driven by curiosity.</p></div>
-    <a class="work-link" href="#selected-work"><span class="work-eyes" aria-hidden="true"><i><span class="eye-lid"></span></i><i><span class="eye-lid"></span></i></span><span class="work-face">Explore my work <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></span></a>
+    <a class="work-link" href="https://ayush.im/#selected-work"><span class="work-eyes" aria-hidden="true"><i><span class="eye-lid"></span></i><i><span class="eye-lid"></span></i></span><span class="work-face">Explore my work <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></span></a>
   </div>
   <footer class="hero-footer">
     <p class="hero-identity">Thoughtful interfaces. Working software.</p>
@@ -44,15 +45,12 @@ const links = [
   </nav>
 </section></div>
 <script>
-  import { setupHeroMotion } from "../scripts/hero-motion";
-  import { setupButtonEyes } from "../scripts/button-eyes";
-  import { setupMenuMotion } from "../scripts/menu-motion";
   import { createPageScope } from "../scripts/page-scope";
-  document.addEventListener("astro:page-load", () => {
+  function setupHero() {
     if (!document.querySelector(".hero")) return;
     const scope = createPageScope();
-    const workButton = document.querySelector<HTMLAnchorElement>(".work-link");
-    if (workButton) setupButtonEyes(workButton);
+
+
     const clock = document.querySelector<HTMLTimeElement>("#hero-clock");
     const day = document.querySelector("#clock-day");
     const time = document.querySelector("#clock-time");
@@ -65,11 +63,9 @@ const links = [
       if (time) time.textContent = clockFormat.format(now);
     }
     updateClock();
-    const clockTimer = window.setInterval(updateClock, 30_000);
-    scope.add(() => window.clearInterval(clockTimer));
+
     const menu = document.querySelector<HTMLElement>("#hero-menu");
     const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
-    const menuMotion = menu ? setupMenuMotion(menu) : undefined;
     scope.listen(menu, "beforetoggle", event => {
       if (!menu) return;
       if ((event as ToggleEvent).newState === "closed" && menu.contains(document.activeElement)) {
@@ -83,7 +79,7 @@ const links = [
       toggle?.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
       const label = toggle?.querySelector(".menu-label");
       if (label) label.textContent = open ? "Close" : "Menu";
-      if (open) { positionMenu(); menuMotion?.enter(); }
+      if (open) positionMenu();
       else if (menu.contains(document.activeElement)) toggle?.focus();
       if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
     });
@@ -98,13 +94,14 @@ const links = [
     scope.listen(window, "resize", positionMenu);
     scope.listen(window, "scroll", positionMenu, { passive: true });
     const hero = document.querySelector<HTMLElement>(".hero");
-    if (hero) setupHeroMotion(hero);
+
     const reflectVisibility = () => hero?.classList.toggle("page-hidden", document.hidden);
     scope.listen(document, "visibilitychange", reflectVisibility);
     reflectVisibility();
-  });
+  }
+  setupHero();
 </script>
-<style is:inline set:html={heroPaletteCSS} />
+
 <style>
   .hero-frame { --colorX: var(--hero-colorX); padding: 20px; background: linear-gradient(180deg, var(--colorX), var(--home-canvas) 100%); }
   .hero { --intro-radius:64px; --focus:var(--hero-ink); position:relative; isolation:isolate; display:grid; grid-template-rows:48px 1fr auto; gap:24px; min-height:calc(100svh - 40px); padding:24px 44px 28px; border-radius:64px; overflow:clip; background:linear-gradient(168deg,var(--hero-top),var(--hero-bottom)); color:var(--hero-ink); font:400 18px/1.4 var(--font-ui); }
