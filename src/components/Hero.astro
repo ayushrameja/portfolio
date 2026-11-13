@@ -160,7 +160,8 @@ const links = [
   .hero-description .supporting { color:var(--hero-muted); }
   .hero .work-link { position:relative; isolation:isolate; display:flex; min-height:52px; min-width:248px; margin-top:32px; border:0; color:var(--color-paper); border-radius:14px; font-weight:500; }
   /* The body the eyes live in only shows once the face lifts. */
-  .work-link::before { content:""; position:absolute; inset:0; border-radius:inherit; background:var(--hero-grain,none),linear-gradient(120deg,var(--hero-violet),color-mix(in oklab,var(--hero-violet),var(--hero-coral) 45%)); background-blend-mode:overlay,normal; opacity:0; transition:opacity 160ms; }
+  /* The body under the lifted face is the face's own lime and sky in shadow, so the button reads as one object. */
+  .work-link::before { content:""; position:absolute; inset:0; border-radius:inherit; background:var(--hero-grain,none),linear-gradient(120deg,color-mix(in oklab,var(--hero-accent),black 52%),color-mix(in oklab,color-mix(in oklab,var(--hero-accent),var(--hero-sky) 40%),black 50%)); background-blend-mode:overlay,normal; opacity:0; transition:opacity 160ms; }
   .work-link.eyes-active::before { opacity:1; }
   /* Set the face's foreground directly; links/visited states must not recolor it. */
   .work-face { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:12px; width:100%; min-height:52px; padding:13px 23px; border:0; border-radius:inherit; background:var(--hero-grain,none),linear-gradient(120deg,var(--hero-accent),color-mix(in oklab,var(--hero-accent),var(--hero-sky) 26%)); background-blend-mode:overlay,normal; color:var(--hero-paper); -webkit-text-fill-color:currentColor; transform-origin:50% 50%; transition:transform 400ms cubic-bezier(.22,1,.36,1); }

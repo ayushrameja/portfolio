@@ -11,7 +11,9 @@ import { createPageScope } from './page-scope';
  *  - `[data-drift]` layers, the section patterns, move slower than the page.
  *
  *  Everything is measured up front and after resizes, so a frame only reads
- *  the scroll position and writes transforms. Armed by the `reveal-ready`
+ *  the scroll position and writes transforms. Whatever those transforms move
+ *  is on its own compositor layer (`data-layer`), so a frame moves pictures
+ *  that are already painted instead of painting cards again. Armed by the `reveal-ready`
  *  class from the layout's head: without JavaScript or with reduced motion the
  *  page scrolls natively and nothing is hidden. */
 
@@ -30,6 +32,8 @@ type Piece = {
   parent: Piece | null;
   leans: boolean;
   leaning: boolean;
+  /** On its own compositor layer. */
+  lifted: boolean;
 };
 type Drift = { el: HTMLElement; top: number; height: number; y: number };
 
@@ -100,6 +104,7 @@ export function setupScrollStory() {
     parent: null,
     leans: false,
     leaning: false,
+    lifted: false,
   }));
   for (const piece of pieces) {
     const outer = piece.el.parentElement?.closest('[data-reveal]');
@@ -119,6 +124,7 @@ export function setupScrollStory() {
       piece.height = piece.el.offsetHeight;
       // Anything taller than the viewport, such as an essay, stays upright.
       piece.leans = fine && !piece.parent && piece.height < viewport * 1.1;
+      lift(piece);
       // A shape inside a card follows just behind its card.
       if (piece.parent) { piece.start = Math.min(piece.parent.start + 48, last); continue; }
       // Pieces that share a row arrive left to right.
@@ -130,6 +136,14 @@ export function setupScrollStory() {
     dirty = true;
   };
 
+  // A piece keeps its layer for as long as something may still move it: until
+  // it has arrived, and for good if it leans.
+  const lift = (piece: Piece) => {
+    const lifted = piece.leans || !piece.done;
+    if (lifted === piece.lifted) return;
+    piece.lifted = lifted;
+    piece.el.toggleAttribute('data-layer', lifted);
+  };
   const write = (piece: Piece, value: number) => {
     const count = piece.words.length;
     if (!count) { piece.el.style.setProperty('--p', value.toFixed(3)); return; }
@@ -141,6 +155,7 @@ export function setupScrollStory() {
     piece.el.classList.add('is-revealed');
     piece.el.style.removeProperty('--p');
     piece.words.forEach(word => word.style.removeProperty('--p'));
+    lift(piece);
   };
 
   let dirty = true, lean = 0, lastScroll = lenis.scroll, lastTime = 0;
@@ -153,7 +168,7 @@ export function setupScrollStory() {
     const speed = (scroll - lastScroll) / elapsed * 16.7;
     lastScroll = scroll;
     const target = fine ? clamp(speed * LEAN_PER_SPEED, -LEAN_LIMIT, LEAN_LIMIT) : 0;
-    lean += (target - lean) * (1 - Math.exp(-elapsed / 140));
+    lean += (target - lean) * (1 - Math.exp(-elapsed / 90));
     if (lean && Math.abs(lean) < .01 && !target) { lean = 0; dirty = true; }
     if (!speed && !lean && !dirty) return;
     dirty = false;

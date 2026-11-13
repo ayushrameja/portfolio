@@ -264,8 +264,10 @@ html.reveal-ready [data-reveal="words"].is-split { opacity: 1; translate: none; 
 html.reveal-ready .reveal-word { --p: 0; display: inline-block; opacity: calc(var(--p) * 1.5); translate: 0 calc((1 - var(--p)) * .6em); rotate: calc((1 - var(--p)) * 5deg); transform-origin: 0 100%; }
 html.reveal-ready [data-reveal].is-revealed, html.reveal-ready .is-revealed .reveal-word { --p: 1; opacity: 1; translate: none; rotate: none; scale: none; }
 @media print { html.reveal-ready [data-reveal], html.reveal-ready .reveal-word { opacity: 1; translate: none; rotate: none; scale: none; } }
-/* The section patterns drift on their own layer while the page scrolls. */
-html.reveal-ready [data-drift] { will-change: transform; }
+/* Anything the scroll moves sits on its own compositor layer, so leaning a
+   card is a transform of a finished picture and not a repaint of the card.
+   scroll-story.ts sets data-layer while a piece can still move. */
+html.reveal-ready [data-layer], html.reveal-ready [data-layer]:not(.is-revealed) .reveal-word, html.reveal-ready [data-drift] { will-change: transform, opacity; }
 @media (prefers-reduced-motion: reduce) {
   .button, .button svg, .button-quiet, .button-quiet::before, a.card { transition: none; }
 }

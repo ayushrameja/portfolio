@@ -44,11 +44,13 @@ Rules the progress follows:
 
 Current assignments: section and page headings use `words`; Selected work cards `grow`; Experience rows alternate `left` and `right`; the Notes lead card comes from the left and the two side cards from the right; the contact email disc `grow`s; shapes `turn`.
 
-**Lean.** Top-level pieces in view get `skewY` in proportion to scroll speed: 0.06 degrees per pixel-per-frame, capped at 3 degrees, eased over about 140ms, and removed entirely at rest. Pieces taller than 1.1 viewports (an essay, a long project write-up) do not lean.
+**Lean.** Top-level pieces in view get `skewY` in proportion to scroll speed: 0.06 degrees per pixel-per-frame, capped at 3 degrees, eased over about 90ms, and removed entirely at rest. Pieces taller than 1.1 viewports (an essay, a long project write-up) do not lean.
 
 **Drift.** `[data-drift]` layers, the section patterns, are translated by 12% of the distance scrolled past them, up to 140px.
 
 Lean and drift run only for a fine pointer with hover. A finger scrolls on the compositor ahead of any script, so there they could only trail behind.
+
+**Layers.** Whatever the scroll moves must already be a picture on the compositor, or every frame repaints it. The script sets `data-layer` on a piece, which gives it `will-change: transform, opacity`, until the piece has arrived, and permanently if it leans. A heading's words are promoted until the heading has arrived; the patterns always are. On the home page that is 31 layers at rest for a fine pointer, and none once everything has arrived on touch.
 
 **Cost per frame.** Positions are measured once and again when the body resizes; they come from `offsetTop`, which the reveal transforms do not affect. A frame reads the scroll position from Lenis and writes `--p` or `transform` to the few pieces in play. When nothing is moving the loop returns before doing any of that. `--p` is registered with `inherits: false` so setting it on a card does not restyle the card's contents.
 
@@ -68,6 +70,16 @@ Lean and drift run only for a fine pointer with hover. A finger scrolls on the c
 - *Lean at 0.034 and a 2.2 degree cap* was barely visible at ordinary wheel speeds. Raised to 0.06 and 3.
 - *Section washes and grain masked with CSS* broke when the drifting pattern got its own layer; recorded in site-design.md.
 
+### 2026-11-13 — The skew lagged
+
+**User report, after trying the first build:** "when I scroll up and down, I see lag, the scroll is smooth, I see the skew lagging."
+
+**Cause.** The lean was an inline `transform` on elements that were not on compositor layers, so each frame Chrome painted every visible card again (images, grain, gradients) to draw it skewed. A Chrome trace of wheeling down and back up the settled home page at 1440×900 @2× showed 3,059 raster tasks taking 486ms. The first build's verification missed this because it only timed `requestAnimationFrame` callbacks; raster happens off the main thread and those stayed at 16.7ms throughout.
+
+**Fix.** Layers, as described under Implementation. The same trace afterwards: 1,280 raster tasks taking 44ms. With lean and drift switched off entirely it is 1,304 tasks and 32ms, so the lean now costs about what plain scrolling costs. The lean's easing was also shortened from 140ms to 90ms so it follows the scroll more closely.
+
+**Lesson:** frame callbacks alone do not show paint cost. For anything that transforms large elements per frame, trace it and read the raster work.
+
 **Left alone on purpose:** the hero and the loader take no part in the scroll story. They have their own entrance, and the user asked for the hero to stay as it is.
 
 ## Verification
@@ -78,7 +90,8 @@ Lean and drift run only for a fine pointer with hover. A finger scrolls on the c
 - **Chrome, real GPU (ANGLE Metal, Apple M1 Pro), wheel down the whole page and back up:** home at 1440×900 @2×, 516 frames, median 16.7ms, 99th percentile 16.8ms, one frame at 33ms; home at 390×844 @3×, 628 frames, one at 33ms; a note page, 406 frames, one at 33ms; the projects index, 292 frames, one at 33ms. All pieces revealed (36/36 on home), no lean left on any element at rest, no horizontal overflow.
 - **Chrome, behaviour:** a deep link to `/#contact` lands on the section with focus on it; a dock link scrolls smoothly to its section, sets the hash and moves focus; tabbing into a project row below the fold brings it in fully; a filled message box scrolls first and then hands the wheel to the page; with reduced motion there is no `reveal-ready`, no Lenis, and everything is visible.
 - **WebKit (Playwright build 2336):** Lenis active, bottom of the home page reached, 36/36 revealed, `mask-composite: intersect` supported, no horizontal overflow, and screenshots mid-scroll show the patterns, the lean and the rising words.
-- **Limits:** frame times were measured in headless Chrome with a synthetic wheel, not by hand on a trackpad. Not checked: real Safari, a real touch device, a screen reader reading the split headings, a 120Hz display.
+- **After the layer fix (Chrome trace, real GPU, home 1440×900 @2×, down and back up on a settled page):** raster 44ms in 1,280 tasks, against 486ms in 3,059 before and 32ms in 1,304 with lean off; no dropped frames reported. A first pass with every piece arriving: raster 90ms. The notes index: raster 18ms. Frame callbacks unchanged: one 33ms frame in about 500 on home at both sizes and on the projects index; all pieces revealed; nothing left leaning at rest. A screenshot of the Notes section at rest looks as before.
+- **Limits:** the trace comes from headless Chrome, which draws to no display; it shows the work per frame, not what a 120Hz screen presents. The user's own check is the real test of the lag. Frame times were measured there with a synthetic wheel, not by hand on a trackpad. Not checked: real Safari, a real touch device, a screen reader reading the split headings, a 120Hz display.
 - **Firefox: not verified.** Playwright's Firefox build would not launch in this environment (its headless compositor failed before any page loaded), so nothing is known about the patterns' masks or the registered `--p` there.
 
 ## Deferred decisions
