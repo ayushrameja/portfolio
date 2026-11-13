@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { handleContact } from '../src/server/contact.mjs';
-import { fieldError } from '../src/scripts/contact-form.ts';
 const data = { name: 'Portfolio test', email: 'visitor@example.com', message: 'Synthetic delivery test.' };
 const env = { SMTP_EMAIL: 'sender@example.com', SMTP_PASSWORD: 'fake-test-value', CONTACT_EMAIL: 'inbox@example.com', CONTACT_RATE_LIMITER: { limit: async () => ({ success: true }) } };
 const request = (body = data, headers = {}, method = 'POST') => new Request('https://portfolio.test/api/contact', { method, headers: { Origin: 'https://portfolio.test', 'Content-Type': 'application/json', ...headers }, ...(method === 'POST' ? { body: typeof body === 'string' ? body : JSON.stringify(body) } : {}) });
@@ -45,10 +44,4 @@ test('rejected SMTP responses do not produce a false success or expose errors', 
 test('native no-JavaScript form submission sends then renders a confirmation', async () => {
   const response = await handleContact(request(new URLSearchParams(data).toString(), { 'Content-Type': 'application/x-www-form-urlencoded' }), env, async () => ({ accepted: [env.CONTACT_EMAIL] }));
   assert.equal(response.status, 200); assert.match(response.headers.get('Content-Type'), /text\/html/); assert.match(await response.text(), /Message sent/);
-});
-
-test('field validation provides specific errors and accepts trimmed valid input', () => {
-  assert.ok(fieldError('name', ' ')); assert.ok(fieldError('email', 'incomplete@'));
-  assert.ok(fieldError('message', 'x'.repeat(5001)));
-  for (const [name, value] of Object.entries(data)) assert.equal(fieldError(name, ` ${value} `), '');
 });

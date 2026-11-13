@@ -1,9 +1,59 @@
 ---
 import { brandMarks } from "../data/project-mosaic";
-interface Props { company: string }
-const { company } = Astro.props;
-const mark = company === "autodesk" ? brandMarks.autodesk : company === "siemens" ? brandMarks.siemens : null;
+import type { experiences } from "../data/experience";
+
+/** An employer's logo in one colour. With `tile` it sits on a gradient quarter
+ *  disc from the `ar` mark; `--size` on the tile sets its edge length. */
+interface Props {
+  company: (typeof experiences)[number]["id"];
+  tile?: boolean;
+  /** The disc turns into place on scroll. */
+  reveal?: boolean;
+  /** Shares a view-transition name with the same employer's tile on the next page. */
+  morph?: boolean;
+  class?: string;
+}
+const { company, tile = false, reveal = false, morph = false, class: className } = Astro.props;
+// Accenture's accent mark, drawn as a plain chevron.
+const chevron = { viewBox: "0 0 40 36", paths: ["M3 1 37 14v8L3 35V25l23-7L3 11Z"] };
+const brand = company === "accenture" ? chevron : brandMarks[company];
+const mark = "paths" in brand ? brand : chevron;
+// Tone and corner follow the hero's pairing. Each disc turns toward the side
+// that keeps its flat edge under the logo.
+const tiles = {
+  autodesk: { tone: "sky", corner: "tr", flat: "bottom", turn: "-90deg" },
+  siemens: { tone: "lime", corner: "tl", flat: "bottom", turn: "90deg" },
+  accenture: { tone: "violet", corner: "br", flat: "top", turn: "90deg" },
+} as const;
+const look = tiles[company];
 ---
-<span class:list={["company-mark", `company-mark-${company}`]} aria-hidden="true">
-  {mark && "paths" in mark ? <svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg> : <svg viewBox="0 0 40 36"><path d="M3 1 37 14v8L3 35V25l23-7L3 11Z" /></svg>}
-</span>
+{tile
+  ? <span class:list={["company-tile", className]} data-flat={look.flat} style={`--turn:${look.turn}${morph ? `;view-transition-name:company-${company}` : ""}`} aria-hidden="true">
+      <span class="company-tile-turn" data-reveal={reveal ? "turn" : undefined}><i class:list={["shape", `shape-${look.corner}`, `tone-${look.tone}`]}></i></span>
+      <span class:list={["company-mark", `company-mark-${company}`]}><svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg></span>
+    </span>
+  : <span class:list={["company-mark", `company-mark-${company}`, className]} aria-hidden="true"><svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg></span>}
+
+<style>
+  .company-mark { display:inline-grid; place-items:center; flex:none; width:var(--mark-size,40px); }
+  .company-mark svg { display:block; width:100%; height:auto; fill:currentColor; }
+  /* Optical sizes: the Siemens wordmark is wide and thin, the chevron is compact. */
+  .company-mark-siemens { width:calc(var(--mark-size,40px)*1.36); }
+  .company-mark-accenture { width:calc(var(--mark-size,40px)*.8); }
+
+  .company-tile { --size:96px; --mark-size:calc(var(--size)*.46); position:relative; display:grid; place-items:center; flex:none; width:var(--size); height:var(--size); color:var(--surface); }
+  .company-tile-turn,.company-tile .shape { position:absolute; inset:0; }
+  .company-tile .shape { transition:rotate 700ms var(--ease-out); }
+  /* The logo leans toward the flat edge so the curve never crowds it. */
+  .company-tile .company-mark { position:relative; translate:0 12%; }
+  .company-tile[data-flat="top"] .company-mark { translate:0 -12%; }
+  /* The disc turns under the logo, like the hero's tiles, for its own pointer
+     or for the link that contains it. */
+  @media(hover:hover) {
+    .company-tile:hover .shape,:global(a:hover) .company-tile .shape { rotate:var(--turn); }
+  }
+  :global(a:focus-visible) .company-tile .shape { rotate:var(--turn); }
+  @media(prefers-reduced-motion:reduce) {
+    .company-tile .shape { transition:none; rotate:none !important; }
+  }
+</style>

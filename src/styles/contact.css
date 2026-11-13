@@ -1,0 +1,105 @@
+/* Contact: the closing panel. A centred opener, then the direct line (the
+   email on a quarter disc from the mark) beside the form. */
+#contact {
+  /* Field outlines need 3:1 against the card; errors are coral lifted for small text. */
+  --contact-field-line: #777684;
+  --contact-error: color-mix(in oklab, var(--coral), white 28%);
+}
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; max-width: var(--reading-width); margin-inline: auto; }
+.contact-direct { container-type: inline-size; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+/* ---- Direct line ----------------------------------------------------------- */
+/* Like the hero's mosaic: the tiles close into one rounded shape, and the
+   largest of them carries the address. */
+.contact-mosaic { --cell: clamp(72px, 34cqi, 164px); display: grid; grid-template-columns: minmax(0, 1fr) var(--cell); grid-template-rows: repeat(2, var(--cell)); gap: 10px; }
+.contact-email-cell { grid-row: 1 / 3; min-width: 0; }
+.contact-email { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; height: 100%; padding: 20px 20px 20px 26px; border-radius: min(calc(var(--cell) * 2 + 10px), calc(100cqi - var(--cell) - 22px)) 12px 12px 12px; text-decoration: none; transition: translate 420ms var(--ease-out); }
+.contact-email-label { font-size: var(--text-small); font-weight: 500; opacity: .78; }
+.contact-email-address { font-size: clamp(1.125rem, 5.8cqi, 1.75rem); font-weight: 500; line-height: 1.15; letter-spacing: -.02em; overflow-wrap: anywhere; text-decoration: underline transparent 2px; text-underline-offset: .2em; }
+.contact-email svg { position: absolute; top: 18px; right: 18px; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; transition: translate 420ms var(--ease-out); }
+.contact-email:focus-visible .contact-email-address { text-decoration-color: currentColor; }
+.contact-tile { display: block; }
+.contact-tile .shape { width: 100%; height: 100%; transition: rotate 700ms var(--ease-out); }
+/* Shares its frame with the link buttons below it. */
+.contact-place { flex: 1; display: flex; align-items: center; gap: 16px; margin: 0; padding: 16px 18px; border: 1px solid var(--control-line); border-radius: var(--radius-control); background: var(--control); font-size: 1.125rem; line-height: 1.35; }
+.contact-place::before { content: ""; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--grain), linear-gradient(145deg, var(--sky), color-mix(in oklab, var(--sky), var(--violet) 55%)); background-blend-mode: overlay, normal; }
+.contact-place span { display: block; }
+.contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.contact-links .button-quiet { flex: 1 1 auto; justify-content: space-between; padding-inline: 18px; white-space: nowrap; }
+
+/* ---- Form ------------------------------------------------------------------ */
+/* The message field takes up whatever height the neighbouring column adds. */
+.contact-form { display: flex; flex-direction: column; min-width: 0; }
+.contact-field-grow { flex: 1; display: flex; flex-direction: column; }
+.contact-field-grow textarea { flex: 1; }
+.contact-note { margin: 0 0 24px; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.contact-noscript { margin: 16px 0 0; }
+.contact-row { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 16px; }
+.contact-field { min-width: 0; }
+.contact-field label { display: block; margin-bottom: 8px; color: var(--ink-soft); font-size: .9375rem; font-weight: 500; line-height: 1.3; }
+/* 17px text keeps iOS from zooming in on focus; the scroll margin keeps a
+   focused control clear of the dock. */
+.contact-field :is(input, textarea) { display: block; width: 100%; min-width: 0; min-height: 52px; padding: 12px 16px; border: 1px solid var(--contact-field-line); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font: 400 1.0625rem/1.5 var(--font-ui); caret-color: var(--lime); scroll-margin-block: 96px 132px; }
+.contact-field textarea { min-height: 152px; resize: vertical; }
+.contact-field :is(input, textarea):focus-visible { border-color: var(--ink); outline-offset: 2px; }
+.contact-field :is(input, textarea)[aria-invalid="true"] { border-color: var(--contact-error); box-shadow: inset 0 0 0 1px var(--contact-error); }
+/* Browser autofill would otherwise paint its own pale fill. */
+.contact-field :is(input, textarea):is(:-webkit-autofill, :autofill) { -webkit-text-fill-color: var(--ink); box-shadow: inset 0 0 0 100px var(--surface); }
+/* One line is always reserved, so a message appearing does not move the form. */
+.contact-error { display: flex; align-items: flex-start; gap: 8px; min-height: 1.45em; min-height: 1lh; margin: 6px 0 10px; color: var(--contact-error); font-size: var(--text-small); line-height: 1.45; }
+.contact-error:not(:empty)::before { content: "!"; content: "!" / ""; flex: none; display: grid; place-items: center; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; background: var(--contact-error); color: var(--surface); font-size: .6875rem; font-weight: 700; line-height: 1; }
+.contact-send { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+/* The marker is a shape from the mark: a turning quarter disc while sending,
+   a disc once sent, a square when something went wrong. */
+/* A line is always reserved, so a first message does not push the button. */
+.contact-status { display: flex; align-items: flex-start; gap: 10px; min-height: 1lh; margin: 0; color: var(--ink-soft); font-size: .9375rem; line-height: 1.45; text-wrap: pretty; }
+.contact-status:not(:empty)::before { content: ""; flex: none; width: 12px; height: 12px; margin-top: .32em; border-radius: 100% 3px 3px 3px; background: linear-gradient(145deg, var(--sky), var(--violet)); }
+.contact-form[data-state="loading"] .contact-status::before { animation: contact-turn 1.8s infinite; }
+.contact-form[data-state="success"] .contact-status { color: var(--lime); }
+.contact-form[data-state="success"] .contact-status::before { border-radius: 50%; background: linear-gradient(145deg, var(--lime), var(--sky)); animation: contact-pop 520ms var(--ease-spring) both; }
+.contact-form[data-state="error"] .contact-status { color: var(--contact-error); }
+.contact-form[data-state="error"] .contact-status::before { border-radius: 3px; background: linear-gradient(145deg, var(--contact-error), var(--coral)); }
+/* Four eased quarter turns, the way the hero's tiles turn. */
+@keyframes contact-turn {
+  0% { rotate: 0deg; animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
+  25% { rotate: 90deg; animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
+  50% { rotate: 180deg; animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
+  75% { rotate: 270deg; animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
+  100% { rotate: 360deg; }
+}
+@keyframes contact-pop { from { scale: 0; } }
+.contact-submit { width: 100%; white-space: nowrap; scroll-margin-block: 96px 132px; }
+.contact-submit svg { transition: translate 320ms var(--ease-out); }
+/* Busy keeps focus, unlike `disabled`; it borrows the shared disabled look. */
+.contact-submit[aria-disabled="true"] { cursor: progress; filter: saturate(.5) brightness(.85); translate: none; }
+
+@media (hover: hover) {
+  .contact-email:hover { translate: 0 -3px; }
+  .contact-email:hover .contact-email-address { text-decoration-color: currentColor; }
+  .contact-email:hover svg { translate: 3px -3px; }
+  .contact-tile:hover .shape { rotate: 90deg; }
+  .contact-field :is(input, textarea):hover { border-color: var(--ink-soft); }
+  .contact-field :is(input, textarea)[aria-invalid="true"]:hover { border-color: var(--contact-error); }
+  .contact-submit:not([aria-disabled="true"]):hover svg { translate: 3px 0; }
+}
+/* Room for the name and the address side by side. */
+@media (min-width: 640px) {
+  .contact-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-send { flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
+  .contact-status { flex: 1; }
+  .contact-submit { width: auto; min-width: 196px; }
+}
+@media (min-width: 900px) {
+  .contact-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; max-width: none; }
+}
+@media (max-width: 600px) {
+  .contact-form.card { padding: 20px 16px; }
+  .contact-note { margin-bottom: 20px; }
+  .contact-email { padding: 16px 14px 16px 22px; }
+  .contact-email svg { top: 14px; right: 14px; width: 18px; height: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-email, .contact-email svg, .contact-tile .shape, .contact-submit svg { transition: none; }
+  .contact-tile:hover .shape { rotate: none; }
+  .contact-form .contact-status::before { animation: none; }
+}

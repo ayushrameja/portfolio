@@ -1,0 +1,14 @@
+---
+import { monogram } from "../brand/monogram";
+
+interface Props {
+  letter?: keyof typeof monogram;
+  class?: string;
+}
+
+const { letter = "a", class: className } = Astro.props;
+const mark = monogram[letter];
+---
+<svg class={className} viewBox={mark.viewBox} fill="currentColor" aria-hidden="true">
+  {mark.paths.map((d) => <path d={d} fill-rule="evenodd" />)}
+</svg>

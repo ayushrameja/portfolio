@@ -1,60 +1,161 @@
-/* Hallmark · existing portfolio system · scope: notes pages · signature: the original essays · motion: still */
-/* Critique: clear archive navigation, generous reading rhythm, no decoration competing with the writing. */
-.notes-group { margin-bottom: 64px; }
-.notes-group > h2 { margin-bottom: var(--space-6); font-size: clamp(28px, 4vw, 40px); font-weight: 500; letter-spacing: -.03em; scroll-margin-top: var(--space-6); }
-.notes-list { list-style: none; padding: 0; border-top: 1px solid var(--project-line); }
-.notes-list > li { border-bottom: 1px solid var(--project-line); }
-.notes-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-8); padding: 28px 8px; text-decoration: none; }
-.notes-entry h3 { max-width: 32ch; margin: 0; font-size: clamp(21px, 2.4vw, 28px); font-weight: 500; line-height: 1.25; letter-spacing: -.02em; }
-.notes-entry-meta { display: flex; flex-direction: column; gap: var(--space-2); text-align: right; color: var(--project-muted); font-size: var(--text-small); line-height: 1.4; white-space: nowrap; }
-.notes-entry-meta time, .notes-meta time { font-variant-numeric: tabular-nums; }
-@media (hover: hover) {
-  .notes-entry:hover { background: var(--project-hover); }
-  .notes-entry:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
-}
-.notes-reading { max-width: 760px; margin-inline: auto; }
-.notes-header { padding-block: 40px var(--space-8); scroll-margin-top: var(--space-6); }
-.notes-header h1 { margin: 0; font-size: clamp(36px, 4.8vw, 64px); line-height: 1.08; font-weight: 500; letter-spacing: -.035em; text-wrap: balance; }
-.notes-meta { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-6); font-size: var(--text-small); color: var(--project-muted); }
-.notes-description { margin-top: var(--space-6); font-size: clamp(19px, 2vw, 23px); line-height: 1.5; }
-.notes-tags { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: var(--space-6); padding: 0; list-style: none; color: var(--project-muted); font-size: var(--text-small); line-height: 1.5; }
-.notes-outline { margin-bottom: 40px; padding-block: var(--space-4); border-block: 1px solid var(--project-line); }
-.notes-outline summary { width: fit-content; min-height: 44px; align-content: center; padding-block: var(--space-3); font-size: var(--text-body); font-weight: 500; cursor: pointer; }
-.notes-outline nav { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-top: var(--space-3); }
-.notes-outline a { display: inline-flex; align-items: center; min-height: 44px; padding-block: var(--space-2); font-size: var(--text-body); line-height: 1.4; }
-.notes-body { max-width: 66ch; font-size: 19px; line-height: 1.75; overflow-wrap: break-word; }
-.notes-body > :first-child { margin-top: 0; }
-.notes-body :is(p, ul, ol, blockquote, pre, table, figure) { margin-block: var(--space-6); }
-.notes-body :is(h2, h3, h4) { margin-block: 40px var(--space-4); line-height: 1.2; font-weight: 500; letter-spacing: -.02em; scroll-margin-top: var(--space-6); }
-.notes-body h2 { font-size: clamp(27px, 3vw, 34px); }
-.notes-body h3 { font-size: 24px; }
-.notes-body h4 { font-size: 21px; }
-.notes-body ul { list-style: disc; padding-left: var(--space-6); }
-.notes-body ol { list-style: decimal; padding-left: var(--space-6); }
-.notes-body li + li { margin-top: var(--space-2); }
-.notes-body :is(ul, ol) :is(ul, ol) { margin-block: var(--space-2); }
-.notes-body blockquote { padding-left: var(--space-6); border-left: 2px solid var(--project-accent); color: var(--project-muted); }
-.notes-body code { font-family: var(--font-code); font-size: .9em; }
-.notes-body pre { max-width: 100%; overflow-x: auto; padding: var(--space-4); border: 1px solid var(--project-line); border-radius: 8px; line-height: 1.6; }
-.notes-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: var(--text-body); }
-.notes-body :is(th, td) { padding: 12px 16px; border-bottom: 1px solid var(--project-line); text-align: left; }
-.notes-body hr { margin-block: var(--space-8); border-color: var(--project-line); }
-.notes-body a { overflow-wrap: anywhere; }
-.notes-end { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-top: 48px; padding-block: var(--space-6); border-top: 1px solid var(--project-line); }
-.notes-end a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); }
-@media (max-width: 600px) {
-  .notes-group { margin-bottom: 40px; }
-  .notes-entry { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); padding-block: var(--space-6); }
-  .notes-entry-meta { flex-direction: row; flex-wrap: wrap; gap: var(--space-4); text-align: left; }
-  .notes-header { padding-top: var(--space-6); }
-  .notes-body { font-size: 18px; }
-  .notes-outline { margin-bottom: var(--space-8); }
+/* Notes: the home section (.fn-*), the index (.notes-*) and the reading page
+   (.note-*). Lime leads and sky answers it; Engineering wears lime and Life
+   wears sky wherever a desk is shown. */
+
+/* ---- Small pieces used by all three ---------------------------------------- */
+/* Quarter discs at small sizes: the shared .shape corners and inner shadow are
+   cut for hero-sized tiles. */
+.notes-q { --q:5px; box-shadow:inset 0 1px 2px rgb(255 255 255/.24),inset 0 -5px 10px rgb(0 0 0/.12); }
+.notes-q.q-tl { border-radius:100% var(--q) var(--q) var(--q); }
+.notes-q.q-br { border-radius:var(--q) var(--q) 100% var(--q); }
+.notes-q.q-bl { border-radius:var(--q) var(--q) var(--q) 100%; }
+/* The arrow tile turns a quarter when its link is pointed at, like the hero's
+   tiles; the arrow turns back so it keeps pointing forward. */
+.notes-go { display:grid; place-items:center; flex:none; width:40px; height:40px; transition:rotate 700ms var(--ease-out); }
+.notes-go svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.75; transition:rotate 700ms var(--ease-out); }
+.notes-link:focus-visible .notes-go { rotate:90deg; }
+.notes-link:focus-visible .notes-go svg { rotate:-90deg; }
+.notes-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 0; margin:0; color:var(--muted); font-size:var(--text-small); line-height:1.3; font-variant-numeric:tabular-nums; }
+.notes-meta > * + *::before { content:"·"; margin-inline:9px; }
+.notes-title { transition:color 200ms ease; }
+@media(hover:hover) {
+  .notes-link:hover .notes-go { rotate:90deg; }
+  .notes-link:hover .notes-go svg { rotate:-90deg; }
+  .notes-link:hover .notes-title { color:var(--accent-ink); }
 }
 
-/* Archive rows are compact reading links; preserve their relationship to dates. */
-.notes-entry:focus-visible, .notes-reading :is(a, summary):focus-visible {
-  outline: var(--focus-width) solid var(--color-focus);
-  outline-offset: var(--focus-offset);
+/* ---- Home section ----------------------------------------------------------- */
+/* One lead essay beside two shorter cards; the group as a whole stays centred. */
+.fn-grid { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; }
+.fn-cell { display:grid; }
+.fn-cell-lead { grid-row:span 2; }
+.fn-card.card { display:flex; flex-direction:column; gap:14px; }
+.fn-card-top { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.fn-desc { margin:0; color:var(--ink-soft); font-size:1.0625rem; line-height:1.5; text-wrap:pretty; }
+.fn-card .fn-desc { margin-top:auto; padding-top:10px; }
+
+.fn-lead.card { isolation:isolate; overflow:hidden; gap:16px; padding:clamp(24px,3.2vw,44px); }
+/* Lime light from the far corner, on its own layer so the hover fill does not wipe it. */
+.fn-lead::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(560px 360px at 100% 100%,color-mix(in oklab,var(--lime) 14%,transparent),transparent 72%); }
+.fn-quote { margin:auto 0; padding:clamp(22px,3.4vw,44px) 0; }
+/* An opening quote mark made from two of the mark's quarter discs. */
+.fn-quote-mark { display:flex; gap:6px; margin-bottom:20px; }
+.fn-quote-mark i { --q:4px; width:26px; height:26px; }
+.fn-quote blockquote { margin:0; color:var(--ink); font-size:clamp(1.5rem,2.5vw,2.125rem); font-weight:500; line-height:1.2; letter-spacing:-.02em; text-wrap:balance; }
+.fn-quote mark { background:linear-gradient(100deg,var(--lime),var(--sky)); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+/* The margin note leans like something written in afterwards. */
+.fn-aside { display:flex; align-items:flex-start; gap:10px; margin:20px 0 0 clamp(20px,9%,80px); color:var(--lime); font:italic 1.125rem/1.3 var(--font-editorial); rotate:-2deg; transform-origin:0 50%; }
+.fn-aside svg { flex:none; width:36px; height:29px; margin-top:-8px; }
+.fn-more { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:20px; border-top:1px solid var(--line); font-size:1.125rem; font-weight:500; }
+.fn-more .notes-go { width:48px; height:48px; }
+.fn-all { display:flex; justify-content:center; margin:clamp(28px,4vw,48px) 0 0; }
+@media(max-width:900px) {
+  .fn-grid { grid-template-columns:minmax(0,1fr); }
+  .fn-cell-lead { grid-row:auto; }
 }
-.notes-entry:active { background: var(--project-surface); }
-.notes-reading :is(a, summary):active { color: var(--project-accent); }
+@media(forced-colors:active) { .fn-quote mark { background:none; color:inherit; } }
+
+/* ---- Index -------------------------------------------------------------------- */
+.notes-intro.section-head { margin-bottom:0; }
+/* A note drawn with the mark's shapes: a quarter-disc drop cap and pill lines. */
+.notes-glyph { display:grid; grid-template-columns:repeat(6,16px); grid-auto-rows:16px; gap:6px; margin-bottom:8px; }
+.notes-glyph i:nth-child(1) { --q:6px; grid-area:1/1/3/3; }
+.notes-glyph i:nth-child(2) { grid-area:1/3/2/7; }
+.notes-glyph i:nth-child(3) { grid-area:2/3/3/6; }
+.notes-glyph i:nth-child(4) { grid-area:3/1/4/7; }
+.notes-glyph i:nth-child(5) { grid-area:4/1/5/5; }
+.notes-glyph .shape-pill { box-shadow:inset 0 1px 2px rgb(255 255 255/.24); }
+.notes-jumps { justify-content:center; margin-top:8px; }
+.notes-jumps a { gap:8px; min-height:40px; padding-inline:16px; color:var(--ink); text-decoration:none; transition:background-color 200ms ease,border-color 200ms ease; }
+.notes-jumps a span { color:var(--muted); font-variant-numeric:tabular-nums; }
+.notes-jumps i { width:12px; height:12px; --q:2px; }
+@media(hover:hover) { .notes-jumps a:hover { border-color:var(--muted); background:var(--surface-high); } }
+
+.notes-desk-head { display:grid; justify-items:center; gap:14px; margin-bottom:clamp(24px,4vw,44px); text-align:center; }
+.notes-desk-head i { width:44px; height:44px; }
+.notes-desk-head p { margin:-6px 0 0; font-size:var(--text-small); }
+.notes-list { max-width:940px; margin:0 auto; padding:0; list-style:none; border-top:1px solid var(--line); }
+.notes-list li { border-bottom:1px solid var(--line); }
+/* Rows reach past the rules so the hover fill reads as a rounded slab. */
+.notes-row { display:grid; grid-template-columns:6.75rem minmax(0,1fr) auto; align-items:center; gap:6px 24px; margin:0 -18px; padding:22px 18px; border-radius:20px; color:inherit; text-decoration:none; transition:background-color 220ms ease; }
+.notes-row time, .notes-row-time { color:var(--muted); font-size:var(--text-small); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.notes-row-text { display:grid; gap:6px; }
+.notes-row-text p { margin:0; color:var(--muted); font-size:1rem; line-height:1.45; text-wrap:pretty; }
+.notes-row-end { display:flex; align-items:center; gap:20px; }
+@media(hover:hover) { .notes-row:hover { background:var(--surface-high); } }
+@media(max-width:760px) {
+  /* Title first, then date and reading time on one line under it. */
+  .notes-row { grid-template-columns:auto auto minmax(0,1fr) auto; grid-template-areas:"text text text go" "date time . go"; gap:10px 0; margin-inline:-10px; padding:18px 10px; border-radius:16px; }
+  .notes-row-text { grid-area:text; }
+  .notes-row-date { grid-area:date; }
+  .notes-row-end { display:contents; }
+  .notes-row-time { grid-area:time; }
+  .notes-row-time::before { content:"·"; margin-inline:9px; }
+  .notes-row-end .notes-go { grid-area:go; width:34px; height:34px; margin-left:16px; }
+}
+
+/* ---- Reading page ------------------------------------------------------------- */
+.note-head { display:grid; justify-items:center; gap:20px; max-width:900px; margin-inline:auto; text-align:center; }
+.note-head-tile { width:48px; height:48px; transition:rotate 700ms var(--ease-out); }
+.note-title { margin:0; font-size:clamp(2rem,4.4vw,3.5rem); font-weight:500; line-height:1.06; letter-spacing:-.03em; text-wrap:balance; }
+.note-head .lead { max-width:40rem; }
+.note-head .chip-list { justify-content:center; }
+.note-head .breadcrumb a { text-underline-offset:.25em; }
+.note-head .breadcrumb a:hover { text-decoration:underline; text-decoration-color:var(--accent-ink); }
+
+/* The text column stays centred; from 1360px the outline rides in the left
+   margin and keeps its place while the essay scrolls. */
+.note-layout { --measure:42.5rem; display:grid; grid-template-columns:minmax(0,var(--measure)); justify-content:center; gap:clamp(24px,4vw,36px); }
+.note-outline { border:1px solid var(--line); border-radius:var(--radius-card); background:var(--surface-raised); }
+.note-outline summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:56px; padding:0 20px; border-radius:inherit; color:var(--ink); font-size:1rem; cursor:pointer; list-style:none; }
+.note-outline summary::-webkit-details-marker { display:none; }
+.note-outline summary svg { width:16px; height:16px; fill:none; stroke:var(--accent-ink); stroke-width:1.75; transition:rotate 320ms var(--ease-out); }
+.note-outline[open] summary svg { rotate:180deg; }
+.note-outline ol { display:grid; margin:0 20px 18px; padding:0; list-style:none; border-left:1px solid var(--line); }
+.note-outline a { display:block; margin-left:-1px; padding:8px 0 8px 16px; border-left:2px solid transparent; color:var(--muted); font-size:.9375rem; line-height:1.35; text-decoration:none; text-wrap:pretty; transition:color 200ms ease,border-color 200ms ease; }
+.note-outline a:hover { border-left-color:var(--muted); color:var(--ink); }
+.note-outline a[aria-current] { border-left-color:var(--accent-ink); color:var(--ink); }
+@media(hover:hover) { .note-outline summary:hover { color:var(--accent-ink); } }
+@media(min-width:1360px) {
+  .note-layout { grid-template-columns:minmax(0,1fr) minmax(0,var(--measure)) minmax(0,1fr); align-items:start; gap:0 48px; }
+  .note-outline { position:sticky; top:28px; justify-self:end; width:min(100%,250px); max-height:calc(100svh - 140px); overflow-y:auto; margin-inline:-8px; padding-inline:8px; border:0; border-radius:0; background:none; scrollbar-width:thin; }
+  .note-outline summary { justify-content:flex-start; min-height:0; padding:4px 0 14px; color:var(--muted); font-size:var(--text-small); }
+  .note-outline ol { margin:0; }
+  .note-body { grid-column:2; }
+}
+
+/* Long-form reading on the canvas: a larger size, open leading, and a
+   measure of about 70 characters. Composes the shared .prose. */
+.note-body { font-size:clamp(1.125rem,1.02rem + .42vw,1.25rem); line-height:1.72; letter-spacing:.004em; }
+.note-body p { text-wrap:pretty; }
+/* The opening paragraph is the hook, so it reads a step brighter and larger. */
+.note-body > p:first-child { color:var(--ink); font-size:1.12em; line-height:1.6; }
+.note-body h2 { margin-top:2.3em; font-size:clamp(1.5rem,1.3rem + .8vw,1.875rem); line-height:1.18; text-wrap:balance; scroll-margin-top:32px; }
+/* A short pill in the panel's colours opens each section. */
+.note-body h2::before { content:""; display:block; width:36px; height:8px; margin-bottom:22px; border-radius:999px; background:var(--grain),linear-gradient(100deg,var(--accent),var(--accent-blend)); background-blend-mode:overlay,normal; }
+.note-body h3 { margin-top:1.9em; font-size:clamp(1.25rem,1.16rem + .36vw,1.4375rem); text-wrap:balance; scroll-margin-top:32px; }
+.note-body :is(h2,h3) + * { margin-top:.9em; }
+/* The essays use loose lists, so each item arrives wrapped in a paragraph. */
+.note-body li > p { margin:0; }
+.note-body li > p + p { margin-top:.6em; }
+.note-body li + li { margin-top:.6em; }
+.note-body :is(ul,ol) { padding-left:1.3em; }
+.note-body li { padding-left:.2em; }
+.note-body code { color:var(--ink); border:1px solid var(--line); }
+.note-body pre code { border:0; }
+.note-body ::selection { background:var(--lime); color:var(--surface); }
+/* Closing mark: three of the logo's shapes where the essay ends. */
+.note-fin { display:flex; justify-content:center; gap:8px; margin-top:clamp(40px,6vw,64px); }
+.note-fin i { width:18px; height:18px; --q:3px; }
+
+.note-end { display:grid; grid-template-columns:minmax(0,1fr); justify-items:center; gap:clamp(20px,3vw,32px); }
+.note-end-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px; width:100%; max-width:940px; }
+.note-end-card.card { display:flex; flex-direction:column; gap:12px; }
+.note-end-card .notes-meta { margin-top:auto; padding-top:8px; }
+.note-end-links { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:14px 28px; margin:0; }
+
+@media(hover:hover) { .note-head-tile:hover { rotate:90deg; } }
+@media(prefers-reduced-motion:reduce) {
+  .notes-go, .notes-go svg, .notes-title, .notes-row, .notes-jumps a, .note-head-tile, .note-outline a, .note-outline summary svg { transition:none; }
+  .notes-link:hover .notes-go, .notes-link:hover .notes-go svg, .notes-link:focus-visible .notes-go, .notes-link:focus-visible .notes-go svg, .note-head-tile:hover { rotate:none; }
+}

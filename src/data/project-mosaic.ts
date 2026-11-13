@@ -1,10 +1,9 @@
 /**
  * Homepage "Selected work" bento.
  *
- * Each card is a single link. `href` points at the current project record;
- * swap it for the dedicated case-study page once that page exists.
- * Grid placement and visual weight are driven by `id` in project-mosaic.css
- * (comnext = feature, studio = tall, the rest = standard).
+ * Each card is a single link to the project's page. Grid placement and the
+ * artwork are chosen by `id` in SelectedWork.astro (comnext and templio are
+ * wide, studio is tall, the rest are standard).
  */
 export type BrandId = "autodesk" | "siemens" | "google" | "lowhp" | "templio";
 
@@ -18,8 +17,8 @@ export interface MosaicProject {
   summary: string;
   visualNote?: string;
   href: string;
-  /** Dark artwork accent with contrast on the card’s pale surfaces. */
-  accent: string;
+  /** Accent for the card's arrow tile and corner glow. */
+  tone: "violet" | "lime" | "coral" | "sky";
 }
 
 /** Monochrome brand marks rendered with `fill: currentColor`. */
@@ -44,7 +43,7 @@ export const mosaicProjects: MosaicProject[] = [
     summary: "From static pages to a content-driven web platform.",
     visualNote: "Public-site reference",
     href: "/projects/comnext/",
-    accent: "#88513e",
+    tone: "violet",
   },
   {
     id: "learn",
@@ -55,7 +54,7 @@ export const mosaicProjects: MosaicProject[] = [
     summary: "Courses, roadmaps and live support sessions.",
     visualNote: "Workflow illustration",
     href: "/projects/mvp-learn-v2/",
-    accent: "#70508f",
+    tone: "lime",
   },
   {
     id: "studio",
@@ -65,7 +64,7 @@ export const mosaicProjects: MosaicProject[] = [
     brand: "lowhp",
     summary: "My indie studio for games, websites and experiments.",
     href: "/projects/low-hp-studio/",
-    accent: "#925144",
+    tone: "coral",
   },
   {
     id: "siemens",
@@ -76,7 +75,7 @@ export const mosaicProjects: MosaicProject[] = [
     summary: "Real-time industrial monitoring.",
     visualNote: "Signal illustration",
     href: "/projects/igbt-health-app/",
-    accent: "#276e65",
+    tone: "sky",
   },
   {
     id: "google",
@@ -88,7 +87,7 @@ export const mosaicProjects: MosaicProject[] = [
     summary: "APIs, custom roles and cloud storage.",
     visualNote: "Concept illustration",
     href: "/projects/google-customer-experience/",
-    accent: "#346980",
+    tone: "coral",
   },
   {
     id: "templio",
@@ -98,6 +97,6 @@ export const mosaicProjects: MosaicProject[] = [
     brand: "templio",
     summary: "Custom websites that feel hand-built.",
     href: "/projects/templio/",
-    accent: "#80564b",
+    tone: "violet",
   },
 ];

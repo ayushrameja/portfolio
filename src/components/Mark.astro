@@ -1,0 +1,12 @@
+---
+import { heroTiles } from "../brand/hero-tiles";
+import { markTones } from "../brand/monogram";
+
+/** The ar mark with its gradient tiles. Give each instance on a page its own `id`. */
+interface Props { id: string; class?: string }
+const { id, class: className } = Astro.props;
+---
+<svg class={className} viewBox="0 0 105 50" aria-hidden="true">
+  <defs>{markTones.map(([tone, blend], i) => <linearGradient id={`${id}-${i}`} x2="1" y2="1"><stop offset="0" style={`stop-color:color-mix(in oklab,var(--${tone}),white 30%)`} /><stop offset=".45" style={`stop-color:var(--${tone})`} /><stop offset="1" style={`stop-color:color-mix(in oklab,var(--${tone}),var(--${blend}) 60%)`} /></linearGradient>)}</defs>
+  {heroTiles.map((d, i) => <path d={d} fill={`url(#${id}-${i % 4})`} fill-rule="evenodd" />)}
+</svg>

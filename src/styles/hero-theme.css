@@ -1,0 +1,17 @@
+/* The hero's roles, mapped onto the site tokens. Hero owns the shared panel
+   geometry; the loader reads its page colours from the --intro-* roles. */
+.hero-frame {
+  --hero-violet: var(--violet); --hero-lime: var(--lime); --hero-coral: var(--coral); --hero-sky: var(--sky);
+  --hero-colorX: var(--canvas); --hero-top: var(--surface); --hero-bottom: var(--surface);
+  --hero-ink: var(--ink); --hero-muted: var(--muted); --hero-accent: var(--hero-lime);
+  --hero-line: #34343c; --hero-paper: var(--surface);
+  --hero-glow-violet: color-mix(in oklab, var(--hero-violet) 42%, transparent);
+  --hero-glow-coral: color-mix(in oklab, var(--hero-coral) 30%, transparent);
+  --hero-glow-sky: color-mix(in oklab, var(--hero-sky) 28%, transparent);
+  --hero-glow-lime: color-mix(in oklab, var(--hero-lime) 20%, transparent);
+  --hero-grain: var(--grain);
+  --hero-grain-light: var(--grain-light);
+  /* Loader pages: lime only reads as lime when bright, so the deep r page is led by sky. */
+  --intro-a-page: var(--hero-violet); --intro-a-ink: var(--hero-ink);
+  --intro-r-page: var(--hero-sky); --intro-r-ink: var(--hero-ink);
+}

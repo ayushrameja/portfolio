@@ -1,3 +1,0 @@
-/* Inner routes reuse the homepage dock's logo, layout, surfaces and focus states. */
-.bottom-nav.reading-nav { max-width: calc(100% - 24px); transition: none; }
-.reading-nav .reading-parent { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }

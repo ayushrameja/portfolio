@@ -1,4 +1,6 @@
-/* Shared portfolio type, spacing and palette roles; component artwork keeps its accents. */
+/* Site-wide design tokens. The hero is a rounded near-black panel; below it
+   sections sit open on the white canvas and carry dark cards. Colour comes
+   from four accents, always as soft gradients with grain. */
 :root {
   --font-ui: "Inter Tight", Arial, sans-serif;
   --font-editorial: Georgia, "Times New Roman", serif;
@@ -6,21 +8,64 @@
   --text-caption: .8125rem;
   --text-small: .875rem;
   --text-body: 1rem;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
+
+  --violet: #7c5cff;
+  --lime: #c8f53c;
+  --coral: #ff5a3c;
+  --sky: #5cc8ff;
+
+  /* The accents deepened until they carry small text on the canvas. */
+  --violet-ink: #5b3fe6;
+  --lime-ink: #4f6b00;
+  --coral-ink: #c2351c;
+  --sky-ink: #0b6ca8;
+
+  --canvas: #fff;
+  --canvas-ink: #1c1c22;
+  --canvas-soft: #3a3944;
+  --canvas-muted: #5c5b66;
+  --surface: #0a0a0c;
   --color-paper: #fffdf9;
-  --color-ink: #2b433b;
-  --color-accent: #416657;
-  --color-surface: #e6eddf;
-  --color-work-ink: #302f35;
-  --color-work-muted: #514d57;
-  --color-focus: #2b433b;
-  --color-focus-light: #ffffff;
-  --color-focus-dark: #171717;
+
+  /* Panel geometry is shared with the hero and the loader. */
+  --gutter: 20px;
+  --radius-panel: 64px;
+  --radius-card: 28px;
+  --radius-control: 14px;
+  --panel-pad: clamp(28px, 5vw, 72px);
+  --panel-block: clamp(56px, 8vw, 112px);
+  --content-width: 1180px;
+  --reading-width: 720px;
+
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* Grain: opaque grey for overlay blending on colour, white speckle for dark
+     surfaces, dark speckle for the canvas. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.1 0 0 0 -.05 1.1 0 0 0 -.05 1.1 0 0 0 -.05 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --grain-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2 0 0 0 -.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --grain-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 -.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+
+  --focus: var(--surface);
   --focus-width: 2px;
   --focus-offset: 4px;
-  --content-width: 1120px;
+}
+/* Roles for anything set on a dark surface. Sections redefine them for the
+   canvas (see .panel in site.css); the dark islands inside a section take
+   them back here, so the two sets cannot drift apart. */
+:root, .card, .button-quiet, .on-dark {
+  --surface-raised: #131317;
+  --surface-high: #1b1b21;
+  --line: #2c2c34;
+  --line-strong: #3a3a44;
+  --control: #16161a;
+  --control-line: #34343c;
+  --ink: #f4f1ea;
+  --ink-soft: #d9d5cc;
+  --muted: #a3a1ad;
+  /* Text on a fill of --ink. */
+  --ink-contrast: var(--surface);
+}
+@media (max-width: 600px) {
+  :root { --gutter: 10px; --radius-panel: 36px; --radius-card: 22px; --panel-pad: 22px; }
 }

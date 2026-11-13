@@ -1,101 +1,25 @@
-# Ayush Rameja — portfolio
+# Portfolio
 
-Static Astro portfolio for Cloudflare Workers Static Assets. The current source is the maintained design; superseded prototypes, migration archives, and unused assets have been removed.
+Redesign workspace on `feat/portfolio-redesign-v2`. The previous UI has been removed. The homepage has a rounded-panel refraction intro followed by a static dark version of the ayush.im hero on a white surrounding canvas. Project, note, and experience routes will be rebuilt with the new UI.
 
-## Stack and commands
+Design decisions, rejected approaches, and change history are recorded in [directions/](directions/README.md).
 
-Astro, TypeScript, and Tailwind CSS, with Wrangler for Cloudflare preview and deployment. Exact versions are pinned in `package.json` and `pnpm-lock.yaml`. Use the Node.js and pnpm versions specified in `package.json`.
+## Preserved content
+
+- `src/content/`: original project records and notes.
+- `src/data/`: experience, contact links, project metadata, image captions, and extracted UI copy in `site-copy.json`.
+- `src/assets/`, `src/brand/`, and `public/`: portrait, project imagery, brand assets, and fonts.
+- `src/content.config.ts` and `src/lib/`: content schema and helpers.
+
+Dependencies and the lockfile are unchanged. Contact backend, Cloudflare configuration, and legacy redirect tooling remain available for the rebuild. Redirect destinations currently have no page templates.
+
+## Development
 
 ```sh
-pnpm install
-pnpm dev                  # Astro development server
-pnpm check                # Astro and TypeScript diagnostics
-pnpm test                 # Content, redirects, intro, and palette regressions
-pnpm build                # Regenerates redirects and builds dist/
-pnpm build:cloudflare     # Compatibility entry point used by Workers Builds
-pnpm preview              # Local static preview
-pnpm preview:cloudflare   # Build and preview with Wrangler on port 8787
-pnpm deploy               # Build and publish portfolio
-pnpm deploy:cloudflare    # Compatibility entry point used by Workers Builds
+pnpm dev
+pnpm check
+pnpm test
+pnpm build
 ```
 
-The canonical URL is `https://ayush.im`. `wrangler.jsonc` serves `dist/` with trailing-slash handling and `404.html` for missing pages. Deployment is a separate action; confirm the target account and domain before publishing.
-
-Cloudflare Workers Builds targets the existing `portfolio` Worker. Its build command is `pnpm run build:cloudflare`, production deploy command is `pnpm run deploy:cloudflare`, and preview deploy command is `pnpm exec wrangler preview`. The compatibility scripts keep the dashboard commands valid across the previous Next.js branch and this Astro migration.
-
-## Source map
-
-- `src/components/Hero.astro`: portrait hero, marquee, Bengaluru clock, navigation, and résumé link.
-- `src/components/Intro.astro` and `src/scripts/intro.ts`: homepage loading sequence.
-- `src/scripts/hero-palette.ts`: three palettes on a 30-second CSS animation cycle.
-- `src/scripts/button-eyes.ts` and `src/scripts/menu-motion.ts`: button and menu interactions.
-- `src/brand/hero-tiles.ts`: shared homepage and intro logo geometry.
-- `src/assets/portrait-approved.png`: portrait source, optimized by Astro during the build.
-- `public/brand/ar-circular.svg`: inner-page header logo.
-- `public/fonts/`: Inter Tight WOFF2 and its license.
-- `src/content/notes/` and `src/content/projects/`: maintained public content, validated by `src/content.config.ts`.
-- `scripts/legacy-routes.mjs`: compatibility redirects for earlier site URLs.
-
-There are 13 notes and 15 project records. Their original copy came from earlier portfolio revisions; Git history retains the migration archives. Private projects are excluded.
-
-## Homepage behavior
-
-Each full homepage load plays the complete four-second logo and expanding-aperture sequence. Slow page readiness pauses playback at the visible logo before the hero opens. Readiness includes document load, fonts, and eager-image decoding; lazy images do not block it. A 15-second readiness fallback and stalled-playback recovery prevent trapping visitors.
-
-Reduced-motion preferences bypass the intro and disable the continuous hero animations. Escape does not skip the storyboard. Without JavaScript, the intro stays hidden and the HTML remains available. Inner pages do not play the intro. Development-only `?introDelay=1500` and `?introDelay=hold` hooks support failure testing.
-
-The shared contact section offers direct email and a name/email/message form. The form posts to `/api/contact` using the Gmail SMTP setup from `main`; Resume opens the configured Google Drive preview. See Contact form below for runtime and verification details.
-
-## Redirects
-
-
-Archived URLs that have a replacement page are permanent `301` rules in `public/_redirects`. Workers Static Assets reads that file from the build output. The default status is 302, so every rule sets 301. Destinations use the canonical trailing slash (`/notes/…/`, `/projects/…/`) so `html_handling: auto-trailing-slash` does not add a second hop. Rules are exact paths, including both slash variants. Unknown article slugs are not covered by a splat, so they stay 404.
-
-`scripts/write-redirects.mjs` regenerates the file from note and project `archivedRoute` values, plus the five `/work/<slug>` pages from the unpublished 2026-10-11 refresh. `pnpm build` runs it before `astro build`. Astro’s dev server does not apply `_redirects`; check those rules with `pnpm preview:cloudflare`.
-
-| Old URL | Destination |
-| --- | --- |
-| `/blogs` and `/blogs/` | `/notes/` |
-| `/blogs/<archived-slug>` and the slashed form | `/notes/<slug>/` |
-| `/bakbak` and `/bakbak/` | `/projects/bakbak/` |
-| `/work/bakbak`, `/work/masala`, `/work/burnhop`, `/work/templio`, `/work/greytrace`, and their slashed forms | the matching `/projects/<slug>/` |
-
-`/bakbak#download` uses the `/bakbak` rule. Cloudflare does not match fragments. The project page has no download section.
-
-These archived routes have no single replacement and are not redirected to the homepage. Both slash variants return the site 404:
-
-- `/resume` — production résumé page was not rebuilt.
-- `/experience/autodesk`, `/experience/siemens`, `/experience/accenture` — employer chapters covered several projects.
-- `/about` — unpublished about page. Low HP Studio does not replace that page.
-- `/playground` — unpublished index included Receipt creator and TypeRush, which this site excludes.
-- `/work` — unpublished selected-work index. `/projects/` is a different collection.
-
-## Domain routing
-
-The `portfolio` Worker retains the production `ayush.im/*` route. Branch previews use the top-level `previews` block and do not change production routes. `pnpm run deploy:preview` builds and publishes a branch preview.
-
-`infra/domain-redirects/` is the independent `portfolio-domain-redirects` Worker from `main`; it preserves the existing `.com` and `www` redirects, including paths and query strings. Deploy it separately with `pnpm run deploy:redirects`. Its Workers Builds root is `/infra/domain-redirects`, with no build command, `npx --yes wrangler@4.146.0 deploy` for production and `npx --yes wrangler@4.146.0 preview` for previews; its build watch path is `infra/domain-redirects/*`.
-
-
-## Contact form
-
-The shared contact form posts `name`, `email`, and `message` to `/api/contact`.
-`src/server/worker.mjs` adapts main’s Gmail/Nodemailer delivery to the static Astro site.
-The Worker uses existing `SMTP_EMAIL`, `SMTP_PASSWORD`, and optional `CONTACT_EMAIL`
-secrets (recipient defaults to `SMTP_EMAIL`); credentials never enter the browser bundle.
-Pages still use static assets. Only `/api/contact` requests run the email handler.
-
-For local end-to-end work, use `pnpm preview:cloudflare`. Astro dev alone serves the UI,
-not the Worker endpoint. Supply local SMTP values in an ignored `.dev.vars` only when
-intentionally testing real delivery; otherwise missing credentials return 503.
-Tests inject a mail sender and do not send messages. Browser tests should intercept the
-endpoint, and those responses are simulated, not proof of inbox delivery.
-
-The endpoint enforces same-origin submissions, field/body limits, and an approximate
-three-attempts-per-minute limit per IP and Cloudflare location. It sends plain text,
-sets Reply-To to the visitor, and reports success only after SMTP accepts the configured
-recipient. SMTP acceptance does not guarantee inbox delivery. Native form submission
-also works without JavaScript. Sending errors preserve the browser draft.
-
-Cloudflare deployment and a separately authorized real inbox test are still required
-to verify delivery on the published site. Existing secrets are preserved on deployment.
+The redesign has not been deployed. The previous implementation remains in Git history.

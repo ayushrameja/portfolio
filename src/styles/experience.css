@@ -1,148 +1,92 @@
-/* Hallmark · v2.0.0 · theme: existing portfolio (by request) · genre: editorial · shape: company career deck · signature: branded career chapters in portfolio surfaces · hero: editorial title · nav: existing portfolio · footer: contact · motion: still */
-/* Critique: replace the sparse resume rows with substantial company cards; align the section to the contact container and use the showcase type and rounded surfaces. */
-/* Hallmark · waive 44c · Existing portfolio detail-page shell · Compact reading header keeps the career evidence close to the role. */
-/* Hallmark · waive 79 · Short factual company record with content immediately following · There is no empty hero region; the story starts within the first viewport. */
-/* Hallmark · dismissed 77 · Company records contain only supplied career evidence; extra marketing sections would add filler. */
-/* Hallmark · answered F15 · Shared project shell and contact styles retained for continuity. */
-:root {
-  --experience-ink: var(--color-ink);
-  --experience-muted: #526157;
-  --experience-line: #cbd4c7;
-  --experience-paper: var(--color-paper);
-  --experience-hover: var(--color-surface);
-  --experience-font: var(--font-ui);
-  --experience-display: var(--font-editorial);
-}
-.experience-section { max-width: 1440px; margin-inline: auto; padding: 64px var(--home-content-inset) 96px; color: var(--experience-ink); font-family: var(--experience-font); scroll-margin-top: 32px; }
-.experience-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 32px; margin-bottom: 48px; }
-.experience-heading h2 { max-width: 17ch; font-size: clamp(32px, 3.6vw, 52px); font-weight: 500; letter-spacing: -.035em; line-height: 1.1; }
-.experience-heading p { max-width: 28ch; font-size: 18px; color: var(--experience-muted); }
-.experience-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--experience-line); }
-.experience-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, .8fr) 44px; align-items: center; gap: 24px; padding: 40px 12px; border-bottom: 1px solid var(--experience-line); color: inherit; text-decoration: none; }
-.experience-row:hover { background: var(--experience-hover); }
-.experience-row:active { background: var(--experience-paper); }
-.experience-row:focus-visible, .experience-detail a:focus-visible { outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
-.experience-number { color: var(--experience-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
-.experience-company h3 { font-size: 22px; font-weight: 500; line-height: 1.25; letter-spacing: -.025em; }
-.experience-company span { display: block; margin-top: 12px; font-size: 14px; color: var(--experience-muted); }
-.experience-overview p { margin: 0 0 12px; font: 400 clamp(23px, 2.2vw, 32px)/1.15 var(--experience-display); }
-.experience-overview span { display: block; max-width: 36ch; color: var(--experience-muted); font-size: 16px; line-height: 1.5; }
-.experience-role { font-size: 15px; }
-.experience-open { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--experience-line); border-radius: 50%; }
-.experience-open svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
-.experience-section :is(h2,h3), .experience-detail :is(h1,h2,h3) { min-width: 0; overflow-wrap: break-word; text-wrap: balance; }
-.experience-detail { color: var(--experience-ink); font-family: var(--experience-font); }
-.experience-intro { padding-block: 36px 48px; }
-.experience-intro h1 { max-width: 18ch; margin: 0; font: 400 clamp(44px, 6.5vw, 84px)/1.06 var(--experience-display); letter-spacing: -.035em; }
-.experience-lead { max-width: 49ch; margin-block: 24px 16px; font-size: clamp(19px, 2vw, 24px); line-height: 1.5; text-wrap: pretty; }
-.experience-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--experience-line); }
-.experience-facts dt { font-size: 14px; color: var(--experience-muted); margin-bottom: 8px; }
-.experience-facts dd { margin: 0; font-size: 18px; }
-.experience-story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); gap: 32px; padding: 48px 0 64px; border-top: 1px solid var(--experience-line); }
-.experience-detail h2 { font-size: clamp(28px, 3vw, 38px); font-weight: 500; letter-spacing: -.025em; line-height: 1.15; }
-.experience-story > div > p { margin: 0; font-size: 20px; line-height: 1.65; text-wrap: pretty; }
-.experience-contributions { margin: 32px 0 0; }
-.experience-contributions > div + div { margin-top: 28px; }
-.experience-contributions dt { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
-.experience-contributions dd { margin: 0; max-width: 60ch; font-size: 17px; color: var(--experience-muted); line-height: 1.65; }
-.experience-projects { padding: 40px clamp(20px, 4vw, 48px); background: var(--experience-hover); border-radius: 28px; scroll-margin-top: 24px; }
-.experience-projects h2 { min-width: 0; overflow-wrap: break-word; margin-bottom: 32px; }
-.experience-project { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding-block: 24px; border-top: 1px solid var(--experience-line); text-decoration: none; }
-.experience-project h3 { font-size: 24px; font-weight: 500; }
-.experience-project p { max-width: 56ch; margin-top: 12px; color: var(--experience-muted); font-size: 17px; line-height: 1.6; }
-.experience-project > span { white-space: nowrap; font-size: 15px; text-decoration: underline; text-underline-offset: 5px; }
-.experience-project:hover h3 { text-decoration: underline; text-underline-offset: 5px; }
-.experience-project:active { opacity: .8; }
-@media (max-width: 1000px) {
-  .experience-row { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.2fr) 44px; gap: 20px; }
-  .experience-role { grid-column: 2; grid-row: 2; }
-  .experience-overview { grid-column: 3; grid-row: 1 / 3; }
-  .experience-open { grid-column: 4; grid-row: 1 / 3; }
-}
-@media (max-width: 600px) {
-  .experience-section { padding-block: 40px 64px; }
-  .experience-heading { display: block; margin-bottom: 32px; }
-  .experience-heading p { margin-top: 20px; max-width: none; }
-  .experience-row { grid-template-columns: minmax(0, 1fr) 44px; padding: 28px 0; gap: 16px; }
-  .experience-number { display: none; }
-  .experience-company { grid-column: 1; grid-row: 1; }
-  .experience-open { grid-column: 2; grid-row: 1; }
-  .experience-role { grid-column: 1 / -1; grid-row: 2; }
-  .experience-overview { grid-column: 1 / -1; grid-row: 3; margin-top: 8px; }
-  .experience-company span { font-size: 15px; margin-top: 8px; }
-  .experience-facts { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .experience-story { grid-template-columns: minmax(0, 1fr); padding-block: 32px 48px; }
-  .experience-project { align-items: flex-start; flex-direction: column; gap: 20px; }
-}
-@media (prefers-reduced-motion: reduce) { .experience-section, .experience-detail { scroll-behavior: auto; } }
+/* Experience: the chapter list on the home page and the page for each role.
+   Selectors carry an element or parent so they win over the shared classes
+   they compose, whichever stylesheet loads first. */
 
-/* Career deck: shared showcase surfaces, aligned to the contact container. */
-:root {
-  --career-autodesk: var(--color-surface);
-  --career-siemens: #e3eeea;
-  --career-accenture: #eee7ec;
-  --career-siemens-ink: #285951;
-  --career-accenture-ink: #574352;
-  --career-rule: color-mix(in srgb, var(--color-ink) 18%, transparent);
+/* ---- Home: one row per role ---------------------------------------------- */
+.exp-chapters { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+a.exp-chapter { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(220px, 280px); grid-template-areas: "tile employer period" "tile overview period"; align-items: center; gap: 8px clamp(20px, 3vw, 44px); padding: clamp(20px, 2.4vw, 32px); }
+a.exp-chapter .company-tile { --size: clamp(88px, 9vw, 120px); grid-area: tile; }
+.exp-employer { grid-area: employer; align-self: end; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+.exp-employer h3 { margin: 0; font-size: 1.125rem; font-weight: 500; line-height: 1.3; }
+.exp-employer p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.3; }
+.exp-overview { grid-area: overview; align-self: start; }
+.exp-overview p { margin: 6px 0 0; color: var(--ink-soft); text-wrap: pretty; }
+.exp-overview .exp-title { margin: 0; color: var(--ink); font-size: clamp(1.5rem, 2.5vw, 2.125rem); font-weight: 500; line-height: 1.12; letter-spacing: -.022em; }
+.exp-period { grid-area: period; display: grid; gap: 14px; align-content: center; align-self: stretch; padding-left: clamp(20px, 3vw, 44px); border-left: 1px solid var(--line); }
+.exp-period p { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* Tenure bar: a pill on a hairline, placed on a scale that all roles share. */
+.exp-track { position: relative; display: block; height: 10px; }
+.exp-track::before { content: ""; position: absolute; inset: 4px 0; border-radius: 999px; background: var(--line-strong); }
+.exp-track i { position: absolute; top: 0; bottom: 0; left: var(--from); width: var(--span); min-width: 10px; border-radius: 999px; background: var(--grain), linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent), var(--accent-blend) 55%)); background-blend-mode: overlay, normal; transform-origin: 0 50%; }
+/* The bar draws out once its row has settled. */
+html.reveal-ready [data-reveal] .exp-track i { scale: 0 1; transition: scale 900ms var(--ease-out) 350ms; }
+html.reveal-ready [data-reveal].is-revealed .exp-track i { scale: 1 1; }
+
+.exp-more { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 500; transition: color 200ms ease; }
+.exp-more svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; transition: translate 320ms var(--ease-out); }
+a:focus-visible .exp-more { color: var(--accent-ink); }
+a:focus-visible .exp-more svg { translate: 4px 0; }
+@media (hover: hover) {
+  a:hover .exp-more { color: var(--accent-ink); }
+  a:hover .exp-more svg { translate: 4px 0; }
 }
-.experience-section {
-  width: min(calc(100% - 2 * var(--home-content-inset)), var(--content-width));
-  max-width: var(--content-width);
-  padding: 64px 0 80px;
+
+@media (max-width: 820px) {
+  a.exp-chapter { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "tile employer" "overview overview" "period period"; gap: 16px; }
+  a.exp-chapter .company-tile { --size: 64px; }
+  .exp-employer { align-self: center; display: block; }
+  .exp-period { gap: 12px; padding: 0; border-left: 0; }
+  .exp-period p { color: var(--muted); font-size: 1rem; }
+  .exp-period .exp-more { margin-top: 6px; }
 }
-.experience-heading { align-items: flex-end; gap: 48px; margin-bottom: 40px; }
-.experience-heading h2 { max-width: 19ch; font-size: clamp(36px, 4.2vw, 60px); line-height: 1.04; }
-.experience-heading p { max-width: 32ch; margin: 0 0 4px; font-size: 18px; line-height: 1.5; text-wrap: pretty; }
-.career-deck { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 0; }
-.career-deck > li { display: flex; min-width: 0; }
-.career-card { display: flex; flex-direction: column; width: 100%; padding: 32px; border-radius: 28px; background: var(--career-autodesk); color: var(--experience-ink); text-decoration: none; transition: transform 240ms ease; }
-.career-card-siemens { background: var(--career-siemens); color: var(--career-siemens-ink); }
-.career-card-accenture { background: var(--career-accenture); color: var(--career-accenture-ink); }
-.company-mark { display: flex; align-items: center; height: 48px; }
-.company-mark svg { display: block; width: 48px; height: 40px; fill: currentColor; }
-.company-mark-siemens svg { width: 144px; height: 30px; }
-.company-mark-accenture svg { width: 44px; }
-.career-brand h3 { margin: 16px 0 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
-.career-copy { margin-block: 40px 32px; }
-.career-copy > p { max-width: 14ch; min-width: 0; overflow-wrap: break-word; margin: 0; font-size: clamp(28px, 2.5vw, 36px); font-weight: 500; line-height: 1.08; letter-spacing: -.035em; text-wrap: balance; }
-.career-copy > span { display: block; margin-top: 16px; font-size: 16px; line-height: 1.5; text-wrap: pretty; }
-.career-tenure { display: flex; flex-direction: column; gap: 8px; margin-top: auto; font-size: 15px; line-height: 1.4; }
-.career-tenure > span:first-child { font-weight: 500; }
-.career-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--career-rule); margin-top: 24px; padding-top: 20px; font-size: 15px; }
-.career-arrow { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--experience-paper); }
-.career-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
-.career-card:focus-visible { outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
-.career-card:active { transform: translateY(-2px); }
-@media (hover: hover) { .career-card:hover { transform: translateY(-8px); } }
-.experience-detail { --career-surface: var(--career-autodesk); }
-.experience-detail[data-company="siemens"] { --career-surface: var(--career-siemens); }
-.experience-detail[data-company="accenture"] { --career-surface: var(--career-accenture); }
-.experience-intro { margin-top: 32px; padding: 32px 48px 40px; border-radius: 28px; background: var(--career-surface); }
-.experience-intro .project-breadcrumb { margin-bottom: 24px; }
-.experience-brand { display: flex; align-items: center; gap: 20px; margin-bottom: 32px; font-size: 18px; }
-.experience-intro h1 { max-width: 18ch; font-family: var(--experience-font); font-weight: 500; font-size: clamp(40px, 5vw, 68px); letter-spacing: -.04em; }
-.experience-story { border-top: 0; padding-top: 64px; }
-@media (max-width: 1000px) and (min-width: 701px) {
-  .career-deck { gap: 12px; }
-  .career-card { padding: 24px; }
-  .career-copy > p { font-size: 28px; }
-  .career-tenure { min-height: 72px; }
+
+/* ---- Role page: centred opener -------------------------------------------- */
+.exp-intro-inner { display: grid; justify-items: center; gap: clamp(20px, 2.4vw, 28px); text-align: center; }
+.exp-intro-inner .breadcrumb { justify-content: center; }
+.exp-brand { display: grid; justify-items: center; gap: 14px; margin-top: clamp(8px, 3vw, 36px); }
+.exp-brand .company-tile { --size: clamp(104px, 12vw, 152px); }
+.exp-brand p { margin: 0; color: var(--ink-soft); font-size: 1.125rem; }
+.exp-intro-inner .lead { max-width: 640px; }
+dl.exp-facts { width: 100%; max-width: 860px; margin-top: clamp(8px, 2vw, 20px); }
+dl.exp-facts > div { padding-inline: 12px; }
+@media (max-width: 600px) { dl.exp-facts { grid-template-columns: 1fr; } }
+
+/* ---- Role page: focus and contributions ----------------------------------- */
+dl.exp-contributions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; margin: 0; }
+div.exp-contribution { display: grid; align-content: start; gap: 8px; }
+/* Small markers keep the quarter-disc silhouette with tighter corners. */
+.exp-contribution .shape { width: 40px; height: 40px; margin-bottom: 16px; box-shadow: inset 0 1px 2px rgb(255 255 255 / .22); }
+.exp-contribution .shape-tl { border-radius: 100% 6px 6px 6px; }
+.exp-contribution .shape-tr { border-radius: 6px 100% 6px 6px; }
+.exp-contribution .shape-br { border-radius: 6px 6px 100% 6px; }
+.exp-contribution dt { font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.2; letter-spacing: -.015em; }
+.exp-contribution dd { margin: 0; color: var(--ink-soft); text-wrap: pretty; }
+
+/* ---- Role page: projects --------------------------------------------------- */
+ul.exp-projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 14px; margin: 0 auto; padding: 0; list-style: none; }
+ul.exp-projects[data-count="1"] { max-width: 720px; }
+a.exp-project { display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; height: 100%; }
+.exp-project-meta { margin: 0; color: var(--muted); font-size: var(--text-small); }
+.exp-project h3 { margin: 0; }
+.exp-project-summary { margin: 0; color: var(--ink-soft); text-wrap: pretty; }
+.exp-project .chip-list { margin-top: 6px; }
+.exp-project .exp-more { margin-top: 10px; }
+
+/* ---- Role page: onward ------------------------------------------------------ */
+.panel.exp-onward { padding-block: clamp(28px, 4vw, 56px); }
+.exp-onward nav { display: grid; justify-items: center; gap: 18px; text-align: center; }
+a.exp-next { display: inline-flex; align-items: center; gap: clamp(14px, 2vw, 22px); padding: 8px 12px; border-radius: var(--radius-card); color: var(--ink); text-decoration: none; }
+a.exp-next .company-tile { --size: clamp(56px, 7vw, 80px); }
+.exp-next strong { font-size: clamp(1.75rem, 3.4vw, 2.75rem); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; text-align: left; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: .18em; transition: text-decoration-color 200ms ease; }
+.exp-next > svg { width: clamp(18px, 2vw, 24px); height: auto; flex: none; fill: none; stroke: var(--accent-ink); stroke-width: 1.5; transition: translate 320ms var(--ease-out); }
+a.exp-next:focus-visible strong { text-decoration-color: var(--accent-ink); }
+a.exp-next:focus-visible > svg { translate: 6px 0; }
+@media (hover: hover) {
+  a.exp-next:hover strong { text-decoration-color: var(--accent-ink); }
+  a.exp-next:hover > svg { translate: 6px 0; }
 }
-@media (max-width: 700px) {
-  .experience-section { padding-block: 40px 48px; }
-  .experience-heading { display: block; margin-bottom: 28px; }
-  .experience-heading p { margin-top: 20px; max-width: 32ch; font-size: 17px; }
-  .career-deck { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .career-card { padding: 28px; border-radius: 24px; }
-  .career-brand { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-  .career-brand h3 { margin: 0; max-width: 13ch; text-align: right; }
-  .company-mark-siemens svg { width: 112px; }
-  .career-copy { margin-block: 32px 24px; }
-  .career-copy > p { font-size: 36px; }
-  .experience-intro { padding: 24px; border-radius: 24px; }
-  .experience-brand { align-items: flex-start; flex-direction: column; gap: 12px; }
-}
+
 @media (prefers-reduced-motion: reduce) {
-  .career-card { transition: none; }
-  .career-card:hover, .career-card:active { transform: none; }
+  .exp-more, .exp-more svg, .exp-next strong, .exp-next > svg { transition: none; }
 }

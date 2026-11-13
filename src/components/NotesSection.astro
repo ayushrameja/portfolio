@@ -1,0 +1,54 @@
+---
+import { getEntry } from "astro:content";
+import Panel from "./Panel.astro";
+import { noteDate } from "../lib/note-presentation";
+import "../styles/notes.css";
+
+/** The home page's Notes section: one lead essay with a line pulled from it,
+ *  and two shorter cards. The three essays are chosen by hand. */
+const [featured, review, life] = await Promise.all([
+  getEntry("notes", "how-to-review-agent-written-prs"),
+  getEntry("notes", "code-review-comments-that-actually-help"),
+  getEntry("notes", "gita-detachment-vs-apathy"),
+]);
+if (!featured || !review || !life) throw new Error("A curated Notes essay is missing from the notes collection.");
+const desks = {
+  engineering: { label: "Engineering", tile: "tone-lime q-tl" },
+  life: { label: "Life", tile: "tone-sky q-br" },
+} as const;
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+---
+<Panel id="notes" glow="lime" tabindex="-1" aria-labelledby="notes-title">
+  <div class="panel-inner">
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>Notes</p>
+      <h2 class="display" id="notes-title" data-reveal="words">Field notes.</h2>
+      <p class="lead" data-reveal>On building software and figuring out the rest.</p>
+    </header>
+    <div class="fn-grid">
+      <article class="fn-cell fn-cell-lead" data-reveal="left">
+        <a class="card fn-card fn-lead notes-link" href={`/notes/${featured.id}/`} aria-labelledby="fn-lead-title">
+          <p class="notes-meta"><span>{desks[featured.data.desk].label}</span><time datetime={featured.data.publishedAt}>{noteDate(featured.data.publishedAt)}</time><span>{featured.data.readingTime} read</span></p>
+          <h3 class="heading notes-title" id="fn-lead-title">{featured.data.title}</h3>
+          <figure class="fn-quote">
+            <span class="fn-quote-mark" aria-hidden="true"><i class="shape tone-lime notes-q q-bl" data-reveal="turn"></i><i class="shape tone-lime notes-q q-bl" data-reveal="turn"></i></span>
+            <blockquote>Someone still has to decide whether the diff is <mark>correct, safe, maintainable, and worth shipping.</mark></blockquote>
+            <figcaption class="fn-aside"><svg viewBox="0 0 40 32" fill="none" aria-hidden="true"><path d="M34 28C12 28 8 18 10 5m-6 7 6-8 6 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg><span>The part we can’t automate away.</span></figcaption>
+          </figure>
+          <span class="fn-more">Read the essay <span class="shape tone-lime notes-q q-tl notes-go" aria-hidden="true"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span></span>
+        </a>
+      </article>
+      {[review, life].map(note => <article class="fn-cell" data-reveal="right">
+        <a class="card fn-card notes-link" href={`/notes/${note.id}/`} aria-labelledby={`fn-${note.id}`}>
+          <span class="fn-card-top">
+            <span class="notes-meta"><span>{desks[note.data.desk].label}</span><span>{note.data.readingTime} read</span></span>
+            <span class:list={["shape notes-q notes-go", desks[note.data.desk].tile]} aria-hidden="true"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span>
+          </span>
+          <h3 class="subheading notes-title" id={`fn-${note.id}`}>{note.data.title}</h3>
+          <p class="fn-desc">{note.data.description}</p>
+        </a>
+      </article>)}
+    </div>
+    <p class="fn-all" data-reveal><a class="button-quiet" href="/notes/">All notes <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></a></p>
+  </div>
+</Panel>

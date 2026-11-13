@@ -1,0 +1,15 @@
+---
+/** An open section on the white canvas. `glow` picks the accent pair for its
+ *  wash of light, its pattern, and what `.eyebrow`, links and prose pick up.
+ *  `pattern={false}` leaves only the wash, for sections that follow another
+ *  of the same accent or carry long text. */
+interface Props {
+  as?: "section" | "div" | "article" | "header" | "footer";
+  glow?: "violet" | "lime" | "coral" | "sky";
+  pattern?: boolean;
+  class?: string;
+  [attribute: string]: unknown;
+}
+const { as: Tag = "section", glow = "violet", pattern = true, class: className, ...rest } = Astro.props;
+---
+<Tag class:list={["panel", className]} data-glow={glow} data-plain={pattern ? undefined : ""} {...rest}>{pattern && <i class="panel-pattern" aria-hidden="true" data-drift></i>}<slot /></Tag>
