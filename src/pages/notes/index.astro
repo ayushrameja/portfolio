@@ -1,0 +1,58 @@
+---
+import { getNotes } from "../../lib/content";
+import { noteDate } from "../../lib/note-presentation";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Panel from "../../components/Panel.astro";
+import "../../styles/notes.css";
+
+const notes = await getNotes();
+const desks = [
+  { id: "engineering", label: "Engineering", tile: "tone-lime q-tl" },
+  { id: "life", label: "Life", tile: "tone-sky q-br" },
+].map(desk => ({ ...desk, entries: notes.filter(note => note.data.desk === desk.id) }));
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+---
+<BaseLayout title="Notes · Ayush Rameja" description="Archived engineering and life essays by Ayush Rameja.">
+  <Panel glow="lime" aria-labelledby="notes-heading">
+    <header class="section-head notes-intro">
+      <span class="notes-glyph" aria-hidden="true">
+        <i class="shape tone-lime notes-q q-tl" data-reveal="turn"></i>
+        <i class="shape tone-sky shape-pill" data-reveal></i>
+        <i class="shape tone-violet shape-pill" data-reveal></i>
+        <i class="shape tone-coral shape-pill" data-reveal></i>
+        <i class="shape tone-lime shape-pill" data-reveal></i>
+      </span>
+      <h1 class="display" id="notes-heading" data-reveal>Notes</h1>
+      <p class="lead" data-reveal>{notes.length} archived essays, retained as written.</p>
+      <nav aria-label="Note categories" data-reveal>
+        <ul class="chip-list notes-jumps">
+          {desks.map(desk => <li><a class="chip" href={`#${desk.id}`}><i class:list={["shape notes-q", desk.tile]} aria-hidden="true"></i>{desk.label} <span>{desk.entries.length}</span></a></li>)}
+        </ul>
+      </nav>
+    </header>
+  </Panel>
+  {desks.map(desk => <Panel id={desk.id} glow="lime" tabindex="-1" aria-labelledby={`${desk.id}-heading`}>
+    <div class="panel-inner">
+      <header class="notes-desk-head" data-reveal>
+        <i class:list={["shape notes-q", desk.tile]} aria-hidden="true" data-reveal="turn"></i>
+        <h2 class="heading" id={`${desk.id}-heading`}>{desk.label}</h2>
+        <p class="muted">{desk.entries.length} notes</p>
+      </header>
+      <ul class="notes-list">
+        {desk.entries.map(note => <li data-reveal>
+          <a class="notes-row notes-link" href={`/notes/${note.id}/`}>
+            <time class="notes-row-date" datetime={note.data.publishedAt}>{noteDate(note.data.publishedAt)}</time>
+            <div class="notes-row-text">
+              <h3 class="subheading notes-title">{note.data.title}</h3>
+              <p>{note.data.description}</p>
+            </div>
+            <span class="notes-row-end">
+              <span class="notes-row-time">{note.data.readingTime} read</span>
+              <span class:list={["shape notes-q notes-go", desk.tile]} aria-hidden="true"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span>
+            </span>
+          </a>
+        </li>)}
+      </ul>
+    </div>
+  </Panel>)}
+</BaseLayout>

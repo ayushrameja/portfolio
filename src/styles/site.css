@@ -1,0 +1,204 @@
+/* Shared building blocks for every page below the hero. Page and section
+   styles compose these instead of redefining surfaces, type or controls. */
+
+/* ---- Panels: rounded near-black surfaces on the white canvas ------------ */
+.panel {
+  --glow-a: color-mix(in oklab, var(--violet) 30%, transparent);
+  --glow-b: color-mix(in oklab, var(--coral) 20%, transparent);
+  --accent: var(--violet);
+  --accent-blend: var(--coral);
+  --focus: var(--ink);
+  color-scheme: dark;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  margin: 0 var(--gutter) var(--gutter);
+  padding: var(--panel-pad);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  color: var(--ink);
+  scroll-margin-top: var(--gutter);
+}
+.panel:first-child { margin-top: var(--gutter); }
+.panel[data-glow="lime"] { --accent: var(--lime); --accent-blend: var(--sky); --glow-a: color-mix(in oklab, var(--lime) 17%, transparent); --glow-b: color-mix(in oklab, var(--sky) 20%, transparent); }
+.panel[data-glow="coral"] { --accent: var(--coral); --accent-blend: var(--lime); --glow-a: color-mix(in oklab, var(--coral) 24%, transparent); --glow-b: color-mix(in oklab, var(--violet) 26%, transparent); }
+.panel[data-glow="sky"] { --accent: var(--sky); --accent-blend: var(--violet); --glow-a: color-mix(in oklab, var(--sky) 22%, transparent); --glow-b: color-mix(in oklab, var(--lime) 13%, transparent); }
+/* Light comes in from two corners, in fixed sizes so tall panels stay calm. */
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 420px at 0% 0%, var(--glow-a), transparent 72%),
+    radial-gradient(600px 400px at 100% 100%, var(--glow-b), transparent 72%);
+}
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--grain-light);
+  opacity: .2;
+}
+.panel-inner { width: 100%; max-width: var(--content-width); margin-inline: auto; }
+.panel-reading { width: 100%; max-width: var(--reading-width); margin-inline: auto; }
+
+/* ---- Type ---------------------------------------------------------------- */
+.display { margin: 0; font-size: clamp(2.5rem, 5.4vw, 4.75rem); font-weight: 500; line-height: 1.02; letter-spacing: -.035em; text-wrap: balance; }
+.heading { margin: 0; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; text-wrap: balance; }
+.subheading { margin: 0; font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.2; letter-spacing: -.015em; }
+.lead { margin: 0; font-size: clamp(1.125rem, 1.6vw, 1.375rem); line-height: 1.45; color: var(--ink-soft); text-wrap: pretty; }
+.muted { color: var(--muted); }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0; color: var(--muted); font-size: var(--text-small); letter-spacing: .01em; }
+/* A small quarter disc from the mark introduces the label. */
+.eyebrow::before { content: ""; width: 12px; height: 12px; border-radius: 100% 3px 3px 3px; background: linear-gradient(145deg, var(--accent, var(--violet)), var(--accent-blend, var(--coral))); }
+
+/* Section openers stay centred, like the hero. */
+.section-head { display: grid; justify-items: center; gap: 16px; margin: 0 auto clamp(32px, 5vw, 64px); max-width: 860px; text-align: center; }
+
+/* ---- Shapes: the mark's tiles as gradient-and-grain blocks ---------------- */
+.shape {
+  --tone: var(--violet);
+  --blend: var(--coral);
+  display: block;
+  border-radius: 12px;
+  background: var(--grain), linear-gradient(145deg, color-mix(in oklab, var(--tone), white 16%), var(--tone) 42%, color-mix(in oklab, var(--tone), var(--blend) 40%));
+  background-blend-mode: overlay, normal;
+  box-shadow: inset 0 2px 4px rgb(255 255 255 / .22), inset 0 -14px 28px rgb(0 0 0 / .14);
+}
+.tone-violet { --tone: var(--violet); --blend: var(--coral); }
+.tone-lime { --tone: var(--lime); --blend: var(--sky); }
+.tone-coral { --tone: var(--coral); --blend: var(--lime); }
+.tone-sky { --tone: var(--sky); --blend: var(--violet); }
+.shape-tl { border-radius: 100% 12px 12px 12px; }
+.shape-tr { border-radius: 12px 100% 12px 12px; }
+.shape-br { border-radius: 12px 12px 100% 12px; }
+.shape-bl { border-radius: 12px 12px 12px 100%; }
+.shape-pill { border-radius: 999px; }
+.shape-disc { border-radius: 50%; }
+/* Text set on a shape is always the dark surface colour. */
+.shape { color: var(--surface); }
+
+/* ---- Cards ---------------------------------------------------------------- */
+.card {
+  position: relative;
+  display: block;
+  padding: clamp(20px, 2.4vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  color: inherit;
+  text-decoration: none;
+}
+a.card { transition: border-color 220ms ease, background-color 220ms ease, translate 420ms var(--ease-out); }
+@media (hover: hover) {
+  a.card:hover { border-color: var(--line-strong); background: var(--surface-high); translate: 0 -3px; }
+}
+
+/* ---- Controls ------------------------------------------------------------- */
+.button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 13px 24px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--grain), linear-gradient(120deg, var(--lime), color-mix(in oklab, var(--lime), var(--sky) 26%));
+  background-blend-mode: overlay, normal;
+  color: var(--surface);
+  font: 500 1.125rem/1.2 var(--font-ui);
+  text-decoration: none;
+  cursor: pointer;
+  transition: translate 320ms var(--ease-out), filter 220ms ease, box-shadow 320ms var(--ease-out);
+}
+.button svg, .button-quiet svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.button svg { transition: translate 320ms var(--ease-out); }
+.button[disabled] { cursor: progress; filter: saturate(.5) brightness(.85); }
+/* The quiet control fills with lime from below, like the hero's Resume button. */
+.button-quiet {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 13px 22px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius-control);
+  background: var(--control);
+  color: var(--ink);
+  font: 400 1.125rem/1.2 var(--font-ui);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 222ms ease;
+}
+.button-quiet svg { color: var(--lime); transition: color 222ms ease; }
+.button-quiet::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--grain), linear-gradient(120deg, var(--lime), color-mix(in oklab, var(--lime), var(--sky) 26%)); background-blend-mode: overlay, normal; transform: translateY(101%); transition: transform 333ms var(--ease-out); }
+.button-quiet:focus-visible::before { transform: translateY(0); }
+.button-quiet:focus-visible, .button-quiet:focus-visible svg { color: var(--surface); }
+@media (hover: hover) {
+  /* The face lifts, brightens and throws a soft lime light; its arrow leans forward. */
+  .button:hover { translate: 0 -3px; filter: brightness(1.08) saturate(1.1); box-shadow: 0 10px 28px color-mix(in oklab, var(--lime) 30%, transparent); }
+  .button:hover svg { translate: 4px 0; }
+  .button-quiet:hover::before { transform: translateY(0); }
+  .button-quiet:hover, .button-quiet:hover svg { color: var(--surface); }
+}
+.text-link { color: inherit; text-decoration: underline; text-decoration-color: var(--accent, var(--lime)); text-decoration-thickness: 2px; text-underline-offset: .22em; transition: text-decoration-color 200ms ease, color 200ms ease; }
+@media (hover: hover) { .text-link:hover { color: var(--accent, var(--lime)); } }
+
+.chip { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 14px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink-soft); font-size: var(--text-small); line-height: 1.2; white-space: nowrap; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; color: var(--muted); font-size: var(--text-small); }
+.breadcrumb a { color: inherit; text-decoration: none; }
+.breadcrumb a:hover { color: var(--ink); }
+
+/* Label/value facts, used for roles, timelines and the like. */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; margin: 0; border-top: 1px solid var(--line); }
+.facts > div { padding: 16px 16px 16px 0; border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--muted); font-size: var(--text-small); }
+.facts dd { margin: 4px 0 0; font-size: 1.125rem; }
+
+/* ---- Prose: rendered Markdown on a dark panel ------------------------------ */
+.prose { color: var(--ink-soft); font-size: 1.1875rem; line-height: 1.7; overflow-wrap: break-word; }
+.prose > :first-child { margin-top: 0; }
+.prose :where(p, ul, ol, blockquote, pre, table, figure) { margin: 1.25em 0 0; }
+.prose :where(h2) { margin: 2.2em 0 0; color: var(--ink); font-size: 1.75rem; font-weight: 500; line-height: 1.2; letter-spacing: -.02em; scroll-margin-top: 24px; }
+.prose :where(h3) { margin: 1.8em 0 0; color: var(--ink); font-size: 1.3125rem; font-weight: 500; line-height: 1.3; letter-spacing: -.01em; scroll-margin-top: 24px; }
+.prose :where(strong) { color: var(--ink); font-weight: 600; }
+.prose :where(a) { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent, var(--lime)); text-decoration-thickness: 2px; text-underline-offset: .2em; }
+.prose :where(a:hover) { color: var(--accent, var(--lime)); }
+.prose :where(ul) { padding-left: 1.2em; list-style: disc; }
+.prose :where(ol) { padding-left: 1.4em; list-style: decimal; }
+.prose :where(li + li) { margin-top: .45em; }
+.prose :where(li)::marker { color: var(--accent, var(--lime)); }
+.prose :where(blockquote) { padding: 4px 0 4px 20px; border-left: 3px solid var(--accent, var(--violet)); color: var(--ink); font-size: 1.25rem; }
+.prose :where(code) { padding: .12em .4em; border-radius: 6px; background: var(--surface-high); font-family: var(--font-code); font-size: .88em; }
+.prose :where(pre) { overflow-x: auto; padding: 18px 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-raised); font-size: .9375rem; line-height: 1.6; }
+.prose :where(pre code) { padding: 0; background: none; font-size: inherit; }
+.prose :where(hr) { margin: 2.4em 0 0; border: 0; border-top: 1px solid var(--line); }
+.prose :where(img) { border-radius: 18px; }
+.prose :where(table) { width: 100%; border-collapse: collapse; font-size: 1rem; }
+.prose :where(th, td) { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+
+/* ---- Reveal: content settles in as it scrolls into view --------------------
+   Only armed once the head script has confirmed JavaScript and motion. Fade
+   and movement only: a blur here would re-rasterise whole cards. */
+html.reveal-ready [data-reveal] { opacity: 0; translate: 0 22px; transition: opacity 700ms var(--ease-out), translate 900ms var(--ease-out), rotate 900ms var(--ease-out); transition-delay: var(--reveal-delay, 0ms); }
+/* Shapes turn into place, like the mark assembling in the hero. */
+html.reveal-ready [data-reveal="turn"] { rotate: -90deg; }
+html.reveal-ready [data-reveal].is-revealed { opacity: 1; translate: 0 0; rotate: 0deg; }
+@media print { html.reveal-ready [data-reveal] { opacity: 1; translate: none; rotate: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .button, .button svg, .button-quiet, .button-quiet::before, a.card { transition: none; }
+}

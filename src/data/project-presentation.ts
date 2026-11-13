@@ -35,6 +35,26 @@ export const projectImages: Record<string, ProjectImage[]> = {
 };
 projectImages["low-hp-studio"] = [projectImages.burnhop[0], projectImages.greytrace[0]];
 
+// The project records carry these two names in capitals; show them as the rest of the site does.
+// CHUBB stays as written, matching its project title.
+const clientNames: Record<string, string> = { AUTODESK: "Autodesk", SIEMENS: "Siemens" };
+
 export function projectClient(client?: string, employer?: string) {
-  return client && employer === "accenture" ? `${client} via Accenture` : client;
+  const name = client && (clientNames[client] ?? client);
+  return name && employer === "accenture" ? `${name} via Accenture` : name;
+}
+
+export const projectGroups = [
+  { id: "employer", label: "Employer work", description: "Engineering for Autodesk, Siemens and clients through Accenture." },
+  { id: "independent", label: "Independent", description: "Games, websites and tools built from curiosity." },
+] as const;
+
+// Tone and corner are paired as in the hero's mosaic.
+const tileLooks = [["violet", "tl"], ["lime", "bl"], ["coral", "br"], ["sky", "tr"]] as const;
+
+/** A project's numbered tile: its place in the full list, with a tone and
+ *  corner that stay the same wherever the project appears. */
+export function projectTile(index: number) {
+  const [tone, corner] = tileLooks[index % tileLooks.length];
+  return { number: String(index + 1).padStart(2, "0"), tone, shape: `shape-${corner} tone-${tone}` };
 }

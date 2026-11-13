@@ -1,0 +1,229 @@
+---
+import Panel from "./Panel.astro";
+import { brandMarks, mosaicProjects } from "../data/project-mosaic";
+import "../styles/work.css";
+
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+const sizes: Partial<Record<(typeof mosaicProjects)[number]["id"], string>> = { comnext: "is-wide", templio: "is-wide", studio: "is-tall" };
+// The Autodesk screenshot is cut into a 5-column grid of blocks; these blocks
+// are swapped for tiles from the mark. A third row is only shown on phones.
+const mosaicCells = Array.from({ length: 15 }, (_, index) => ({ index, column: index % 5, row: Math.floor(index / 5) }));
+const mosaicTiles: Record<number, string> = { 4: "shape-tr tone-sky", 5: "shape-bl tone-lime", 8: "shape-tl tone-violet" };
+const icons = {
+  course: ["M16 8c-4-3-8-3-12-2v20c4-1 8-1 12 2 4-3 8-3 12-2V6c-4-1-8-1-12 2Zm0 0v20"],
+  roadmap: ["M5 26h15a6 6 0 0 0 0-12h-8a5 5 0 0 1 0-10h14m-5-4 5 4-5 4"],
+  session: ["M5 5h22v17H15l-8 6v-6H5Zm6 7h10m-10 5h6"],
+  roles: ["m16 3-11 5v9c0 7 11 12 11 12s11-5 11-12V8Z", "m10 16 4 4 8-9"],
+  api: ["m11 9-8 7 8 7m10-14 8 7-8 7M19 5l-6 22"],
+  storage: ["M8 26a7 7 0 0 1-1-14 9 9 0 0 1 23 5 8 8 0 0 1-7 9Z", "M16 24V13m-4 4 4-4 4 4"],
+};
+const journey = [
+  { label: "Courses", icon: icons.course, look: "shape-tl tone-violet" },
+  { label: "Roadmaps", icon: icons.roadmap, look: "shape-disc tone-lime" },
+  { label: "Sessions", icon: icons.session, look: "shape-br tone-sky" },
+];
+const services = [
+  { label: "Custom roles", icon: icons.roles, look: "shape-bl tone-violet" },
+  { label: "APIs", icon: icons.api, look: "shape-disc tone-sky" },
+  { label: "Cloud storage", icon: icons.storage, look: "shape-tr tone-coral" },
+];
+// Bar heights for the signal, as a share of the stage; the second value is the
+// height each bar moves to while the card is hovered.
+const signal = [[18, 30], [30, 18], [18, 44], [52, 26], [100, 70], [38, 92], [70, 40], [24, 56], [18, 30], [44, 20], [26, 62], [18, 34], [34, 18]];
+---
+<Panel id="selected-work" glow="violet" tabindex="-1" aria-labelledby="work-title">
+  <div class="panel-inner">
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>Selected work</p>
+      <h2 class="display" id="work-title" data-reveal>Serious about building. <span class="work-title-accent">Curious about everything.</span></h2>
+    </header>
+
+    <ul class="work-grid">
+      {mosaicProjects.map(project => {
+        const mark = brandMarks[project.brand];
+        return (
+          <li class={sizes[project.id]} data-reveal>
+            <a class:list={["card work-card", `tone-${project.tone}`]} href={project.href}>
+              <span class="work-card-top">
+                <span class:list={["work-brand-mark", `work-brand-mark--${project.brand}`]} aria-hidden="true">
+                  {"mask" in mark
+                    ? <span class="work-brand-mask" style={`--mask:url(${mark.mask})`}></span>
+                    : <svg viewBox={mark.viewBox}>{mark.paths.map(d => <path d={d} />)}</svg>}
+                </span>
+                <span class="work-brand-text"><span>{project.org}</span><span class="work-brand-kind">{project.attribution && `${project.attribution} · `}{project.kind}</span></span>
+                <span class="work-go" aria-hidden="true"><i class:list={["shape shape-tr work-turn", `tone-${project.tone}`]}></i><svg class="work-arrow" viewBox="0 0 16 16"><path d={arrowPath} /></svg></span>
+              </span>
+
+              <div class:list={["work-art", `work-art--${project.id}`]} aria-hidden="true">
+                {project.id === "comnext" && (
+                  <div class="art-mosaic">
+                    {mosaicCells.map(cell => mosaicTiles[cell.index]
+                      ? <i class:list={["shape work-turn", mosaicTiles[cell.index]]}></i>
+                      : <span class="art-mosaic-block" style={`--c:${cell.column};--r:${cell.row}`}><img src="/projects/autodesk-home.jpg" alt="" width="1280" height="800" loading="lazy" decoding="async" /></span>)}
+                  </div>
+                )}
+                {project.id === "learn" && (
+                  <div class="art-nodes art-journey">
+                    <svg class="art-path" viewBox="0 0 300 100" preserveAspectRatio="none"><path d="M50 62C100 62 100 38 150 38s50 24 100 24" /></svg>
+                    {journey.map(stop => <span class="art-node"><span class="art-node-tile"><i class:list={["shape work-turn", stop.look]}></i><svg viewBox="0 0 32 32">{stop.icon.map(d => <path d={d} />)}</svg></span><span class="art-node-label">{stop.label}</span></span>)}
+                  </div>
+                )}
+                {project.id === "studio" && (
+                  <div class="art-studio">
+                    <span class="art-shot"><img src="/projects/burnhop.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /><span class="art-shot-name">Burnhop</span></span>
+                    <span class="art-strip"><i class="shape shape-bl tone-coral work-turn"></i><i class="shape shape-pill tone-lime"></i><i class="shape shape-tr tone-sky work-turn"></i></span>
+                    <span class="art-shot"><img src="/projects/greytrace.webp" alt="" width="1280" height="800" loading="lazy" decoding="async" /><span class="art-shot-name">Greytrace</span></span>
+                  </div>
+                )}
+                {project.id === "siemens" && (
+                  <div class="art-signal">
+                    {signal.map(([rest, live], index) => <i class="shape shape-pill" style={`--h:${rest};--live:${live / rest};--i:${index}`}></i>)}
+                  </div>
+                )}
+                {project.id === "google" && (
+                  <div class="art-nodes art-services">
+                    {services.map(service => <span class="art-node"><span class="art-node-tile"><i class:list={["shape work-turn", service.look]}></i><svg viewBox="0 0 32 32">{service.icon.map(d => <path d={d} />)}</svg></span><span class="art-node-label">{service.label}</span></span>)}
+                  </div>
+                )}
+                {project.id === "templio" && (
+                  <div class="art-templio">
+                    <i class="shape shape-tl tone-coral work-turn"></i>
+                    <i class="shape shape-bl tone-lime work-turn"></i>
+                    <span class="art-shot"><img src="/projects/templio.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async" /></span>
+                  </div>
+                )}
+              </div>
+
+              <div class="work-card-copy">
+                <h3 class="subheading">{project.title}</h3>
+                <p>{project.summary}</p>
+                {project.visualNote && <p class="work-card-note">{project.visualNote}</p>}
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <p class="work-more" data-reveal><a class="button-quiet" href="/projects/">All projects <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></a></p>
+  </div>
+</Panel>
+
+<style>
+  /* The second sentence takes the panel's accent, as a grained gradient. */
+  .work-title-accent { display:block; padding-bottom:.08em; background:var(--grain),linear-gradient(100deg,color-mix(in oklab,var(--accent),white 34%),color-mix(in oklab,var(--accent-blend),white 22%)); background-blend-mode:overlay,normal; -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  /* Bento: two wide cards hold the corners and the studio card runs tall between them. */
+  .work-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; margin:0; padding:0; list-style:none; }
+  .work-grid > li { display:grid; grid-column:span 4; min-width:0; }
+  .work-grid > .is-wide { grid-column:span 8; }
+  .work-grid > .is-tall { grid-column:9/-1; grid-row:1/span 2; }
+  .work-card { isolation:isolate; overflow:hidden; display:flex; flex-direction:column; gap:22px; min-width:0; }
+  /* Each card catches a little of its own tone in one corner. */
+  .work-card::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(460px 280px at 100% 0%,color-mix(in oklab,var(--tone) 15%,transparent),transparent 70%); opacity:.7; transition:opacity 300ms ease; }
+  .work-card:focus-visible::before { opacity:1; }
+
+  .work-card-top { display:flex; align-items:center; gap:12px; min-height:44px; }
+  .work-brand-mark { display:grid; place-items:center; flex:none; min-width:44px; height:44px; padding:0 12px; border:1px solid var(--line); border-radius:14px; background:var(--surface-high); color:var(--ink); }
+  .work-brand-mark svg { display:block; width:auto; height:19px; fill:currentColor; }
+  .work-brand-mark--siemens svg { height:10px; }
+  .work-brand-mask { display:block; width:22px; height:22px; background:currentColor; -webkit-mask:var(--mask) center/contain no-repeat; mask:var(--mask) center/contain no-repeat; }
+  .work-brand-text { display:grid; min-width:0; margin-right:auto; font-size:1rem; line-height:1.3; }
+  .work-brand-kind { color:var(--muted); font-size:var(--text-small); }
+  /* The arrow rides on a quarter disc that turns with the card's other tiles. */
+  .work-go { position:relative; display:grid; place-items:center; flex:none; width:44px; height:44px; color:var(--surface); }
+  .work-go .shape { position:absolute; inset:0; }
+  .work-go .work-arrow { position:relative; transition:translate 420ms var(--ease-out); }
+  .work-card:focus-visible .work-go .work-arrow { translate:2px 0; }
+
+  .work-art { container-type:inline-size; position:relative; flex:1; display:grid; place-items:center; min-height:176px; }
+  .work-art--studio { place-items:stretch; }
+  .work-art img { display:block; }
+
+  /* .comNext: one page seen as blocks, some of them swapped out. */
+  .art-mosaic { --gap:8px; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:var(--gap); width:100%; }
+  .art-mosaic > * { aspect-ratio:1; }
+  .art-mosaic > :nth-child(n+11) { display:none; }
+  .art-mosaic-block { position:relative; overflow:hidden; border-radius:12px; background:var(--surface-high); }
+  /* Every block shows its own part of the same screenshot, gaps included. */
+  .art-mosaic-block img { position:absolute; left:calc(var(--c) * -1 * (100% + var(--gap))); top:calc(var(--r) * -1 * (100% + var(--gap))); width:calc(500% + 4 * var(--gap)); max-width:none; height:auto; }
+
+  /* Learn and Customer Experience: three labelled tiles in a row. */
+  .art-nodes { --node:clamp(56px,24cqi,84px); position:relative; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); justify-items:center; align-items:start; width:100%; max-width:380px; }
+  .art-node { display:grid; justify-items:center; gap:10px; width:100%; }
+  .art-node-tile { position:relative; display:grid; place-items:center; width:var(--node); aspect-ratio:1; color:var(--surface); }
+  .art-node-tile .shape { position:absolute; inset:0; }
+  .art-node-tile svg { position:relative; width:42%; height:42%; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .art-node-label { color:var(--muted); font-size:var(--text-caption); line-height:1.2; text-align:center; }
+  /* The journey rises to its middle stop along a dashed path. */
+  .art-journey { padding-top:22px; }
+  .art-journey .art-node:nth-of-type(2) { translate:0 -22px; }
+  .art-path { position:absolute; inset:0 0 auto; width:100%; height:calc(var(--node) + 22px); overflow:visible; fill:none; stroke:var(--line-strong); stroke-width:2; stroke-dasharray:2 7; stroke-linecap:round; }
+  .art-path path { vector-effect:non-scaling-stroke; }
+  /* The API sits in the middle, a little larger, wired to both sides. */
+  .art-services { align-items:center; }
+  .art-services .art-node:nth-of-type(2) .art-node-tile { width:calc(var(--node) * 1.22); }
+  .art-services::before { content:""; position:absolute; top:calc(var(--node) * .61); left:18%; right:18%; border-top:2px dotted var(--line-strong); }
+
+  /* IGBT Health: a signal drawn in pills around a baseline. */
+  .art-signal { position:relative; display:flex; align-items:center; justify-content:center; gap:clamp(5px,2.4%,9px); width:100%; max-width:340px; height:140px; }
+  .art-signal::before { content:""; position:absolute; left:0; right:0; top:50%; border-top:1px solid var(--line); }
+  .art-signal .shape { --tone:color-mix(in oklab,var(--lime),var(--sky) calc(var(--i) * 8%)); --blend:var(--violet); position:relative; flex:1; max-width:14px; height:calc(var(--h) * 1%); transition:scale 520ms var(--ease-out); transition-delay:calc(var(--i) * 18ms); }
+  .work-card:focus-visible .art-signal .shape { scale:1 var(--live); }
+
+  /* Low HP Studio: its two games, with a strip of tiles between them. */
+  .art-studio { display:flex; gap:8px; min-width:0; min-height:176px; }
+  .art-shot { position:relative; overflow:hidden; flex:1; min-width:0; min-height:0; border-radius:16px; background:var(--surface-high); }
+  .art-shot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .art-studio .art-shot:first-child img { object-position:100% 50%; }
+  .art-shot-name { position:absolute; left:8px; bottom:8px; padding:4px 10px; border-radius:999px; background:rgb(10 10 12/.82); color:var(--ink); font-size:var(--text-caption); line-height:1.3; }
+  .art-strip { display:flex; flex-direction:column; gap:8px; flex:none; width:clamp(30px,12%,44px); }
+  .art-strip .shape { width:100%; aspect-ratio:1; }
+  .art-strip .shape-pill { flex:1; aspect-ratio:auto; }
+
+  /* Templio: the site between two tiles, set down slightly by hand. */
+  .art-templio { --gap:8px; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); grid-template-rows:repeat(2,auto); gap:var(--gap); width:100%; }
+  .art-templio .shape { grid-column:1; aspect-ratio:1; }
+  .art-templio .art-shot { grid-area:1/2/3/6; border-radius:12px 16px 72px 12px; rotate:-1.2deg; transform-origin:0 100%; transition:rotate 700ms var(--ease-out); }
+  .art-templio .art-shot img { object-position:50% 0; }
+  .work-card:focus-visible .art-templio .art-shot { rotate:0deg; }
+
+  .work-card-copy h3 { overflow-wrap:break-word; }
+  .work-card-copy p { margin:6px 0 0; color:var(--ink-soft); font-size:1rem; line-height:1.5; text-wrap:pretty; }
+  .work-card-copy .work-card-note { display:flex; align-items:center; gap:8px; margin-top:12px; color:var(--muted); font-size:var(--text-caption); }
+  .work-card-note::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--line-strong); }
+
+  .work-more { display:flex; justify-content:center; margin:clamp(28px,4vw,48px) 0 0; }
+
+  @media(hover:hover) {
+    .work-card:hover::before { opacity:1; }
+    .work-card:hover .work-go .work-arrow { translate:2px 0; }
+    .work-card:hover .art-signal .shape { scale:1 var(--live); }
+    .work-card:hover .art-templio .art-shot { rotate:0deg; }
+  }
+  /* Tall studio card: the games stack and the strip lies between them. */
+  @media(min-width:1000px) {
+    .art-studio { flex-direction:column; }
+    .art-strip { flex-direction:row; width:100%; height:clamp(64px,26cqi,88px); }
+    .art-strip .shape { width:auto; height:100%; }
+    .art-studio .art-shot:first-child img { object-position:100% 50%; }
+  }
+  @media(max-width:999px) {
+    .work-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .work-grid > li,.work-grid > .is-tall { grid-column:auto; grid-row:auto; }
+    .work-grid > .is-wide { grid-column:1/-1; }
+  }
+  @media(max-width:639px) {
+    .work-grid { grid-template-columns:minmax(0,1fr); }
+    .art-mosaic { --gap:6px; }
+    .art-mosaic > :nth-child(n+11) { display:block; }
+    .art-templio { --gap:6px; }
+    .art-templio .art-shot { border-bottom-right-radius:44px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    .work-card::before,.work-go .work-arrow,.art-signal .shape,.art-templio .art-shot { transition:none; }
+    .work-card:hover .work-go .work-arrow,.work-card:focus-visible .work-go .work-arrow { translate:none; }
+    .work-card:hover .art-signal .shape,.work-card:focus-visible .art-signal .shape { scale:none; }
+    .art-templio .art-shot,.work-card:hover .art-templio .art-shot,.work-card:focus-visible .art-templio .art-shot { rotate:none; }
+  }
+</style>

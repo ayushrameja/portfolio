@@ -5,6 +5,7 @@ Feature decisions, corrections, and change history live here. Each topic records
 ## Topics
 
 - [Loading screen and hero](loading-screen.md): shared rounded panel, two-turn page-fold loader in the hero palette, rejected approaches, and the centred dark hero with edge glow, grain, and gradient logo-shape tiles.
+- [Site design system and pages](site-design.md): the user's design values, tokens and shared classes, the dock and layout, and how the work, experience, notes, contact and 404 pages were rebuilt and audited.
 
 ## Updating a record
 

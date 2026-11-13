@@ -43,7 +43,7 @@
 - `src/pages/index.astro` provides the inline initialization and bundle-failure deadline (4500ms; 6500ms before 2026-11-13). Reduced-motion and JavaScript-disabled visits expose the hero directly; unavailable WebGL uses a short static-logo fallback.
 - Escape, hidden-tab changes, page exit, and graphics-context loss release the intro. There is no visible Skip button (removed 2026-11-11 at the user's request). Local-only `?introAt=0` through `?introAt=3100` freezes a frame for review; Escape exits that preview.
 - The current sequence shows a near-black `a` on a violet-led pastel blend, a near-black `r` on a lime-led pastel blend, then reveals the dark hero. Hero content becomes visible underneath the opaque final sheet at the start of that turn, and stays inert until completion.
-- Work and Notes link to the live site while their local routes remain removed in the redesign checkout.
+- Work and Notes link to local routes again (2026-11-13); see site-design.md.
 
 ## Change history
 
@@ -236,9 +236,20 @@ Asked what the loader pages should become; the user chose "soft multi-colour ble
 
 **Status:** all four await review. Page brightness (30%), the sky-led `r` page, the violet CTA body, lime footer hover, and every eye behaviour and threshold are implementation choices. No commit, push, or deployment.
 
+### 2026-11-13 — Hero joined to the rebuilt site
+
+The rest of the site was rebuilt around the hero; see [site-design.md](site-design.md). Changes that touched the hero or loader:
+
+- The palette, grain and geometry moved to site-wide tokens; `hero-theme.css` now only maps the `--hero-*` and `--intro-*` roles onto them. Overrides that relied on stylesheet order moved into `Hero.astro`.
+- The home page uses `BaseLayout`. The loader bootstrap moved to its `head` slot and now plays only on a first arrival: not for deep links, history restores, or returns from another page of the site.
+- The menu and CTA point at local routes (`/projects/`, `#experience`, `/notes/`, `#contact`, `#selected-work`); the menu gained an Experience row and closes when a link in it is used.
+- Resume and Menu fill with the grained lime gradient on hover instead of flat lime.
+
+Checked afterwards on the real GPU: 156 of 156 frames through the reveal at laptop and phone sizes, and the usual cleanup state.
+
 ## Verification
 
-Performance, darker pages, hovers, eyes (2026-11-13, latest):
+Performance, darker pages, hovers, eyes (2026-11-13):
 
 - `pnpm check`: zero errors, warnings, or hints. `pnpm test`: 7/7 (nonvisual). `pnpm build` and `git diff --check` passed.
 - Frame pacing, headless Chrome on the real GPU (Apple M1 Pro), `requestAnimationFrame` intervals from 2.0s to 4.6s after load: before, 148–151 of 156 frames with 33–67ms frames clustered around the loader's finish and one ~53ms long task; after, 156 of 156 with no long tasks in three runs at 1440×900 @2× and one run each at 390×844 @3× and 2560×1440 @2×. Headless runs at 60 Hz, so a 120 Hz display was not measured. Helium itself was not tested.

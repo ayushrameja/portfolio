@@ -1,0 +1,42 @@
+---
+import Panel from "./Panel.astro";
+import CompanyMark from "./CompanyMark.astro";
+import { experiences } from "../data/experience";
+import "../styles/experience.css";
+
+// Each role's place on one shared scale, from the first start date to today,
+// so the three bars read down the list as a staircase.
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const today = new Date();
+const toMonths = (label: string) => {
+  const [month, year] = label.split(" ");
+  return label === "Present" ? today.getFullYear() * 12 + today.getMonth() : Number(year) * 12 + monthNames.indexOf(month);
+};
+const first = Math.min(...experiences.map(experience => toMonths(experience.start)));
+const total = Math.max(1, toMonths("Present") - first);
+const percent = (months: number) => `${Math.round((months / total) * 1000) / 10}%`;
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+---
+<Panel id="experience" glow="sky" tabindex="-1" aria-labelledby="experience-title">
+  <div class="panel-inner">
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>Experience</p>
+      <h2 class="display" id="experience-title" data-reveal>Good teams.<br />Meaningful work.</h2>
+      <p class="lead" data-reveal>My experience across learning platforms, industrial systems and enterprise software.</p>
+    </header>
+    <ol class="exp-chapters">
+      {experiences.map(experience => <li data-reveal>
+        <a class="card exp-chapter" href={`/experience/${experience.id}/`} aria-labelledby={`experience-${experience.id}`} aria-describedby={`experience-${experience.id}-title`}>
+          <CompanyMark company={experience.id} tile reveal morph />
+          <div class="exp-employer"><h3 id={`experience-${experience.id}`}>{experience.company}</h3><p>{experience.role}</p></div>
+          <div class="exp-overview"><p class="exp-title" id={`experience-${experience.id}-title`}>{experience.title}</p><p>{experience.summary}</p></div>
+          <div class="exp-period">
+            <p>{experience.start} to {experience.end}</p>
+            <span class="exp-track" aria-hidden="true"><i style={`--from:${percent(toMonths(experience.start) - first)};--span:${percent(toMonths(experience.end) - toMonths(experience.start))}`}></i></span>
+            <span class="exp-more">Explore chapter <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></span>
+          </div>
+        </a>
+      </li>)}
+    </ol>
+  </div>
+</Panel>

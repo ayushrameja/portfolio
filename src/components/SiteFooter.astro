@@ -1,0 +1,21 @@
+---
+import { contact } from "../data/contact";
+const year = 2026;
+---
+<footer class="site-footer">
+  <p>© {year} Ayush Rameja</p>
+  <nav aria-label="Elsewhere">
+    <a href={`mailto:${contact.email}`}>{contact.email}</a>
+    <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+    <a href={contact.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+  </nav>
+</footer>
+<style>
+  /* Sits on the white canvas and leaves room for the dock. */
+  .site-footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px; padding:12px calc(var(--gutter) + 24px) calc(96px + env(safe-area-inset-bottom)); color:var(--canvas-muted); font-size:var(--text-small); }
+  .site-footer p { margin:0; }
+  .site-footer nav { display:flex; flex-wrap:wrap; gap:8px 20px; }
+  .site-footer a { color:inherit; text-decoration:none; }
+  .site-footer a:hover { color:var(--canvas-ink); text-decoration:underline; text-underline-offset:.2em; }
+  @media(max-width:600px) { .site-footer { justify-content:center; text-align:center; padding-inline:20px; } .site-footer nav { justify-content:center; } }
+</style>

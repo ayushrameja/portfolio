@@ -1,35 +1,17 @@
-/* Dark surface with vivid accents on a white canvas. Hero owns the shared
+/* The hero's roles, mapped onto the site tokens. Hero owns the shared panel
    geometry; the loader reads its page colours from the --intro-* roles. */
-html.home-page {
-  color-scheme: light;
-  --home-canvas: #fff; --paper: #fff; --ink: #222;
-  scrollbar-color: #555 #fff;
-}
-html.home-page, html.home-page body { background: #fff; color: #222; }
-html.home-page::-webkit-scrollbar-track { background: #fff; }
-html.home-page::-webkit-scrollbar-thumb { background: #555; border-color: #fff; }
-html.home-page .hero-frame {
-  --hero-violet: #7c5cff; --hero-lime: #c8f53c; --hero-coral: #ff5a3c; --hero-sky: #5cc8ff;
-  --hero-colorX: #fff; --hero-top: #0a0a0c; --hero-bottom: #0a0a0c;
-  --hero-ink: #f4f1ea; --hero-muted: #a3a1ad; --hero-accent: var(--hero-lime);
-  --hero-secondary: #25252b; --hero-line: #34343c; --hero-paper: #0a0a0c;
+.hero-frame {
+  --hero-violet: var(--violet); --hero-lime: var(--lime); --hero-coral: var(--coral); --hero-sky: var(--sky);
+  --hero-colorX: var(--canvas); --hero-top: var(--surface); --hero-bottom: var(--surface);
+  --hero-ink: var(--ink); --hero-muted: var(--muted); --hero-accent: var(--hero-lime);
+  --hero-line: #34343c; --hero-paper: var(--surface);
   --hero-glow-violet: color-mix(in oklab, var(--hero-violet) 42%, transparent);
   --hero-glow-coral: color-mix(in oklab, var(--hero-coral) 30%, transparent);
   --hero-glow-sky: color-mix(in oklab, var(--hero-sky) 28%, transparent);
   --hero-glow-lime: color-mix(in oklab, var(--hero-lime) 20%, transparent);
-  /* Grain: opaque grey for overlay blending on colour, white speckle for the dark surface. */
-  --hero-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.1 0 0 0 -.05 1.1 0 0 0 -.05 1.1 0 0 0 -.05 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
-  --hero-grain-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2 0 0 0 -.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --hero-grain: var(--grain);
+  --hero-grain-light: var(--grain-light);
   /* Loader pages: lime only reads as lime when bright, so the deep r page is led by sky. */
   --intro-a-page: var(--hero-violet); --intro-a-ink: var(--hero-ink);
   --intro-r-page: var(--hero-sky); --intro-r-ink: var(--hero-ink);
-  background: #fff; animation: none;
-}
-html.home-page .hero { color-scheme: dark; background: var(--hero-top); box-shadow: none; }
-html.home-page .work-face { color: var(--hero-paper); }
-html.home-page .resume-link, html.home-page .menu-toggle { background: #16161a; border-color: var(--hero-line); }
-html.home-page .hero-menu { background: #141418; color: var(--hero-ink); border-color: var(--hero-line); box-shadow: 0 16px 48px #0008; }
-html.home-page .hero-menu::backdrop { background: #0008; }
-@media (forced-colors: active) {
-  html.home-page { scrollbar-color: auto; }
 }

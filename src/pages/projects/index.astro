@@ -1,0 +1,44 @@
+---
+import { getProjects } from "../../lib/content";
+import { projectClient, projectGroups, projectTile } from "../../data/project-presentation";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Panel from "../../components/Panel.astro";
+import "../../styles/work.css";
+
+// Numbers follow the full list, so a project keeps its tile on its own page.
+const projects = (await getProjects()).map((project, index) => ({ project, tile: projectTile(index) }));
+const groups = projectGroups.map(group => ({ ...group, entries: projects.filter(({ project }) => project.data.kind === group.id) }));
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+---
+<BaseLayout title="Projects · Ayush Rameja" description="Explore Ayush Rameja's professional engineering work and independent projects, with contributions, outcomes and project details.">
+  <Panel glow="violet" aria-labelledby="projects-title">
+    <div class="panel-inner work-intro">
+      <div class="work-cluster" aria-hidden="true">
+        {["shape-tl tone-violet", "shape-tr tone-sky", "shape-bl tone-lime", "shape-br tone-coral"].map(look => <span data-reveal="turn"><i class:list={["shape work-turn-self", look]}></i></span>)}
+      </div>
+      <h1 class="display" id="projects-title" data-reveal>Work, in detail.</h1>
+      <p class="lead" data-reveal>Professional engineering and independent projects, with the work behind each one.</p>
+      <nav class="work-jumps" aria-label="Project categories" data-reveal>
+        {groups.map(group => <a class="chip work-jump" href={`#${group.id}`}>{group.label} <span>{group.entries.length}<span class="sr-only"> projects</span></span></a>)}
+      </nav>
+    </div>
+  </Panel>
+  {groups.map(group => <Panel id={group.id} glow="violet" tabindex="-1" aria-labelledby={`${group.id}-heading`}>
+    <div class="panel-inner">
+      <header class="section-head">
+        <h2 class="heading" id={`${group.id}-heading`} data-reveal>{group.label}</h2>
+        <p class="lead" data-reveal>{group.description}</p>
+      </header>
+      <ul class="work-index">
+        {group.entries.map(({ project, tile }) => <li data-reveal>
+          <a class="card work-row" href={`/projects/${project.id}/`} style={`--row-tone:var(--${tile.tone})`}>
+            <span class="work-tile" aria-hidden="true"><i class:list={["shape work-turn", tile.shape]}></i><b>{tile.number}</b></span>
+            <div class="work-row-name"><h3 class="subheading">{project.data.title}</h3><p>{projectClient(project.data.client, project.data.employer) ?? project.data.status ?? project.data.role}</p></div>
+            <p class="work-row-summary">{project.data.summary}</p>
+            <span class="work-row-go" aria-hidden="true"><svg class="work-arrow" viewBox="0 0 16 16"><path d={arrowPath} /></svg></span>
+          </a>
+        </li>)}
+      </ul>
+    </div>
+  </Panel>)}
+</BaseLayout>

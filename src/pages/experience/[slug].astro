@@ -1,0 +1,76 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Panel from "../../components/Panel.astro";
+import CompanyMark from "../../components/CompanyMark.astro";
+import { experiences } from "../../data/experience";
+import { getProjects } from "../../lib/content";
+import "../../styles/experience.css";
+
+export function getStaticPaths() {
+  return experiences.map((experience, index) => ({ params: { slug: experience.id }, props: { experience, next: experiences[(index + 1) % experiences.length] } }));
+}
+const { experience, next } = Astro.props;
+const projects = (await getProjects()).filter(project => experience.projects.some(id => id === project.id) && project.data.visibility === "public");
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+// One small shape per contribution, in the hero's tone and corner pairings.
+const markers = ["shape-tl tone-violet", "shape-tr tone-sky", "shape-br tone-coral"];
+---
+<BaseLayout title={`${experience.company} experience · Ayush Rameja`} description={experience.description}>
+  <Panel as="header" glow="sky">
+    <div class="panel-inner exp-intro-inner">
+      <nav class="breadcrumb" aria-label="Breadcrumb" data-reveal><a href="/#experience">Experience</a><span aria-hidden="true">/</span><span aria-current="page">{experience.company}</span></nav>
+      <div class="exp-brand"><CompanyMark company={experience.id} tile morph /><p data-reveal>{experience.company}</p></div>
+      <h1 class="display" data-reveal>{experience.title}</h1>
+      <p class="lead" data-reveal>{experience.description}</p>
+      <dl class="facts exp-facts" data-reveal>
+        <div><dt>Company</dt><dd>{experience.company}</dd></div>
+        <div><dt>Role</dt><dd>{experience.role}</dd></div>
+        <div><dt>Tenure</dt><dd>{experience.start} to {experience.end}</dd></div>
+      </dl>
+    </div>
+  </Panel>
+
+  <Panel glow="sky" aria-labelledby="experience-focus">
+    <div class="panel-inner">
+      <header class="section-head">
+        <p class="eyebrow" data-reveal>Focus</p>
+        <h2 class="heading" id="experience-focus" data-reveal>{experience.focus}</h2>
+        <p class="lead" data-reveal>{experience.story}</p>
+      </header>
+      <dl class="exp-contributions">
+        {experience.contributions.map(([title, copy], index) => <div class="card exp-contribution" data-reveal>
+          <dt><i class:list={["shape", markers[index % markers.length]]} data-reveal="turn" aria-hidden="true"></i>{title}</dt>
+          <dd>{copy}</dd>
+        </div>)}
+      </dl>
+    </div>
+  </Panel>
+
+  <Panel id="company-projects" glow="sky" tabindex="-1" aria-labelledby="company-projects-title">
+    <div class="panel-inner">
+      <header class="section-head">
+        <p class="eyebrow" data-reveal>Projects</p>
+        <h2 class="heading" id="company-projects-title" data-reveal>The work at {experience.company}</h2>
+      </header>
+      <ul class="exp-projects" data-count={projects.length}>
+        {projects.map(project => <li data-reveal>
+          <a class="card exp-project" href={`/projects/${project.id}/`} aria-labelledby={`project-${project.id}`}>
+            {(project.data.role || project.data.timeline) && <p class="exp-project-meta">{[project.data.role, project.data.timeline].filter(Boolean).join(" · ")}</p>}
+            <h3 class="subheading" id={`project-${project.id}`}>{project.data.title}</h3>
+            <p class="exp-project-summary">{project.data.summary}</p>
+            {project.data.skills?.length ? <ul class="chip-list" aria-label="Skills">{project.data.skills.map(skill => <li class="chip">{skill}</li>)}</ul> : null}
+            <span class="exp-more">Read project <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></span>
+          </a>
+        </li>)}
+      </ul>
+    </div>
+  </Panel>
+
+  <Panel as="div" glow="sky" class="exp-onward">
+    <nav aria-label="More experience">
+      <p class="eyebrow" data-reveal>Next chapter</p>
+      <a class="exp-next" href={`/experience/${next.id}/`} data-reveal><CompanyMark company={next.id} tile morph /><strong>{next.company}</strong><svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></a>
+      <a class="text-link" href="/#experience" data-reveal>All experience</a>
+    </nav>
+  </Panel>
+</BaseLayout>

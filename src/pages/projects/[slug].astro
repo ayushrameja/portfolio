@@ -1,0 +1,89 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { render } from "astro:content";
+import { getProjects } from "../../lib/content";
+import { projectClient, projectGroups, projectImages, projectTile } from "../../data/project-presentation";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Panel from "../../components/Panel.astro";
+import "../../styles/work.css";
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, index) => {
+    const nextIndex = (index + 1) % projects.length;
+    return {
+      params: { slug: project.id },
+      props: { project, tile: projectTile(index), next: projects[nextIndex], nextTile: projectTile(nextIndex) },
+    };
+  });
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { project, tile, next, nextTile } = Astro.props;
+const { Content, headings } = await render(project);
+const images = projectImages[project.id] ?? [];
+const group = projectGroups.find(entry => entry.id === project.data.kind)!;
+const hasSections = headings.some(heading => heading.depth === 2);
+const hasBody = Boolean(project.body?.trim());
+const skills = project.data.skills ?? [];
+const facts = [
+  ["My role", project.data.role],
+  ["Client", projectClient(project.data.client, project.data.employer)],
+  ["Timeline", project.data.timeline],
+  ["Status", project.data.status],
+].filter((entry): entry is [string, string] => Boolean(entry[1]));
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
+---
+<BaseLayout title={`${project.data.title} · Ayush Rameja`} description={project.data.summary}>
+  <Panel as="header" glow="violet">
+    <div class="panel-inner">
+      <div class="work-header">
+        <span class="work-tile" aria-hidden="true" data-reveal="turn"><i class:list={["shape", tile.shape]}></i><b>{tile.number}</b></span>
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-reveal>
+          <a href="/projects/">Projects</a><span aria-hidden="true">/</span>
+          <a href={`/projects/#${group.id}`}>{group.label}</a>
+        </nav>
+        <h1 class="display" data-reveal>{project.data.title}</h1>
+        <p class="lead" data-reveal>{project.data.summary}</p>
+        {(project.data.href || project.data.source) && <div class="work-actions" data-reveal>
+          {project.data.href && <a class="button" href={project.data.href} target="_blank" rel="noopener noreferrer">Visit site<span class="sr-only"> (opens in a new tab)</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>}
+          {project.data.source && <a class="button-quiet" href={project.data.source} target="_blank" rel="noopener noreferrer">Source<span class="sr-only"> (opens in a new tab)</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>}
+        </div>}
+        {facts.length > 0 && <dl class="facts work-facts" data-reveal>
+          {facts.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+        </dl>}
+      </div>
+      {images.length > 0 && <div class:list={["work-gallery", { "is-pair": images.length > 1 }]}>
+        {images.map((image, index) => <figure data-reveal>
+          <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+          <figcaption>{image.caption}</figcaption>
+        </figure>)}
+      </div>}
+    </div>
+  </Panel>
+
+  {(hasBody || skills.length > 0) && <Panel as="article" glow="violet" aria-label={`About ${project.data.title}`}>
+    <div class="panel-reading">
+      {hasBody && <div class="prose" data-reveal>
+        {!hasSections && <h2>The work</h2>}
+        <Content />
+        {project.data.kind === "employer" && <p class="work-story-note">Figures reflect the original project record.</p>}
+      </div>}
+      {skills.length > 0 && <section class="work-skills" aria-labelledby="tools-heading" data-reveal>
+        <h2 class="subheading" id="tools-heading">Built with</h2>
+        <ul class="chip-list">{skills.map(skill => <li class="chip">{skill}</li>)}</ul>
+      </section>}
+    </div>
+  </Panel>}
+
+  <Panel as="div" glow="violet">
+    <nav class="panel-inner work-next" aria-label="More projects">
+      <a class="work-next-link" href={`/projects/${next.id}/`} data-reveal>
+        <span class="work-tile" aria-hidden="true"><i class:list={["shape work-turn", nextTile.shape]}></i><b>{nextTile.number}</b></span>
+        <span class="eyebrow">Next project</span>
+        <span class="heading work-next-title">{next.data.title} <svg class="work-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></span>
+      </a>
+      <a class="text-link" href="/projects/" data-reveal>All projects</a>
+    </nav>
+  </Panel>
+</BaseLayout>

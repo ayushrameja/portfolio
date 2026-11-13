@@ -1,0 +1,12 @@
+---
+/** A rounded dark surface on the white canvas. `glow` picks the accent pair
+ *  that lights its corners and that `.eyebrow`, links and prose pick up. */
+interface Props {
+  as?: "section" | "div" | "article" | "header" | "footer";
+  glow?: "violet" | "lime" | "coral" | "sky";
+  class?: string;
+  [attribute: string]: unknown;
+}
+const { as: Tag = "section", glow = "violet", class: className, ...rest } = Astro.props;
+---
+<Tag class:list={["panel", className]} data-glow={glow} {...rest}><slot /></Tag>
