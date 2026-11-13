@@ -27,7 +27,7 @@ a:focus-visible .work-turn { rotate: 90deg; }
 .work-jump > span { display: grid; place-items: center; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 999px; background: var(--surface-high); color: var(--ink-soft); font-variant-numeric: tabular-nums; transition: background-color 200ms ease, color 200ms ease; }
 @media (hover: hover) {
   .work-jump:hover { border-color: var(--ink-soft); background: var(--surface-high); }
-  .work-jump:hover > span { background: var(--ink); color: var(--surface); }
+  .work-jump:hover > span { background: var(--ink); color: var(--ink-contrast); }
 }
 
 .work-index { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -76,10 +76,10 @@ a:focus-visible .work-turn { rotate: 90deg; }
 .work-next-link .eyebrow { margin-top: 8px; }
 .work-next-title { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .35em; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: .16em; transition: text-decoration-color 220ms ease; }
 .work-next-title .work-arrow { width: .5em; height: .5em; transition: translate 420ms var(--ease-out); }
-.work-next-link:focus-visible .work-next-title { text-decoration-color: var(--accent); }
+.work-next-link:focus-visible .work-next-title { text-decoration-color: var(--accent-ink); }
 .work-next-link:focus-visible .work-arrow { translate: 6px 0; }
 @media (hover: hover) {
-  .work-next-link:hover .work-next-title { text-decoration-color: var(--accent); }
+  .work-next-link:hover .work-next-title { text-decoration-color: var(--accent-ink); }
   .work-next-link:hover .work-arrow { translate: 6px 0; }
 }
 

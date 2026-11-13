@@ -43,7 +43,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
           <a href="/projects/">Projects</a><span aria-hidden="true">/</span>
           <a href={`/projects/#${group.id}`}>{group.label}</a>
         </nav>
-        <h1 class="display" data-reveal>{project.data.title}</h1>
+        <h1 class="display" data-reveal="words">{project.data.title}</h1>
         <p class="lead" data-reveal>{project.data.summary}</p>
         {(project.data.href || project.data.source) && <div class="work-actions" data-reveal>
           {project.data.href && <a class="button" href={project.data.href} target="_blank" rel="noopener noreferrer">Visit site<span class="sr-only"> (opens in a new tab)</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>}
@@ -62,7 +62,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
     </div>
   </Panel>
 
-  {(hasBody || skills.length > 0) && <Panel as="article" glow="violet" aria-label={`About ${project.data.title}`}>
+  {(hasBody || skills.length > 0) && <Panel as="article" glow="violet" pattern={false} aria-label={`About ${project.data.title}`}>
     <div class="panel-reading">
       {hasBody && <div class="prose" data-reveal>
         {!hasSections && <h2>The work</h2>}
@@ -76,7 +76,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
     </div>
   </Panel>}
 
-  <Panel as="div" glow="violet">
+  <Panel as="div" glow="violet" pattern={false}>
     <nav class="panel-inner work-next" aria-label="More projects">
       <a class="work-next-link" href={`/projects/${next.id}/`} data-reveal>
         <span class="work-tile" aria-hidden="true"><i class:list={["shape work-turn", nextTile.shape]}></i><b>{nextTile.number}</b></span>

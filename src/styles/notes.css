@@ -21,7 +21,7 @@
 @media(hover:hover) {
   .notes-link:hover .notes-go { rotate:90deg; }
   .notes-link:hover .notes-go svg { rotate:-90deg; }
-  .notes-link:hover .notes-title { color:var(--accent); }
+  .notes-link:hover .notes-title { color:var(--accent-ink); }
 }
 
 /* ---- Home section ----------------------------------------------------------- */
@@ -101,7 +101,7 @@
 .note-head .lead { max-width:40rem; }
 .note-head .chip-list { justify-content:center; }
 .note-head .breadcrumb a { text-underline-offset:.25em; }
-.note-head .breadcrumb a:hover { text-decoration:underline; text-decoration-color:var(--accent); }
+.note-head .breadcrumb a:hover { text-decoration:underline; text-decoration-color:var(--accent-ink); }
 
 /* The text column stays centred; from 1360px the outline rides in the left
    margin and keeps its place while the essay scrolls. */
@@ -109,13 +109,13 @@
 .note-outline { border:1px solid var(--line); border-radius:var(--radius-card); background:var(--surface-raised); }
 .note-outline summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:56px; padding:0 20px; border-radius:inherit; color:var(--ink); font-size:1rem; cursor:pointer; list-style:none; }
 .note-outline summary::-webkit-details-marker { display:none; }
-.note-outline summary svg { width:16px; height:16px; fill:none; stroke:var(--accent); stroke-width:1.75; transition:rotate 320ms var(--ease-out); }
+.note-outline summary svg { width:16px; height:16px; fill:none; stroke:var(--accent-ink); stroke-width:1.75; transition:rotate 320ms var(--ease-out); }
 .note-outline[open] summary svg { rotate:180deg; }
 .note-outline ol { display:grid; margin:0 20px 18px; padding:0; list-style:none; border-left:1px solid var(--line); }
 .note-outline a { display:block; margin-left:-1px; padding:8px 0 8px 16px; border-left:2px solid transparent; color:var(--muted); font-size:.9375rem; line-height:1.35; text-decoration:none; text-wrap:pretty; transition:color 200ms ease,border-color 200ms ease; }
 .note-outline a:hover { border-left-color:var(--muted); color:var(--ink); }
-.note-outline a[aria-current] { border-left-color:var(--accent); color:var(--ink); }
-@media(hover:hover) { .note-outline summary:hover { color:var(--accent); } }
+.note-outline a[aria-current] { border-left-color:var(--accent-ink); color:var(--ink); }
+@media(hover:hover) { .note-outline summary:hover { color:var(--accent-ink); } }
 @media(min-width:1360px) {
   .note-layout { grid-template-columns:minmax(0,1fr) minmax(0,var(--measure)) minmax(0,1fr); align-items:start; gap:0 48px; }
   .note-outline { position:sticky; top:28px; justify-self:end; width:min(100%,250px); max-height:calc(100svh - 140px); overflow-y:auto; margin-inline:-8px; padding-inline:8px; border:0; border-radius:0; background:none; scrollbar-width:thin; }
@@ -124,7 +124,7 @@
   .note-body { grid-column:2; }
 }
 
-/* Long-form reading on a dark surface: a larger size, open leading, and a
+/* Long-form reading on the canvas: a larger size, open leading, and a
    measure of about 70 characters. Composes the shared .prose. */
 .note-body { font-size:clamp(1.125rem,1.02rem + .42vw,1.25rem); line-height:1.72; letter-spacing:.004em; }
 .note-body p { text-wrap:pretty; }

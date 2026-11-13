@@ -20,7 +20,7 @@ const markers = ["shape-tl tone-violet", "shape-tr tone-sky", "shape-br tone-cor
     <div class="panel-inner exp-intro-inner">
       <nav class="breadcrumb" aria-label="Breadcrumb" data-reveal><a href="/#experience">Experience</a><span aria-hidden="true">/</span><span aria-current="page">{experience.company}</span></nav>
       <div class="exp-brand"><CompanyMark company={experience.id} tile morph /><p data-reveal>{experience.company}</p></div>
-      <h1 class="display" data-reveal>{experience.title}</h1>
+      <h1 class="display" data-reveal="words">{experience.title}</h1>
       <p class="lead" data-reveal>{experience.description}</p>
       <dl class="facts exp-facts" data-reveal>
         <div><dt>Company</dt><dd>{experience.company}</dd></div>
@@ -30,7 +30,7 @@ const markers = ["shape-tl tone-violet", "shape-tr tone-sky", "shape-br tone-cor
     </div>
   </Panel>
 
-  <Panel glow="sky" aria-labelledby="experience-focus">
+  <Panel glow="sky" pattern={false} aria-labelledby="experience-focus">
     <div class="panel-inner">
       <header class="section-head">
         <p class="eyebrow" data-reveal>Focus</p>
@@ -46,7 +46,7 @@ const markers = ["shape-tl tone-violet", "shape-tr tone-sky", "shape-br tone-cor
     </div>
   </Panel>
 
-  <Panel id="company-projects" glow="sky" tabindex="-1" aria-labelledby="company-projects-title">
+  <Panel id="company-projects" glow="sky" pattern={false} tabindex="-1" aria-labelledby="company-projects-title">
     <div class="panel-inner">
       <header class="section-head">
         <p class="eyebrow" data-reveal>Projects</p>
@@ -66,7 +66,7 @@ const markers = ["shape-tl tone-violet", "shape-tr tone-sky", "shape-br tone-cor
     </div>
   </Panel>
 
-  <Panel as="div" glow="sky" class="exp-onward">
+  <Panel as="div" glow="sky" pattern={false} class="exp-onward">
     <nav aria-label="More experience">
       <p class="eyebrow" data-reveal>Next chapter</p>
       <a class="exp-next" href={`/experience/${next.id}/`} data-reveal><CompanyMark company={next.id} tile morph /><strong>{next.company}</strong><svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} /></svg></a>

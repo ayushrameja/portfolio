@@ -16,14 +16,14 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
       <div class="work-cluster" aria-hidden="true">
         {["shape-tl tone-violet", "shape-tr tone-sky", "shape-bl tone-lime", "shape-br tone-coral"].map(look => <span data-reveal="turn"><i class:list={["shape work-turn-self", look]}></i></span>)}
       </div>
-      <h1 class="display" id="projects-title" data-reveal>Work, in detail.</h1>
+      <h1 class="display" id="projects-title" data-reveal="words">Work, in detail.</h1>
       <p class="lead" data-reveal>Professional engineering and independent projects, with the work behind each one.</p>
       <nav class="work-jumps" aria-label="Project categories" data-reveal>
         {groups.map(group => <a class="chip work-jump" href={`#${group.id}`}>{group.label} <span>{group.entries.length}<span class="sr-only"> projects</span></span></a>)}
       </nav>
     </div>
   </Panel>
-  {groups.map(group => <Panel id={group.id} glow="violet" tabindex="-1" aria-labelledby={`${group.id}-heading`}>
+  {groups.map(group => <Panel id={group.id} glow="violet" pattern={false} tabindex="-1" aria-labelledby={`${group.id}-heading`}>
     <div class="panel-inner">
       <header class="section-head">
         <h2 class="heading" id={`${group.id}-heading`} data-reveal>{group.label}</h2>

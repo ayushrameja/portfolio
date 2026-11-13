@@ -35,7 +35,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
         <span aria-hidden="true">/</span>
         <a href={deskHref}>{desk.label}</a>
       </nav>
-      <h1 class="note-title" id="article-title" data-reveal>{note.data.title}</h1>
+      <h1 class="note-title" id="article-title" data-reveal="words">{note.data.title}</h1>
       <p class="lead" data-reveal>{note.data.description}</p>
       <p class="notes-meta" data-reveal>
         <time datetime={note.data.publishedAt}>{noteDate(note.data.publishedAt)}</time>
@@ -46,7 +46,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
       </ul>}
     </div>
   </Panel>
-  <Panel as="article" glow="lime" aria-labelledby="article-title">
+  <Panel as="article" glow="lime" pattern={false} aria-labelledby="article-title">
     <div class="note-layout">
       {sections.length > 1 && <details class="note-outline" open>
         <summary>In this article <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" /></svg></summary>
@@ -74,7 +74,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
       </div>
     </div>
   </Panel>
-  <Panel as="div" glow="lime">
+  <Panel as="div" glow="lime" pattern={false}>
     <nav class="panel-inner note-end" aria-label="Article navigation">
       {neighbours.length > 0 && <div class="note-end-grid" data-reveal>
         {neighbours.map(item => <a class="card note-end-card notes-link" href={`/notes/${item.note.id}/`}>

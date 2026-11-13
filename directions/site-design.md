@@ -6,11 +6,13 @@
 
 Everything below the "Design values" list is an implementation decision made under that freedom and awaits review.
 
+**Request (2026-11-13, later the same day):** "the website currently have same black background with curves on a white background, I wanted to keep that on hero section only, and make the website have same design but have different patterns of background not same." Asked how far to take it, the user chose **open patterned canvas**: only the hero stays a dark rounded panel; every other section sits open on the light canvas with its own pattern built from the mark, and cards stay dark. The two alternatives offered and not chosen were alternating light and dark sections, and keeping every dark panel with a different texture inside. This revises design value 1 below. The same message asked for a scroll story; that has its own record, [scroll-story.md](scroll-story.md).
+
 ### Design values (user-given; do not trade these away)
 
 These come from the user's feedback recorded in [loading-screen.md](loading-screen.md).
 
-1. **White canvas, dark rounded surfaces.** Content lives on near-black panels with large corner radii and a white gutter around them. No framing borders or shadows on panels; the contrast defines the shape.
+1. **White canvas; the hero is the one dark rounded panel.** *(Revised 2026-11-13 by the user. Until then every section was a near-black rounded panel with a white gutter, which the user found repetitive.)* Below the hero, sections sit open on the canvas. Each has its own background pattern, and no two neighbours share one. Cards and controls inside a section stay dark. No framing borders or shadows on the hero panel; the contrast defines the shape.
 2. **Four accents: violet, lime, coral, sky.** The user approved these colours.
 3. **Never flat colour.** Coloured surfaces are soft, muffled gradients with a dotted, clay-like grain. Dark surfaces get very light colour glowing in from their edges.
 4. **Shapes from the mark.** Quarter discs, discs and pills taken from the `ar` logo are the decorative vocabulary.
@@ -24,10 +26,13 @@ These come from the user's feedback recorded in [loading-screen.md](loading-scre
 ### Tokens (`src/styles/tokens.css`)
 
 - Accents `--violet #7c5cff`, `--lime #c8f53c`, `--coral #ff5a3c`, `--sky #5cc8ff`.
-- Canvas `--canvas #fff` with `--canvas-ink`, `--canvas-muted` for the little text that sits on white.
-- Dark surfaces `--surface #0a0a0c`, `--surface-raised #131317`, `--surface-high #1b1b21`; lines `--line`, `--line-strong`; text `--ink #f4f1ea`, `--ink-soft`, `--muted`.
-- Geometry `--gutter` 20px (10px at 600px and below), `--radius-panel` 64px (36px), `--radius-card` 28px (22px), `--radius-control` 14px, `--panel-pad`, `--content-width` 1180px, `--reading-width` 720px.
-- `--grain` (opaque grey noise for `background-blend-mode: overlay` on colour) and `--grain-light` (white speckle for dark surfaces).
+- Accents for text on the canvas: `--violet-ink #5b3fe6`, `--lime-ink #4f6b00`, `--coral-ink #c2351c`, `--sky-ink #0b6ca8` (each at least 5.5:1 on white).
+- Canvas `--canvas #fff` with `--canvas-ink`, `--canvas-soft`, `--canvas-muted`.
+- `--surface #0a0a0c` is the hero's surface and the text colour on any accent shape; it is the same in every scope.
+- **Two scopes share one set of role names.** `--ink`, `--ink-soft`, `--muted`, `--line`, `--line-strong`, `--surface-raised`, `--surface-high`, `--control`, `--control-line`, `--ink-contrast` hold the dark-surface values on `:root`, `.card`, `.button-quiet` and `.on-dark` (one rule in `tokens.css`). `.panel` redefines them for the canvas. So a rule that says `color: var(--muted)` is right both on a section and inside a card, and anything dark placed straight on a section needs `.card` or `.on-dark`.
+- `--accent` / `--accent-blend` are the section's pair for gradients and shapes; `--accent-ink` / `--accent-blend-ink` are the same pair for text, underlines, markers and strokes. On the canvas they are the deepened inks; inside a dark island they fall back to the bright accents.
+- Geometry `--gutter` 20px (10px at 600px and below), `--radius-panel` 64px (36px, hero and loader only), `--radius-card` 28px (22px), `--radius-control` 14px, `--panel-pad`, `--panel-block` (a section's top and bottom padding), `--content-width` 1180px, `--reading-width` 720px.
+- `--grain` (opaque grey noise for `background-blend-mode: overlay` on colour), `--grain-light` (white speckle for dark surfaces) and `--grain-dark` (dark speckle for the canvas).
 - `--ease-out`, `--ease-spring`.
 - The hero keeps its `--hero-*` roles; `src/styles/hero-theme.css` maps them onto these tokens.
 
@@ -35,7 +40,8 @@ These come from the user's feedback recorded in [loading-screen.md](loading-scre
 
 | Class | Use |
 | --- | --- |
-| `.panel` (+ `data-glow="violet\|lime\|coral\|sky"`) | A rounded dark surface. Sets `--accent` / `--accent-blend` for its contents and lights two corners. Prefer the `Panel.astro` component. |
+| `.panel` (+ `data-glow="violet\|lime\|coral\|sky"`) | An open section on the canvas. Sets the accent pair and the canvas roles for its contents, and draws a wash of the accent, grain, and (through `Panel.astro`, which adds the `.panel-pattern` element) the accent's pattern. `pattern={false}` leaves the wash only and closes the gap to the section above; use it for sections that continue the one before, and for long text. |
+| `.on-dark` | Restores the dark roles on a dark element that is not a `.card` or `.button-quiet` (the contact section's location strip). |
 | `.panel-inner`, `.panel-reading` | Centred content columns at `--content-width` and `--reading-width`. |
 | `.display`, `.heading`, `.subheading`, `.lead`, `.muted`, `.eyebrow` | Type scale. Inter Tight, weight 500 for headings, tight tracking. |
 | `.section-head` | Centred section opener (eyebrow, heading, lead). |
@@ -44,11 +50,22 @@ These come from the user's feedback recorded in [loading-screen.md](loading-scre
 | `.button`, `.button-quiet`, `.text-link` | Lime gradient primary; dark control that fills with lime from below; underlined link in the panel's accent. |
 | `.chip`, `.chip-list`, `.breadcrumb`, `.facts` | Small recurring pieces. |
 | `.prose` | Rendered Markdown on a dark panel. |
-| `[data-reveal]`, `[data-reveal="turn"]` | Settle in on scroll (fade and rise); `turn` adds a quarter turn for shapes. Armed only when JavaScript and motion are available, and disarmed after four seconds if the reveal script never arrives. |
+| `[data-reveal]` and its variants | Arrive with the scroll. See [scroll-story.md](scroll-story.md). |
+
+Section backgrounds, one per accent:
+
+| Accent | Pattern | Where it sits |
+| --- | --- | --- |
+| violet | dot grid | whole field, dimmed through the centre column |
+| sky | quarter discs with a small disc | gathered in the top right corner |
+| lime | rings | both margins, clear through the middle |
+| coral | pills | rising from the foot of the section |
+
+Each pattern is an SVG tile used as a mask over a gradient of the two accent inks, so the pattern itself is never flat colour. Wash, grain and pattern all end before the section's top and bottom edges, so two sections always meet on plain canvas.
 
 ### Shell
 
-- `src/layouts/BaseLayout.astro`: document head, skip link, `<main id="content">`, `SiteFooter`, `SiteDock`, and the reveal script. A `head` slot carries the home page's loader bootstrap.
+- `src/layouts/BaseLayout.astro`: document head, skip link, `<main id="content">`, `SiteFooter`, `SiteDock`, and the scroll story script (scroll-story.md). A `head` slot carries the home page's loader bootstrap.
 - `src/components/Panel.astro`, `Mark.astro` (gradient `ar` mark; each instance needs its own `id`).
 - `src/components/SiteDock.astro`: the one persistent navigation, a floating dock at the bottom (mark, Work, Experience, Notes, Contact, Resume). It comes first in the tab order. On the home page an inline script hides it while the hero, which has its own menu, fills the viewport, and it marks the section in view; without JavaScript it is simply always there. On other pages it marks the current area. `html` has `scroll-padding-bottom: 96px` so focus and anchors stop clear of it.
 - `src/components/SiteFooter.astro`: a quiet line on the white canvas, padded to clear the dock.
@@ -67,12 +84,12 @@ These come from the user's feedback recorded in [loading-screen.md](loading-scre
 
 ### Rules for building a page or section
 
-- Start from a `Panel`. Home sections are `<Panel id="…" glow="…" tabindex="-1" aria-labelledby="…">` with the id the dock expects (`selected-work`, `experience`, `notes`, `contact`) and an `h2`. Other pages put an `h1` in their first panel.
+- Start from a `Panel`. Home sections are `<Panel id="…" glow="…" tabindex="-1" aria-labelledby="…">` with the id the dock expects (`selected-work`, `experience`, `notes`, `contact`) and an `h2`. Other pages put an `h1` in their first panel, which carries the pattern; the panels after it pass `pattern={false}`.
 - Compose the shared classes before writing new CSS. Area-specific CSS goes in that area's stylesheet or a scoped `<style>`; do not restyle shared classes globally.
 - Accent colour appears as gradient plus grain (`.shape`, `.button`, hover fills) or as thin details (underlines, markers, small shapes). No flat accent backgrounds.
-- Body text on dark is `--ink-soft` or `--ink`; secondary text is `--muted`. Keep contrast at WCAG AA.
-- Every interactive element needs a visible hover and `:focus-visible` state that reads on the dark surface.
-- Motion: `data-reveal` for arrival; transitions on `opacity`, `translate`, `scale`, `rotate`. No per-frame JavaScript, no SVG filters on large elements, no scroll-linked effects. Honour `prefers-reduced-motion`.
+- Body text is `--ink-soft` or `--ink`; secondary text is `--muted`. These resolve for the canvas or for a card on their own. Accent-coloured text, underlines and strokes use `--accent-ink`, never `--accent`: lime and sky are unreadable on white. Keep contrast at WCAG AA.
+- Every interactive element needs a visible hover and `:focus-visible` state that reads where it sits. `--focus` is dark on a section and light inside a card; a card's own ring is drawn outside it, on the canvas, so `a.card` sets a dark ring.
+- Motion: `data-reveal` for arrival; hover transitions on `opacity`, `translate`, `scale`, `rotate`. No SVG filters on large elements. Scroll-linked motion goes through `scroll-story.ts` and nowhere else (this replaces the earlier ban on per-frame JavaScript and scroll-linked effects; see [scroll-story.md](scroll-story.md)). Honour `prefers-reduced-motion`.
 - Layouts must work from 360px to 2560px wide. The dock covers about 80px at the bottom of the viewport.
 - Copy and facts come from the existing content collections and data files. Do not invent claims, metrics, clients or dates.
 
@@ -92,7 +109,7 @@ Decided to rebuild those pages on a small shared system instead of restoring and
 - Hero menu and CTA point at local routes again (`/projects/`, `#experience`, `/notes/`, `#contact`, `#selected-work`); the menu closes when one of its links is used. Theme overrides that depended on stylesheet order were folded into `Hero.astro`.
 - Deleted unused `src/styles/base.css` and `src/scripts/hero-palette.ts`.
 
-**Not carried over from `main`:** the client router and its route-transition scripts, the dock's section previews, Lenis smooth scrolling, and the per-card animated artwork with its pause control. These are omissions by choice, open to review.
+**Not carried over from `main`:** the client router and its route-transition scripts, the dock's section previews, Lenis smooth scrolling, and the per-card animated artwork with its pause control. These are omissions by choice, open to review. *(Lenis came back later the same day at the user's request: scroll-story.md.)*
 
 ### 2026-11-13 — Pages built by four subagents, then audited
 
@@ -125,7 +142,39 @@ A fifth subagent then audited everything read-only. Fixed from its findings:
 
 **Lesson:** the builders were given disjoint files and a written brief (this record) to share, and their work fitted together without merging. An interruption cost their reports, so the independent audit was what established the state of the work; it found two defects a visitor would have hit at once.
 
+### 2026-11-13 — Open patterned canvas below the hero
+
+**User intent:** see the second request under Current direction.
+
+Audit before the change: all four home sections and every inner page used one `.panel` rule: the same near-black surface, radius, two corner glows and grain. Only the glow's tint differed, so the page read as one slab repeated.
+
+What changed:
+
+- `.panel` is now an open section. It has no surface colour, radius or side margin; its inline padding grew by the old gutter, so content widths are unchanged.
+- The token roles were split into two scopes (see Tokens). This is what let the area stylesheets keep working: text set straight on a section turned dark, and everything inside a card stayed as it was, with no per-area rewrite.
+- Accent-coloured text and thin details moved from `--accent` to `--accent-ink` in `site.css`, `work.css`, `notes.css`, `experience.css` and the Selected work heading. `.work-jump`'s hover count uses the new `--ink-contrast`.
+- `Panel.astro` gained `pattern` and renders the pattern element. Inner pages keep the pattern on their first panel only.
+- `.contact-place` took `.on-dark`. `.card` sets its own text colour instead of inheriting.
+- The hero, the loader, the dock and the footer were not touched.
+
+**Corrections made while building:**
+
+- *Edge fades as CSS masks on the wash and grain.* They worked in a still page but left a hard line at each section's top once the pattern beside them was on its own compositor layer for the scroll drift. The washes are now sized in percentages so they end inside the section at any height, and the grain is covered at both ends by a canvas-coloured gradient in the same background. Only the pattern element is masked. **Lesson:** check backgrounds with motion on, not only in reduced-motion screenshots.
+- *Dots falling from the top at full strength.* On project pages they ran behind the title and summary and made them busy. The dot field is now dimmed to 38% through the centre column.
+- *Grain at 16%.* It gave whole sections a grey cast against the pure white between them. It is 10%.
+
+**Implementation assumptions, not yet reviewed by the user:** which pattern goes with which accent, their strengths, and that secondary panels on inner pages carry no pattern.
+
 ## Verification
+
+Open canvas (2026-11-13):
+
+- `pnpm check`: zero errors, warnings, hints. `pnpm test`: 7/7. `pnpm build`: 35 pages. `git diff --check` passed.
+- Screenshots (Chrome, reduced motion) of the home page at 1440 and 390 wide, a note, a project, the projects index and the 404; and of the home sections with motion on.
+- Average colour sampled down the seam between Selected work and Experience with motion on: an even ramp from 251 to 255 and back, no step.
+- Computed styles: section text resolves to the canvas inks; text inside cards, `.contact-place` and `.button-quiet` to the dark set; focus rings are dark for cards and quiet buttons on the canvas and light for the inputs and the submit button inside the form card.
+- The ink accents measure 6.4 (violet), 6.1 (lime), 5.5 (coral) and 5.6 (sky) to 1 on white.
+- Not checked: every inner page at every width, forced colours, print, and real Safari, and Firefox. A Playwright WebKit run rendered the patterns correctly; Firefox could not be launched here (scroll-story.md).
 
 Full site (2026-11-13, latest):
 
@@ -141,7 +190,7 @@ Foundation (2026-11-13): `pnpm check` zero errors with stub sections; home page 
 ## Deferred decisions
 
 - Whether to bring back a client router, the dock's previews, or animated project artwork.
-- `lenis` is still a dependency but unused.
+- Whether secondary panels on inner pages should carry a pattern of their own.
 - `src/data/site-copy.json` is an inventory of the old components' copy; it is not imported.
 - Tests for the restored `contact-form.ts` and for the new components were not added; `main` had tests for its dock, intro and artwork that no longer apply.
 - Whether the home page should carry all six project cards or fewer.

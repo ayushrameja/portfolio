@@ -22,7 +22,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
         <i class="shape tone-coral shape-pill" data-reveal></i>
         <i class="shape tone-lime shape-pill" data-reveal></i>
       </span>
-      <h1 class="display" id="notes-heading" data-reveal>Notes</h1>
+      <h1 class="display" id="notes-heading" data-reveal="words">Notes</h1>
       <p class="lead" data-reveal>{notes.length} archived essays, retained as written.</p>
       <nav aria-label="Note categories" data-reveal>
         <ul class="chip-list notes-jumps">
@@ -31,7 +31,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
       </nav>
     </header>
   </Panel>
-  {desks.map(desk => <Panel id={desk.id} glow="lime" tabindex="-1" aria-labelledby={`${desk.id}-heading`}>
+  {desks.map(desk => <Panel id={desk.id} glow="lime" pattern={false} tabindex="-1" aria-labelledby={`${desk.id}-heading`}>
     <div class="panel-inner">
       <header class="notes-desk-head" data-reveal>
         <i class:list={["shape notes-q", desk.tile]} aria-hidden="true" data-reveal="turn"></i>

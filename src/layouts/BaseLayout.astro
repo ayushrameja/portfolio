@@ -27,8 +27,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preload" href="/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline>
-      // Scroll reveals only hide content when a script is present to show it
-      // again; if that script never arrives, the content is shown regardless.
+      // The scroll story only hides content when a script is present to bring
+      // it in; if that script never arrives, the content is shown regardless.
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
         document.documentElement.classList.add("reveal-ready");
         window.setTimeout(function () {
@@ -45,8 +45,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <main id="content" tabindex="-1"><slot /></main>
     <SiteFooter />
     <script>
-      import { setupReveal } from "../scripts/reveal";
-      setupReveal();
+      import { setupScrollStory } from "../scripts/scroll-story";
+      setupScrollStory();
     </script>
   </body>
 </html>

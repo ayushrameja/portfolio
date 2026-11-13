@@ -14,13 +14,13 @@ const links = [
   <div class="panel-inner">
     <header class="section-head">
       <p class="eyebrow" data-reveal>Contact</p>
-      <h2 id="contact-title" class="display" data-reveal>Let’s talk.</h2>
+      <h2 id="contact-title" class="display" data-reveal="words">Let’s talk.</h2>
       <p class="lead" data-reveal>A product to build, a system to simplify, or a new opportunity.</p>
     </header>
     <div class="contact-grid">
       <div class="contact-direct">
         <div class="contact-mosaic">
-          <div class="contact-email-cell" data-reveal>
+          <div class="contact-email-cell" data-reveal="grow">
             <a class="contact-email shape tone-coral" href={`mailto:${contact.email}`}>
               <span class="contact-email-label">Email</span>
               <span class="contact-email-address">{contact.email}</span>
@@ -30,7 +30,7 @@ const links = [
           <span class="contact-tile" data-reveal="turn" aria-hidden="true"><i class="shape tone-sky shape-tr"></i></span>
           <span class="contact-tile" data-reveal="turn" aria-hidden="true"><i class="shape tone-violet shape-br"></i></span>
         </div>
-        <p class="contact-place" data-reveal><span>Bengaluru, India <span class="sr-only">·</span> <span class="muted">UTC +05:30</span></span></p>
+        <p class="contact-place on-dark" data-reveal><span>Bengaluru, India <span class="sr-only">·</span> <span class="muted">UTC +05:30</span></span></p>
         <nav class="contact-links" aria-label="Contact links" data-reveal>
           {links.map(link => <a class="button-quiet" href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span class="sr-only"> (opens in a new tab)</span> <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>)}
         </nav>

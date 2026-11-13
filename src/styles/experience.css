@@ -25,10 +25,10 @@ html.reveal-ready [data-reveal].is-revealed .exp-track i { scale: 1 1; }
 
 .exp-more { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 500; transition: color 200ms ease; }
 .exp-more svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; transition: translate 320ms var(--ease-out); }
-a:focus-visible .exp-more { color: var(--accent); }
+a:focus-visible .exp-more { color: var(--accent-ink); }
 a:focus-visible .exp-more svg { translate: 4px 0; }
 @media (hover: hover) {
-  a:hover .exp-more { color: var(--accent); }
+  a:hover .exp-more { color: var(--accent-ink); }
   a:hover .exp-more svg { translate: 4px 0; }
 }
 
@@ -79,11 +79,11 @@ a.exp-project { display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px
 a.exp-next { display: inline-flex; align-items: center; gap: clamp(14px, 2vw, 22px); padding: 8px 12px; border-radius: var(--radius-card); color: var(--ink); text-decoration: none; }
 a.exp-next .company-tile { --size: clamp(56px, 7vw, 80px); }
 .exp-next strong { font-size: clamp(1.75rem, 3.4vw, 2.75rem); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; text-align: left; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: .18em; transition: text-decoration-color 200ms ease; }
-.exp-next > svg { width: clamp(18px, 2vw, 24px); height: auto; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.5; transition: translate 320ms var(--ease-out); }
-a.exp-next:focus-visible strong { text-decoration-color: var(--accent); }
+.exp-next > svg { width: clamp(18px, 2vw, 24px); height: auto; flex: none; fill: none; stroke: var(--accent-ink); stroke-width: 1.5; transition: translate 320ms var(--ease-out); }
+a.exp-next:focus-visible strong { text-decoration-color: var(--accent-ink); }
 a.exp-next:focus-visible > svg { translate: 6px 0; }
 @media (hover: hover) {
-  a.exp-next:hover strong { text-decoration-color: var(--accent); }
+  a.exp-next:hover strong { text-decoration-color: var(--accent-ink); }
   a.exp-next:hover > svg { translate: 6px 0; }
 }
 

@@ -67,6 +67,8 @@ html::-webkit-scrollbar-thumb { background: #555; border: 2px solid var(--canvas
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
+  /* Lenis animates the scroll itself, anchor jumps included. */
+  html.lenis { scroll-behavior: auto; }
   /* Pages cross-fade where the browser supports cross-document transitions. */
   @view-transition { navigation: auto; }
 }

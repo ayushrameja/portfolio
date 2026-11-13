@@ -20,13 +20,13 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
 ---
 <Panel id="notes" glow="lime" tabindex="-1" aria-labelledby="notes-title">
   <div class="panel-inner">
-    <header class="section-head" data-reveal>
-      <p class="eyebrow">Notes</p>
-      <h2 class="display" id="notes-title">Field notes.</h2>
-      <p class="lead">On building software and figuring out the rest.</p>
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>Notes</p>
+      <h2 class="display" id="notes-title" data-reveal="words">Field notes.</h2>
+      <p class="lead" data-reveal>On building software and figuring out the rest.</p>
     </header>
     <div class="fn-grid">
-      <article class="fn-cell fn-cell-lead" data-reveal>
+      <article class="fn-cell fn-cell-lead" data-reveal="left">
         <a class="card fn-card fn-lead notes-link" href={`/notes/${featured.id}/`} aria-labelledby="fn-lead-title">
           <p class="notes-meta"><span>{desks[featured.data.desk].label}</span><time datetime={featured.data.publishedAt}>{noteDate(featured.data.publishedAt)}</time><span>{featured.data.readingTime} read</span></p>
           <h3 class="heading notes-title" id="fn-lead-title">{featured.data.title}</h3>
@@ -38,7 +38,7 @@ const arrowPath = "M2 8h12M8 2l6 6-6 6";
           <span class="fn-more">Read the essay <span class="shape tone-lime notes-q q-tl notes-go" aria-hidden="true"><svg viewBox="0 0 16 16"><path d={arrowPath} /></svg></span></span>
         </a>
       </article>
-      {[review, life].map(note => <article class="fn-cell" data-reveal>
+      {[review, life].map(note => <article class="fn-cell" data-reveal="right">
         <a class="card fn-card notes-link" href={`/notes/${note.id}/`} aria-labelledby={`fn-${note.id}`}>
           <span class="fn-card-top">
             <span class="notes-meta"><span>{desks[note.data.desk].label}</span><span>{note.data.readingTime} read</span></span>
