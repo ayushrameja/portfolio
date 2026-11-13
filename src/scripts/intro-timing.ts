@@ -1,8 +1,9 @@
-// Reference: ~1 second of visible edge travel, with turns 3 seconds apart.
-// Travel includes off-panel lead-in/out for the softer refraction trail.
+// Two quick turns: each letter rests long enough to register, then the edge
+// crosses in roughly half a second. Travel includes off-panel lead-in/out for
+// the softer refraction trail.
 export const INTRO_TIMING = {
-  foldStart: 650,
-  foldTravel: 1600,
-  revealStart: 3650,
-  duration: 5450,
+  foldStart: 800,
+  foldTravel: 850,
+  revealStart: 2150,
+  duration: 3100,
 } as const;

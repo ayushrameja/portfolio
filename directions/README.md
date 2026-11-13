@@ -4,7 +4,7 @@ Feature decisions, corrections, and change history live here. Each topic records
 
 ## Topics
 
-- [Loading screen and hero](loading-screen.md): shared rounded panel, refraction motion, rejected approaches, and the static neutral hero.
+- [Loading screen and hero](loading-screen.md): shared rounded panel, two-turn page-fold loader in the hero palette, rejected approaches, and the centred dark hero with edge glow, grain, and gradient logo-shape tiles.
 
 ## Updating a record
 

@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import Hero from "../components/Hero.astro";
-import "../styles/neutral-hero.css";
+import "../styles/hero-theme.css";
 ---
 <!doctype html>
 <html lang="en" class="home-page">
@@ -14,7 +14,7 @@ import "../styles/neutral-hero.css";
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline>
       // Only hide the hero when JavaScript and motion are available. If the
-      // animation bundle fails, the page still opens within seven seconds.
+      // animation bundle fails, the page still opens within five seconds.
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         document.documentElement.dataset.intro = "pending";
         window.setTimeout(() => {
@@ -22,7 +22,7 @@ import "../styles/neutral-hero.css";
             delete document.documentElement.dataset.intro;
             window.dispatchEvent(new Event("intro:timeout"));
           }
-        }, 6500);
+        }, 4500);
       }
     </script>
   </head>
