@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SiteDock from "../components/SiteDock.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import PageTurnIntro from "../components/PageTurnIntro.astro";
 
 interface Props {
   title: string;
@@ -36,9 +37,48 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         }, 4000);
       }
     </script>
+    <script is:inline define:vars={{ home }}>
+      // The loader plays on a first arrival and on every refresh, on any page:
+      // not on history restores or when moving between pages of this site. It
+      // also needs JavaScript and motion. If the animation bundle fails, the
+      // page still opens within five seconds.
+      (function () {
+        var root = document.documentElement;
+        var entry = performance.getEntriesByType("navigation")[0];
+        var reload = Boolean(entry && entry.type === "reload");
+        var from = (window.navigation && window.navigation.activation && window.navigation.activation.from && window.navigation.activation.from.url) || document.referrer;
+        var internal = false;
+        try { internal = Boolean(from) && new URL(from).origin === location.origin && !reload; } catch (error) {}
+        // Remembered so a refresh of the home page can return to where it was.
+        window.addEventListener("pagehide", function () { try { sessionStorage.setItem("scroll:" + location.pathname, String(Math.round(window.scrollY))); } catch (error) {} });
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || (entry && entry.type === "back_forward") || internal) return;
+        root.dataset.intro = "pending";
+        // The home loader lives in the hero at the top of the page. A section
+        // link or a refresh further down starts there and glides back after:
+        // a refresh to where it was, a fresh link to its section. The hash
+        // comes off meanwhile so the browser does not jump there first.
+        if (home) {
+          var back = location.hash;
+          if (reload) { try { var y = sessionStorage.getItem("scroll:" + location.pathname); if (Number(y) > 0) back = y; } catch (error) {} }
+          if (location.hash) {
+            root.dataset.introHash = location.hash;
+            history.replaceState(history.state, "", location.pathname + location.search);
+          }
+          if (back) root.dataset.introReturn = back;
+          if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        }
+        window.setTimeout(function () {
+          if (root.dataset.intro === "pending" && !root.hasAttribute("data-intro-preview")) {
+            delete root.dataset.intro;
+            window.dispatchEvent(new Event("intro:timeout"));
+          }
+        }, 4500);
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body>
+    {!home && <PageTurnIntro standalone />}
     <a class="skip-link" href="#content">Skip to content</a>
     {/* First in the tab order: on most pages the dock is the only site navigation. */}
     <SiteDock home={home} />

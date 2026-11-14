@@ -8,27 +8,6 @@ import ContactSection from "../components/ContactSection.astro";
 import "../styles/hero-theme.css";
 ---
 <BaseLayout title="Ayush Rameja" description="Ayush Rameja — full-stack engineer in Bengaluru building useful digital products. Explore selected work and notes on software engineering." home>
-  <script is:inline slot="head">
-    // The loader belongs to a first arrival: not to deep links, history
-    // restores, or returns from another page of this site. It also needs
-    // JavaScript and motion. If the animation bundle fails, the page still
-    // opens within five seconds.
-    (function () {
-      var root = document.documentElement;
-      var entry = performance.getEntriesByType("navigation")[0];
-      var from = (window.navigation && window.navigation.activation && window.navigation.activation.from && window.navigation.activation.from.url) || document.referrer;
-      var internal = false;
-      try { internal = Boolean(from) && new URL(from).origin === location.origin && !(entry && entry.type === "reload"); } catch (error) {}
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || location.hash || (entry && entry.type === "back_forward") || internal) return;
-      root.dataset.intro = "pending";
-      window.setTimeout(function () {
-        if (root.dataset.intro === "pending" && !root.hasAttribute("data-intro-preview")) {
-          delete root.dataset.intro;
-          window.dispatchEvent(new Event("intro:timeout"));
-        }
-      }, 4500);
-    })();
-  </script>
   <Hero />
   <SelectedWork />
   <ExperienceSection />

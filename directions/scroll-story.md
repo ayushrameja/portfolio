@@ -21,7 +21,8 @@ Everything is in `src/scripts/scroll-story.ts`, started from `BaseLayout.astro`.
 - `html.lenis` turns CSS `scroll-behavior` off; without Lenis, anchor jumps still scroll smoothly through CSS.
 - Same-page links (the dock, the hero menu, outlines) are scrolled by Lenis. The browser still performs the navigation, so the hash and keyboard focus move as before.
 - While the loader runs (`data-intro` on `<html>`), Lenis is stopped so wheel input does not queue up behind it.
-- Touch scrolling stays native; Lenis only smooths the wheel.
+- **Since 2026-11-14 touch is smoothed too** (`syncTouch: true`), at the user's request. Until then touch scrolling stayed native and Lenis only smoothed the wheel.
+- When the loader ends, Lenis glides to the place a home refresh left off (see loading-screen.md).
 
 **Arrival.** Every `[data-reveal]` element is a piece. A piece starts to arrive when its top reaches the foot of the viewport and has arrived after a further 30% of the viewport height (180 to 320px). Progress is written to the piece as `--p`, 0 to 1, and CSS turns that into the look:
 
@@ -38,6 +39,7 @@ Rules the progress follows:
 - It never runs backwards.
 - Past halfway a piece commits and finishes by itself, so stopping the scroll never leaves something half arrived.
 - Pieces in one row start 56px of scroll apart, left to right. A piece inside another (a disc in a card) starts 48px after its parent.
+- While the loader runs, pieces wait; they start arriving when its last page begins to turn (2026-11-14).
 - A piece waits until the one before it is under way. A reload or an anchor jump with many pieces already in view therefore still plays as a sequence.
 - Pieces already above the viewport are finished without animation.
 - A finished piece gets `is-revealed` and loses its inline `--p`; the Experience tenure bars key off that class.
@@ -48,7 +50,7 @@ Current assignments: section and page headings use `words`; Selected work cards 
 
 **Drift.** `[data-drift]` layers, the section patterns, are translated by 12% of the distance scrolled past them, up to 140px.
 
-Lean and drift run only for a fine pointer with hover. A finger scrolls on the compositor ahead of any script, so there they could only trail behind.
+Lean and drift run for every pointer since 2026-11-14, because Lenis now drives touch as well. *(Before: fine pointer with hover only, since a natively scrolled finger runs ahead of any script.)*
 
 **Layers.** Whatever the scroll moves must already be a picture on the compositor, or every frame repaints it. The script sets `data-layer` on a piece, which gives it `will-change: transform, opacity`, until the piece has arrived, and permanently if it leans. A heading's words are promoted until the heading has arrived; the patterns always are. On the home page that is 31 layers at rest for a fine pointer, and none once everything has arrived on touch.
 
@@ -81,6 +83,14 @@ Lean and drift run only for a fine pointer with hover. A finger scrolls on the c
 **Lesson:** frame callbacks alone do not show paint cost. For anything that transforms large elements per frame, trace it and read the raster work.
 
 **Left alone on purpose:** the hero and the loader take no part in the scroll story. They have their own entrance, and the user asked for the hero to stay as it is.
+
+### 2026-11-14 — Smooth touch
+
+**User request:** "Currently there is no smooth scroll implemented." Wheel smoothing worked on desktop (a 400px wheel step eased over about 40 frames in headless Chrome); touch was native by design. Asked, the user chose smooth touch too, with lean and drift following touch (over touch smoothing without lean, or investigating desktop).
+
+**Changed:** `syncTouch: true`; lean and drift no longer gated on a fine pointer; arrivals held under the loader until its reveal.
+
+**Status:** not felt on a real phone yet. Lenis's touch inertia defaults are kept; if a flick feels floaty, `syncTouchLerp` and `touchInertiaExponent` are the levers. Lean and drift on touch add compositor layers on phones.
 
 ## Verification
 

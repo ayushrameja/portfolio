@@ -67,10 +67,10 @@ Each pattern is an SVG tile used as a mask over a gradient of the two accent ink
 
 - `src/layouts/BaseLayout.astro`: document head, skip link, `<main id="content">`, `SiteFooter`, `SiteDock`, and the scroll story script (scroll-story.md). A `head` slot carries the home page's loader bootstrap.
 - `src/components/Panel.astro`, `Mark.astro` (gradient `ar` mark; each instance needs its own `id`).
-- `src/components/SiteDock.astro`: the one persistent navigation, a floating dock at the bottom (mark, Work, Experience, Notes, Contact, Resume). It comes first in the tab order. On the home page an inline script hides it while the hero, which has its own menu, fills the viewport, and it marks the section in view; without JavaScript it is simply always there. On other pages it marks the current area. `html` has `scroll-padding-bottom: 96px` so focus and anchors stop clear of it.
+- `src/components/SiteDock.astro`: the one persistent navigation, a floating dock at the bottom. On the home page: mark, Work, Experience, Notes, Contact, Resume. **On other pages (2026-11-14, user request):** mark, the area's index ("All work" → `/projects/`, "All notes" → `/notes/`, "All experience" → `/#experience`; current when on that index; absent on 404), then "Back to home". It comes first in the tab order. On the home page an inline script hides it while the hero, which has its own menu, fills the viewport, and it marks the section in view; without JavaScript it is simply always there. On other pages it marks the current area. `html` has `scroll-padding-bottom: 96px` so focus and anchors stop clear of it.
 - `src/components/SiteFooter.astro`: a quiet line on the white canvas, padded to clear the dock.
-- Pages cross-fade through cross-document view transitions where supported. There is no client router.
-- The loader now plays only on a first arrival at the home page: not for deep links (`/#contact`), history restores, or returns from another page of this site.
+- Moving between pages uses cross-document view transitions where supported: the old page lifts 24px and fades over 280ms, the new one rises 40px and fades in over 560ms after 120ms, and the dock (`view-transition-name: site-dock`) stays put. *(Until 2026-11-14 the browser's default cross-fade, which the user did not notice as an animation.)* There is no client router.
+- **Superseded 2026-11-14:** the loader played only on a first arrival at the home page, not for deep links. It now plays on every page, on a first arrival and on every refresh; see loading-screen.md.
 
 ### Pages and their accents
 
@@ -165,7 +165,17 @@ What changed:
 
 **Implementation assumptions, not yet reviewed by the user:** which pattern goes with which accent, their strengths, and that secondary panels on inner pages carry no pattern.
 
+### 2026-11-14 — Sub-page dock and page transitions
+
+**User requests:** on notes and the other sub-routes the dock repeated the home sections; instead show the logo, the area's index ("all notes", or experience), then back to home. Pages changed with no visible animation; add a simple one.
+
+**Changed:** the dock and transitions described under Shell. Experience has no index page, so "All experience" goes to the home section. On a phone "All notes" wrapped onto two lines until the dock links got `white-space: nowrap`.
+
+**Status:** awaiting review. Transition distances and timings are implementation choices.
+
 ## Verification
+
+Sub-page dock and transitions (2026-11-14): `/notes/` and a note at 412×915 show mark, "All notes" (current on the index) and "Back to home" on one line; a click from `/notes/` to a note fired `pageswap` and `pagereveal` with a view transition that finished, in desktop and mobile emulation. One earlier run logged an aborted transition that did not reproduce. Not checked: Safari, Firefox, the 404 dock.
 
 Open canvas (2026-11-13):
 
