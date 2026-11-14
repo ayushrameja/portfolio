@@ -107,19 +107,23 @@ void main(){
  vec2 pIn=q-warp;
  if(outFront)pOut.x-=wrap;else pIn.x+=wrap;
  float logo=smoothstep(.10,.48,time);
- vec3 paperA=paper(pageA,pageB,q/h);
+ // Branches on revealing are the same for every pixel, so texture lookups
+ // inside them keep their derivatives. During the reveal only the outgoing
+ // page is a page; the incoming one is the hero, so its lookups are skipped.
  vec3 paperB=paper(pageB,pageA,q/h*vec2(-1.,1.));
- vec3 outColor=revealing?mix(paperB,inkB,refractInk(pOut,1.,lens,unit)):mix(paperA,inkA,refractInk(pOut,0.,lens,unit)*logo);
- vec3 inColor=mix(paperB,inkB,refractInk(pIn,1.,lens,unit));
  float glow=lens*.55;
+ vec3 outColor;
+ if(revealing)outColor=mix(paperB,inkB,refractInk(pOut,1.,lens,unit));
+ else outColor=mix(paper(pageA,pageB,q/h),inkA,refractInk(pOut,0.,lens,unit)*logo);
  outColor=haze(outColor,glow,d/unit,q.y/unit);
- inColor=haze(inColor,glow,d/unit,q.y/unit);
  // Green-gold rim light hugs the curl; every page is deep enough to take it.
  float rim=(1.-t)*active;
  vec3 shine=vec3(.2,.42,.12)*rim*min(lip*2.5,1.)+vec3(g(e/1.5))*active*.22;
  // Premultiplied layers. During the reveal the incoming page is the real
  // hero: transparent inside its rect, painted only where the page flares past it.
- vec4 incoming=revealing?vec4(hero*(1.-cBack)+haze(hero,glow,d/unit,q.y/unit)-hero,1.-cBack):vec4(inColor,1.);
+ vec4 incoming;
+ if(revealing)incoming=vec4(hero*(1.-cBack)+haze(hero,glow,d/unit,q.y/unit)-hero,1.-cBack);
+ else incoming=vec4(haze(mix(paperB,inkB,refractInk(pIn,1.,lens,unit)),glow,d/unit,q.y/unit),1.);
  vec4 outgoing=vec4(outColor,1.);
  vec4 front=(outFront?outgoing:incoming)+vec4(shine,0.);
  vec4 back=(outFront?incoming:outgoing)*cBack;
@@ -141,7 +145,10 @@ export function createFoldRenderer(canvas: HTMLCanvasElement, surface: HTMLEleme
  const destroy=()=>{
   if(disposed)return; disposed=true;
   shaders.forEach(s=>gl.deleteShader(s)); gl.deleteProgram(program); gl.deleteBuffer(buffer); gl.deleteTexture(texture);
-  gl.getExtension('WEBGL_lose_context')?.loseContext(); canvas.width=canvas.height=1;
+  // loseContext() blocked for ~50ms on desktop, longer on phones. Deleting the
+  // objects and shrinking the drawing buffer frees the memory; the context
+  // itself goes with the detached canvas.
+  canvas.width=canvas.height=1;
  };
  try {
   const compile=(type:number,source:string)=>{
