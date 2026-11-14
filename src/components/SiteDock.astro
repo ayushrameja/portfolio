@@ -2,24 +2,38 @@
 import Mark from "./Mark.astro";
 import { contact } from "../data/contact";
 
-/** The one persistent navigation: a floating dock. On the home page it waits
- *  until the hero, which has its own menu, has scrolled away. */
+/** The one persistent navigation: a floating dock. On the home page it lists
+ *  the sections and waits until the hero, which has its own menu, has
+ *  scrolled away. Elsewhere it is the mark, the area's index, and the way
+ *  back home. */
 interface Props { home?: boolean }
 const { home = false } = Astro.props;
 const path = Astro.url.pathname;
 const links = [
-  { label: "Work", href: home ? "#selected-work" : "/projects/", section: "selected-work", match: "/projects" },
-  { label: "Experience", href: home ? "#experience" : "/#experience", section: "experience", match: "/experience" },
-  { label: "Notes", href: home ? "#notes" : "/notes/", section: "notes", match: "/notes" },
-  { label: "Contact", href: home ? "#contact" : "/#contact", section: "contact", match: "" },
+  { label: "Work", href: "#selected-work", section: "selected-work" },
+  { label: "Experience", href: "#experience", section: "experience" },
+  { label: "Notes", href: "#notes", section: "notes" },
+  { label: "Contact", href: "#contact", section: "contact" },
 ];
+const areas = [
+  { match: "/projects/", label: "All work", href: "/projects/" },
+  { match: "/notes/", label: "All notes", href: "/notes/" },
+  { match: "/experience/", label: "All experience", href: "/#experience" },
+];
+const area = areas.find(item => path.startsWith(item.match));
+const arrowPath = "M2 8h12M8 2l6 6-6 6";
 ---
 <nav class="site-dock" aria-label="Site navigation" data-home={home ? "" : undefined}>
   <a class="dock-home" href={home ? "#home" : "/"} aria-label="Ayush Rameja, home"><Mark id="dock-mark" /></a>
-  <ul class="dock-links">
-    {links.map(link => <li><a href={link.href} data-section={link.section} aria-current={!home && link.match && path.startsWith(link.match) ? (path === `${link.match}/` ? "page" : "true") : undefined}>{link.label}</a></li>)}
-  </ul>
-  <a class="dock-resume" href={contact.resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)">Resume <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M8 2l6 6-6 6" transform="rotate(-45 8 8)" /></svg></a>
+  {home ? <>
+    <ul class="dock-links">
+      {links.map(link => <li><a href={link.href} data-section={link.section}>{link.label}</a></li>)}
+    </ul>
+    <a class="dock-resume" href={contact.resume} target="_blank" rel="noopener noreferrer" aria-label="Resume (opens in a new tab)">Resume <svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(-45 8 8)" /></svg></a>
+  </> : <>
+    {area && <ul class="dock-links"><li><a href={area.href} aria-current={path === area.href ? "page" : undefined}>{area.label}</a></li></ul>}
+    <a class="dock-back" href="/"><svg viewBox="0 0 16 16" aria-hidden="true"><path d={arrowPath} transform="rotate(180 8 8)" /></svg>Back to home</a>
+  </>}
 </nav>
 {/* Hidden before first paint on the home page; without JavaScript it simply stays available. */}
 {home && <script is:inline>(function (dock) { dock.setAttribute("data-hidden", ""); dock.inert = true; })(document.currentScript.previousElementSibling);</script>}
@@ -54,14 +68,16 @@ const links = [
   .dock-home { display:grid; place-items:center; width:64px; height:44px; padding:0 10px; border-radius:15px; }
   .dock-home :global(svg) { width:100%; height:auto; display:block; }
   .dock-links { display:flex; gap:2px; margin:0; padding:0; list-style:none; }
-  .dock-links a { display:flex; align-items:center; height:44px; padding:0 14px; border-radius:15px; color:var(--muted); transition:color 200ms ease,background-color 200ms ease; }
+  .dock-links a { display:flex; align-items:center; height:44px; padding:0 14px; border-radius:15px; white-space:nowrap; color:var(--muted); transition:color 200ms ease,background-color 200ms ease; }
   .dock-links a[aria-current],.dock-links a[data-active] { background:var(--dock-lime); background-blend-mode:overlay,normal; color:var(--surface); }
   .dock-resume { display:flex; align-items:center; gap:10px; height:44px; padding:0 14px; border:1px solid var(--control-line); border-radius:15px; background:var(--control); transition:color 200ms ease; }
   .dock-resume svg { width:14px; height:14px; fill:none; stroke:var(--lime); stroke-width:1.5; transition:stroke 200ms ease; }
+  .dock-back { display:flex; align-items:center; gap:10px; height:44px; padding:0 14px; border:1px solid var(--control-line); border-radius:15px; background:var(--control); white-space:nowrap; transition:color 200ms ease; }
+  .dock-back svg { width:14px; height:14px; fill:none; stroke:var(--lime); stroke-width:1.5; transition:stroke 200ms ease; }
   @media(hover:hover) {
     .dock-links a:not([aria-current],[data-active]):hover { color:var(--ink); background:var(--surface-high); }
-    .site-dock .dock-resume:hover { background:var(--dock-lime); background-blend-mode:overlay,normal; color:var(--surface); }
-    .dock-resume:hover svg { stroke:var(--surface); }
+    .site-dock .dock-resume:hover,.site-dock .dock-back:hover { background:var(--dock-lime); background-blend-mode:overlay,normal; color:var(--surface); }
+    .dock-resume:hover svg,.dock-back:hover svg { stroke:var(--surface); }
   }
   @media(max-width:600px) {
     .site-dock { gap:2px; padding:5px; border-radius:20px; font-size:.9375rem; }
@@ -69,7 +85,8 @@ const links = [
     .dock-links { gap:0; }
     .dock-links a { padding:0 9px; }
     .dock-resume { display:none; }
+    .dock-back { padding:0 12px; }
   }
   @media(max-width:359px) { .dock-links a { padding:0 6px; font-size:.875rem; } }
-  @media(prefers-reduced-motion:reduce) { .site-dock,.dock-links a,.dock-resume { transition:none; } }
+  @media(prefers-reduced-motion:reduce) { .site-dock,.dock-links a,.dock-resume,.dock-back { transition:none; } }
 </style>

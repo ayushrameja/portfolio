@@ -7,13 +7,23 @@ html[data-intro="pending"] .page-turn-intro { display:block; }
    to rasterise. The inset keeps it clear of the pages' antialiased rim. */
 html[data-intro="pending"]:not([data-intro-revealing]) .hero { clip-path:inset(2px round calc(var(--intro-radius) - 2px)); }
 html[data-intro] .marquee-track,html[data-intro] .hero-glow i { animation-play-state:paused; }
+/* Pages without the hero get a fixed frame over the viewport. Its canvas is
+   white until the reveal, then the page shows through as the last sheet turns. */
+.page-turn-frame {
+  --intro-a-page:var(--violet); --intro-a-ink:var(--ink); --intro-r-page:var(--sky); --intro-r-ink:var(--ink);
+  --hero-top:var(--canvas); --hero-sky:var(--sky); --hero-coral:var(--coral);
+  position:fixed; inset:0; z-index:100; display:none; pointer-events:none;
+}
+html[data-intro="pending"] .page-turn-frame { display:block; background:var(--canvas); }
+html[data-intro="pending"][data-intro-revealing] .page-turn-frame { background:transparent; }
+.page-turn-surface { position:absolute; inset:20px; border-radius:64px; visibility:hidden; }
 .page-turn-intro__art { position:absolute; inset:20px; display:grid; place-items:center; border-radius:64px; background:color-mix(in oklab,var(--intro-a-page,#7c5cff),black 45%); color:var(--intro-a-ink,#f4f1ea); }
 .page-turn-intro__mark { width:clamp(152px,21vw,268px); height:auto; }
 .page-turn-intro__canvas { position:absolute; inset:0; width:100%; height:100%; }
 .page-turn-intro[data-renderer="ready"] .page-turn-intro__art { visibility:hidden; }
-@media(max-width:600px) { .page-turn-intro__art { inset:10px; border-radius:36px; } }
+@media(max-width:600px) { .page-turn-intro__art,.page-turn-surface { inset:10px; border-radius:36px; } }
 @media(prefers-reduced-motion:reduce) {
- html[data-intro] .page-turn-intro { display:none; }
+ html[data-intro] .page-turn-intro,html[data-intro] .page-turn-frame { display:none; }
  html[data-intro] .hero { visibility:visible; }
  html[data-intro] { overflow:auto; }
 }

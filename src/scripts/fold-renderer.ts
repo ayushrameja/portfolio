@@ -106,7 +106,7 @@ void main(){
  vec2 pOut=q+warp;
  vec2 pIn=q-warp;
  if(outFront)pOut.x-=wrap;else pIn.x+=wrap;
- float logo=smoothstep(.10,.48,time);
+ float logo=smoothstep(.10,${INTRO_TIMING.logoIn / 1000},time);
  // Branches on revealing are the same for every pixel, so texture lookups
  // inside them keep their derivatives. During the reveal only the outgoing
  // page is a page; the incoming one is the hero, so its lookups are skipped.
@@ -179,25 +179,42 @@ export function createFoldRenderer(canvas: HTMLCanvasElement, surface: HTMLEleme
   // Page colours come from the hero theme, so the loader and hero share one palette.
   const theme=getComputedStyle(surface);
   const color=(name:string,role:string,fallback:string)=>{
-   const value=theme.getPropertyValue(role).trim();
+   let value=theme.getPropertyValue(role).trim();
+   if(/^#[0-9a-f]{3}$/i.test(value))value=value.replace(/[0-9a-f]/gi,'$&$&');
    const hex=parseInt((/^#[0-9a-f]{6}$/i.test(value)?value:fallback).slice(1),16);
    gl.uniform3f(uniform(name),(hex>>16)/255,(hex>>8&255)/255,(hex&255)/255);
   };
   color('pageA','--intro-a-page','#7c5cff');color('inkA','--intro-a-ink','#f4f1ea');
   color('pageB','--intro-r-page','#5cc8ff');color('inkB','--intro-r-ink','#f4f1ea');
   color('hero','--hero-top','#0a0a0c');color('glowA','--hero-sky','#5cc8ff');color('glowB','--hero-coral','#ff5a3c');
+  // The panel's centre x, half width and shorter side in canvas pixels, for the reveal's scissor.
+  let centre=0,half=0,unit=0;
   const resize=()=>{
    const box=canvas.getBoundingClientRect(),hero=surface.getBoundingClientRect();if(!box.width||!box.height||disposed)return;
    const ratio=Math.min(devicePixelRatio||1,2,Math.sqrt(4200000/(box.width*box.height)));
    canvas.width=Math.floor(box.width*ratio);canvas.height=Math.floor(box.height*ratio);
    gl.viewport(0,0,canvas.width,canvas.height);
+   centre=(hero.left-box.left+hero.width/2)*ratio;half=hero.width/2*ratio;unit=Math.min(hero.width,hero.height)*ratio;
    // WebGL pixels run bottom-up; the panel's centre is measured from the canvas's bottom edge.
-   gl.uniform4f(panel,(hero.left-box.left+hero.width/2)*ratio,(box.bottom-hero.bottom+hero.height/2)*ratio,hero.width/2*ratio,hero.height/2*ratio);
+   gl.uniform4f(panel,centre,(box.bottom-hero.bottom+hero.height/2)*ratio,half,hero.height/2*ratio);
    gl.uniform1f(radius,(parseFloat(getComputedStyle(surface).borderTopLeftRadius)||0)*ratio);
    gl.uniform1f(gutter,Math.min(hero.top-box.top,hero.left-box.left)*ratio);
    gl.uniform1f(size,Math.min(268,Math.max(152,innerWidth*.21))*ratio);
   };
   resize();
-  return {resize,destroy,draw:(ms:number)=>{if(disposed)return;gl.uniform1f(time,ms/1000);gl.drawArrays(gl.TRIANGLES,0,3);}};
+  // In the reveal everything left of the seam's refraction trail is the
+  // uncovered page, fully transparent, so only the strip from there to the
+  // right edge is shaded. The trail fades to nothing within half a unit.
+  const scissor=(ms:number)=>{
+   const progress=Math.min(1,Math.max(0,(ms-INTRO_TIMING.revealStart)/INTRO_TIMING.foldTravel));
+   const eased=progress*progress*(3-2*progress);
+   const left=Math.max(0,Math.floor(centre+((-.12+1.24*eased)*2-1)*half-.5*unit));
+   gl.scissor(left,0,Math.max(0,canvas.width-left),canvas.height);
+  };
+  return {resize,destroy,draw:(ms:number)=>{
+   if(disposed)return;
+   if(ms>=INTRO_TIMING.revealStart){gl.enable(gl.SCISSOR_TEST);scissor(ms);}else gl.disable(gl.SCISSOR_TEST);
+   gl.uniform1f(time,ms/1000);gl.drawArrays(gl.TRIANGLES,0,3);
+  }};
  }catch{destroy();return null;}
 }

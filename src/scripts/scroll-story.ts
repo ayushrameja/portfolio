@@ -1,8 +1,9 @@
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { createPageScope } from './page-scope';
+import { introReturnTarget } from './intro-return';
 
-/** The site's scroll. Lenis smooths the wheel, and three things ride on it:
+/** The site's scroll. Lenis smooths the wheel and touch, and three things ride on it:
  *
  *  - `[data-reveal]` pieces arrive as they are scrolled to. How far each one
  *    has come is tied to the scroll position, never runs backwards, and is
@@ -79,24 +80,27 @@ export function setupScrollStory() {
   if (!root.classList.contains('reveal-ready')) return;
   const scope = createPageScope();
   // Nested scrollers (the message box, a long outline) keep the wheel while
-  // they have somewhere to go, then hand it back to the page.
-  const lenis = new Lenis({ anchors: true, allowNestedScroll: true });
+  // they have somewhere to go, then hand it back to the page. A finger glides
+  // too: Lenis eases touch the way it eases the wheel.
+  const lenis = new Lenis({ anchors: true, allowNestedScroll: true, syncTouch: true });
   scope.add(() => lenis.destroy());
 
   // The loader holds the page still; the wheel must not queue up behind it.
+  // A refresh of the home page then glides back to where it was.
   if (root.dataset.intro) {
     lenis.stop();
     const intro = scope.observe(new MutationObserver(() => {
       if (root.dataset.intro) return;
       intro.disconnect();
       lenis.start();
+      const target = introReturnTarget();
+      if (target !== null) lenis.scrollTo(target, { duration: 1.4 });
     }));
     intro.observe(root, { attributes: true, attributeFilter: ['data-intro'] });
   }
+  // Pieces wait under the loader and start arriving as its last page turns.
+  const held = () => root.dataset.intro === 'pending' && !root.hasAttribute('data-intro-revealing');
 
-  // Leaning and drifting follow the wheel. A finger scrolls on the compositor,
-  // ahead of any script, so on touch they would only trail behind it.
-  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const pieces: Piece[] = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]')).map(el => ({
     el,
     words: el.dataset.reveal === 'words' ? splitWords(el) : [],
@@ -110,7 +114,8 @@ export function setupScrollStory() {
     const outer = piece.el.parentElement?.closest('[data-reveal]');
     if (outer) piece.parent = pieces.find(other => other.el === outer) ?? null;
   }
-  const drifts: Drift[] = fine ? Array.from(document.querySelectorAll<HTMLElement>('[data-drift]')).map(el => ({ el, top: 0, height: 0, y: 0 })) : [];
+  // Lenis drives the wheel and touch alike, so leaning and drifting follow both.
+  const drifts: Drift[] = Array.from(document.querySelectorAll<HTMLElement>('[data-drift]')).map(el => ({ el, top: 0, height: 0, y: 0 }));
   root.setAttribute('data-reveal-live', '');
 
   let viewport = 0, range = 0;
@@ -123,7 +128,7 @@ export function setupScrollStory() {
       piece.top = pageTop(piece.el);
       piece.height = piece.el.offsetHeight;
       // Anything taller than the viewport, such as an essay, stays upright.
-      piece.leans = fine && !piece.parent && piece.height < viewport * 1.1;
+      piece.leans = !piece.parent && piece.height < viewport * 1.1;
       lift(piece);
       // A shape inside a card follows just behind its card.
       if (piece.parent) { piece.start = Math.min(piece.parent.start + 48, last); continue; }
@@ -167,10 +172,10 @@ export function setupScrollStory() {
     const scroll = lenis.scroll;
     const speed = (scroll - lastScroll) / elapsed * 16.7;
     lastScroll = scroll;
-    const target = fine ? clamp(speed * LEAN_PER_SPEED, -LEAN_LIMIT, LEAN_LIMIT) : 0;
+    const target = clamp(speed * LEAN_PER_SPEED, -LEAN_LIMIT, LEAN_LIMIT);
     lean += (target - lean) * (1 - Math.exp(-elapsed / 90));
     if (lean && Math.abs(lean) < .01 && !target) { lean = 0; dirty = true; }
-    if (!speed && !lean && !dirty) return;
+    if ((!speed && !lean && !dirty) || held()) return;
     dirty = false;
 
     const foot = scroll + viewport;
